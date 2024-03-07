@@ -2,25 +2,24 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 interface Cast {
+  data: {
+    castAddBody: {
+      embeds: any[];
+      embedsDeprecated: any[];
+      mentions: number[];
+      mentionsPositions: number[];
+      parentCastId?: {
+        fid: number;
+        hash: string;
+      };
+      text?: string;
+    };
     fid: number;
-    hash: string;    
-    parent_hash: string | null;
-    author_fid: number;
+    network: string;
     timestamp: number;
-    text: string;
-    mentions: number[];
-    mentions_position: number[];
-    embeds: Embed[];
-}
-
-interface Embed {
-    url?: string;
-    cast_id?: CastId;
-}
-
-interface CastId {
-    fid: number;
-    hash: string;
+    type: string;
+  };
+  hash: string;
 }
 
 const CastList: React.FC = () => {
@@ -31,8 +30,9 @@ const CastList: React.FC = () => {
     useEffect(() => {
         const fetchCasts = async () => {
             try {
-                const fid = 2;
-                const response = await axios.get(`http://localhost:2281/castsByFid/${fid}`);
+                const fid = 249222
+                const response = await axios.get(`http://127.0.0.1:8080/castsByFid/${fid}`);
+
                 setCasts(response.data.messages);
                 setLoading(false);
             } catch (error) {
@@ -57,13 +57,26 @@ const CastList: React.FC = () => {
         <h2>Casts</h2>
         {casts.map((cast) => (
           <div key={cast.hash}>
-            <p>Author FID: {cast.author_fid}</p>
-            <p>Text: {cast.text}</p>
-            <p>Timestamp: {new Date(cast.timestamp).toLocaleString()}</p>
+            <p>Author FID: {cast.data.fid}</p>
+            {cast.data.castAddBody && (
+              <>
+                {cast.data.castAddBody.text && (
+                  <p>Text: {cast.data.castAddBody.text}</p>
+                )}
+                {cast.data.castAddBody.parentCastId && (
+                  <p>Parent Cast ID: {cast.data.castAddBody.parentCastId.hash}</p>
+                )}
+              </>
+            )}
+            <p>Timestamp: {new Date(cast.data.timestamp * 1000).toLocaleString()}</p>
+            {/* Add more properties as needed */}
           </div>
         ))}
       </div>
     );
+
+
+
 };
 
 export default CastList;

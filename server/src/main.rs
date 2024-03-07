@@ -3,6 +3,7 @@ use reqwest::Client;
 use actix_web::HttpResponse;
 use actix_web::{get, web, App, HttpServer, Responder};
 mod models;
+use dotenv::dotenv;
 use std::env;
 
 #[get("/")]
@@ -12,27 +13,39 @@ async fn index() -> impl Responder {
 
 #[get("/castById/{fid}/{hash}")]
 async fn get_cast_by_id(info: web::Path<(u64, String)>) -> impl Responder {
+    dotenv().ok();
+    let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
+
     let (fid, hash) = info.into_inner();
-    let url = format!("http://127.0.0.1:2281/v1/castById?fid={}&hash={}", fid, hash);
+    let url = format!("{}:2281/v1/castById?fid={}&hash={}", hubble_url, fid, hash);
     fetch_and_respond(url).await
 }
 
 #[get("/castsByFid/{fid}")]
 async fn get_casts_by_fid(fid: web::Path<u64>) -> impl Responder {
-    let url = format!("http://127.0.0.1:2281/v1/castsByFid?fid={}", fid.into_inner());
+    dotenv().ok();
+    let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
+
+    let url = format!("{}:2281/v1/castsByFid?fid={}", hubble_url, fid.into_inner());
     fetch_and_respond(url).await
 }
 
 #[get("/castsByParent/{fid}/{hash}")]
 async fn get_casts_by_parent(info: web::Path<(u64, String)>) -> impl Responder {
+    dotenv().ok();
+    let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
+
     let (fid, hash) = info.into_inner();
-    let url = format!("http://127.0.0.1:2281/v1/castsByParent?fid={}&hash={}", fid, hash);
+    let url = format!("{}:2281/v1/castsByParent?fid={}&hash={}", hubble_url, fid, hash);
     fetch_and_respond(url).await
 }
 
 #[get("/castsByMention/{fid}")]
 async fn get_casts_by_mention(fid: web::Path<u64>) -> impl Responder {
-    let url = format!("http://127.0.0.1:2281/v1/castsByMention?fid={}", fid.into_inner());
+    dotenv().ok();
+    let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
+
+    let url = format!("{}:2281/v1/castsByMention?fid={}", hubble_url, fid.into_inner());
     fetch_and_respond(url).await
 }
 
