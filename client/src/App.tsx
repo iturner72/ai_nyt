@@ -1,12 +1,14 @@
 import React from 'react';
-import CastList from './components/CastList';
 import './App.css';
+import CastList from './components/CastList';
 
 const App: React.FC = () => {
   return (
     <div className="App">
       <h1>Farcaster Client</h1>
-      <CastList />
+        <div className="flex flex-row p-12 space-x-4">
+        <CastList />
+      </div>
     </div>
   );
 }
