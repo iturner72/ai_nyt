@@ -2,13 +2,8 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-* {
-  font-family: "Lora", serif;
-}
 
-html {
-  background-color: rgb(255 251 235)
-}
+
 
 body {
   margin: 0;

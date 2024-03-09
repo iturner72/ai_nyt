@@ -14,7 +14,6 @@ async fn get_cast_by_id(info: web::Path<(u64, String)>) -> impl Responder {
 #[get("/castsByFid/{fid}")]
 async fn get_casts_by_fid(fid: web::Path<u64>) -> impl Responder {
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
-
     let url = format!("{}:2281/v1/castsByFid?fid={}", hubble_url, fid.into_inner());
     fetch_and_respond(url).await
 }
@@ -32,6 +31,13 @@ async fn get_casts_by_parent(channel: web::Path<String>) -> impl Responder {
 async fn get_casts_by_mention(fid: web::Path<u64>) -> impl Responder {
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
     let url = format!("{}:2281/v1/castsByMention?fid={}", hubble_url, fid.into_inner());
+    fetch_and_respond(url).await
+}
+
+#[get("/channels")]
+async fn get_channels() -> impl Responder {
+    let warpcast_url = env::var("WARPCAST_URL").expect("WARPCAST_URL must be set");
+    let url = format!("{}all-channels", warpcast_url);
     fetch_and_respond(url).await
 }
 

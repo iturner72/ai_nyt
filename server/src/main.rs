@@ -36,6 +36,7 @@ async fn main() -> std::io::Result<()> {
             .service(hubble::get_casts_by_fid)
             .service(hubble::get_casts_by_parent)
             .service(hubble::get_casts_by_mention)
+            .service(hubble::get_channels)
             .service(openai::generate_chat)
     })
     .bind(server_address)?

@@ -1,16 +1,44 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import CastList from './components/CastList';
 import NavBar from "./components/NavBar";
+import axios from "axios";
+
+const channels = ['https://warpcast.com/~/channel/onthebrink', 'https://warpcast.com/~/channel/gray', 'https://warpcast.com/~/channel/ethereum', 'https://warpcast.com/~/channel/farcaster', 'https://warpcast.com/~/channel/solana']
+const fids = [249222, 5650, 37, 97, 151, 318610, 319431]
+// Ian, Vitalik, Balaji, Nic, Matt, Solana, Ryan
 
 const App: React.FC = () => {
+  const [currentChannelIndex, setCurrentChannelIndex] = React.useState<number>(0);
+  const [allChannels, setAllChannels] = React.useState<Channel[]>([]);
+
+  function filterChannels(allChannels: Channel[], url: string) {
+    return allChannels.filter(channel => channels.includes(channel.url));
+  }
+
+  useEffect(() => {
+    async function fetchChannels() {
+      try {
+        axios.get('http://127.0.0.1:8080/channels').then(res => {
+          console.log('Channels:', res.data.channels);
+          setAllChannels(res.data.channels);
+        });
+      } catch (error) {
+        console.error('Failed to fetch channels. Please try again.');
+      }
+    }
+
+    fetchChannels();
+  }, []);
+
   return (
-    <div className="text-center bg-amber-50">
-        <div>
-            <h1 className={'font-semibold text-4xl header my-5'}>ai_nyt</h1>
-        </div>
-        <NavBar />
-        <div className="flex flex-row p-12 space-x-4">
-        <CastList />
+    <div className="text-center bg-stone-100">
+      <div className={'h-32 relative'}>
+        <h1 className={'text-[100px] font-display py-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>ai_nyt</h1>
+      </div>
+      <NavBar channels={channels} currentChannelIndex={currentChannelIndex}
+              setCurrentChannelIndex={setCurrentChannelIndex}/>
+      <div className="flex flex-row bg-stone-200">
+        <CastList channel={channels[currentChannelIndex]}/>
       </div>
     </div>
   );
