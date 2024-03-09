@@ -7,12 +7,11 @@ use std::env;
 
 #[derive(Debug)]
 pub enum MyError {
-    Reqwest(reqwest::Error), // Wrap reqwest's error
-    NoChoicesFound,          // Custom error case
-    HttpError(String),       // An HTTP error with a message
+    Reqwest(reqwest::Error),
+    NoChoicesFound,
+    HttpError(String),
 }
 
-// Implement conversion from `reqwest::Error` to `MyError`.
 impl From<reqwest::Error> for MyError {
     fn from(error: reqwest::Error) -> Self {
         MyError::Reqwest(error)
@@ -80,7 +79,7 @@ impl OpenAIClient {
             ],
         });
     
-        let response = self.client.post("https://api.openai.com/v1/chat/completions") // Make sure this is the correct endpoint
+        let response = self.client.post("https://api.openai.com/v1/chat/completions") 
             .headers(self.headers.clone())
             .json(&body)
             .send().await?;

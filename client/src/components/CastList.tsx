@@ -68,6 +68,34 @@ const CastList = ({channel}: CastListProps) => {
       } finally {
         setLoading(false);
       }
+        // Find the newest cast's timestamp
+        const newestTimestamp = castsByFid.flat().reduce((newest, cast) => {
+            const castTimestamp = new Date(cast.data.timestamp * 1000);
+            return castTimestamp > newest ? castTimestamp : newest;
+        }, new Date(0));
+
+        // Filter casts from the last 24 hours
+        const oneDayAgo = new Date(newestTimestamp.getTime() - (7 * 24 * 60 * 60 * 1000));
+        const recentCastsTexts = castsByFid.flat().filter(cast => {
+            const castTimestamp = new Date(cast.data.timestamp * 1000);
+            return castTimestamp >= oneDayAgo;
+        }).map(cast => cast.data.castAddBody?.text || '').filter(text => text);
+
+        // Concatenate the texts of all casts
+        const concatenatedText = recentCastsTexts.join(' ');
+    
+        try {
+            const response = await axios.post('http://127.0.0.1:8080/generate_daily_summary', { text: concatenatedText });
+            if (response.status === 200 && response.data) {
+                setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
+                console.log('Summary generated:', response.data.summary);
+            } else {
+                console.error('Failed to generate summary:', response.status);
+            }
+        } catch (error) {
+            console.error("Error submitting text for summary:", error);
+            setError('Failed to submit text for summary. Please try again.');
+        }
     };
 
     fetchChannelCasts();

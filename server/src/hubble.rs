@@ -2,6 +2,13 @@ use actix_web::{get, web, HttpResponse, Responder};
 use reqwest::Client;
 use std::env;
 
+#[get("/userNameProofsByFid/{fid}")]
+async fn get_username_proofs_by_fid(fid: web::Path<u64>) -> impl Responder {
+    let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
+    let url = format!("{}:2281/v1/userNameProofsByFid?fid={}", hubble_url, fid.into_inner());
+    fetch_and_respond(url).await
+}
+
 #[get("/castById/{fid}/{hash}")]
 async fn get_cast_by_id(info: web::Path<(u64, String)>) -> impl Responder {
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");

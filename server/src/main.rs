@@ -32,6 +32,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(cors)
             .service(index)
+            .service(hubble::get_username_proofs_by_fid)
             .service(hubble::get_cast_by_id)
             .service(hubble::get_casts_by_fid)
             .service(hubble::get_casts_by_parent)
