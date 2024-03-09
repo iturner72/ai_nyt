@@ -15,7 +15,7 @@ cd client && npm i
 
 ```bash
 npm start
-```bash
+```
 
 ### Server
 ```bash
