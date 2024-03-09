@@ -113,14 +113,6 @@ const CastList: React.FC = () => {
 
 
     return (
-<<<<<<< Updated upstream
-        <div className=" mx-auto">
-            <button className={'absolute left-10 bg-amber-100 p-2 rounded'} onClick={submitTextForSummary}>Generate Summary from Casts</button>
-            {summary && (
-                <div>
-                    <h2>Daily Summary</h2>
-                    <p>{summary}</p>
-=======
       <div className="flex flex-row items-start">
         <button onClick={submitTextForSummary}>Generate Summary from Casts</button>
         {summary && (
@@ -141,17 +133,6 @@ const CastList: React.FC = () => {
             </div>
           ))}
         </div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-          {castsByFid.map((casts, index) => (
-            <div key={fids[index]} style={{ maxWidth: '20%' }}>
-              <h2>FID: {fids[index]}</h2>
-              {casts.map(cast => (
-                <div key={cast.hash} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                  {cast.data.castAddBody?.text ? <p>{cast.data.castAddBody.text}</p> : <p>No text content</p>}
-                  <p>Timestamp: {new Date(cast.data.timestamp * 1000).toLocaleString()}</p>
->>>>>>> Stashed changes
-                </div>
-            )}
             <div className={'flex flex-col w-full gap-2 '}>
                 {castsByFid.map((casts, index) => (
                     <div key={fids[index]} className={'max-w-3xl divide-y divide-slate-400'}>
