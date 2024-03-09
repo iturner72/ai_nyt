@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 
 interface Cast {
-  data: {
-    castAddBody?: {
-      embeds: any[];
-      embedsDeprecated: any[];
-      mentions: number[];
-      mentionsPositions: number[];
-      parentCastId?: {
+    data: {
+        castAddBody?: {
+            embeds: any[];
+            embedsDeprecated: any[];
+            mentions: number[];
+            mentionsPositions: number[];
+            parentCastId?: {
+                fid: number;
+                hash: string;
+            };
+            text?: string;
+        };
         fid: number;
-        hash: string;
-      };
-      text?: string;
+        network: string;
+        timestamp: number;
+        type: string;
     };
-    fid: number;
-    network: string;
-    timestamp: number;
-    type: string;
-  };
-  hash: string;
+    hash: string;
 }
 
 const fids = [249222, 5650, 37, 97, 151, 318610]
@@ -58,7 +58,7 @@ const CastList: React.FC = () => {
         }, new Date(0));
 
         // Filter casts from the last 24 hours
-        const oneDayAgo = new Date(newestTimestamp.getTime() - (24 * 60 * 60 * 1000));
+        const oneDayAgo = new Date(newestTimestamp.getTime() - (14 * 24 * 60 * 60 * 1000));
         const recentCastsTexts = castsByFid.flat().filter(cast => {
             const castTimestamp = new Date(cast.data.timestamp * 1000);
             return castTimestamp >= oneDayAgo;
@@ -66,9 +66,9 @@ const CastList: React.FC = () => {
 
         // Concatenate the texts of all casts
         const concatenatedText = recentCastsTexts.join(' ');
-    
+
         try {
-            const response = await axios.post('http://127.0.0.1:8080/generate_daily_summary', { text: concatenatedText });
+            const response = await axios.post('http://127.0.0.1:8080/generate_daily_summary', {text: concatenatedText});
             if (response.status === 200 && response.data) {
                 setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
                 console.log('Summary generated:', response.data.summary);
@@ -86,28 +86,36 @@ const CastList: React.FC = () => {
 
 
     return (
-      <div className="flex flex-row items-start">
-        <button onClick={submitTextForSummary}>Generate Summary from Casts</button>
-        {summary && (
-          <div>
-            <h2>Daily Summary</h2>
-            <p>{summary}</p>
-          </div>
-        )}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-          {castsByFid.map((casts, index) => (
-            <div key={fids[index]} style={{ maxWidth: '20%' }}>
-              <h2>FID: {fids[index]}</h2>
-              {casts.map(cast => (
-                <div key={cast.hash} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                  {cast.data.castAddBody?.text ? <p>{cast.data.castAddBody.text}</p> : <p>No text content</p>}
-                  <p>Timestamp: {new Date(cast.data.timestamp * 1000).toLocaleString()}</p>
+        <div className=" mx-auto">
+            <button className={'absolute left-10 bg-amber-100 p-2 rounded'} onClick={submitTextForSummary}>Generate Summary from Casts</button>
+            {summary && (
+                <div>
+                    <h2>Daily Summary</h2>
+                    <p>{summary}</p>
                 </div>
-              ))}
+            )}
+            <div className={'flex flex-col w-full gap-2 '}>
+                {castsByFid.map((casts, index) => (
+                    <div key={fids[index]} className={'max-w-3xl divide-y divide-slate-400'}>
+                        <h2>FID: {fids[index]}</h2>
+                        {casts.map(cast => (
+                            <div key={cast.hash} className={'h-64 flex justify-between  overflow-hidden p-4 my-2'}>
+                                <div className={'min-w-[400px] text-left '}>
+                                    {cast.data.castAddBody?.text ? <p>{cast.data.castAddBody.text}</p> :
+                                        <p>No text content</p>}
+                                    <p>Timestamp: {new Date(cast.data.timestamp * 1000).toLocaleString()}</p>
+                                </div>
+                                <div className={'w-full'}>
+                                    {cast.data.castAddBody?.embeds.map(embed => (
+                                        <img key={embed.url} src={embed.url} alt={embed.url} className={'w-full h-full object-cover'}/>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ))}
             </div>
-          ))}
         </div>
-      </div>
     );
 };
 
