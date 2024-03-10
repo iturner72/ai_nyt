@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import config from './../config';
 
 interface Cast {
   data: {
@@ -32,6 +33,7 @@ const CastList = ({channel}: CastListProps) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [summary, setSummary] = useState<string>('');
+  const hubble_url = process.env.HUBBLE_URL;
 
   // useEffect(() => {
   //     const fetchCasts = async () => {
@@ -58,7 +60,7 @@ const CastList = ({channel}: CastListProps) => {
       try {
         console.log('Fetching casts by channel');
 
-        axios.get(`http://127.0.0.1:8080/castsByChannel/${encodeURIComponent(channel)}`).then(res => {
+        axios.get(`http://${config.serverBaseUrl}:8080/castsByChannel/${encodeURIComponent(channel)}`).then(res => {
           console.log(`Fetched casts for chennel ${channel}:`, res.data.messages);
           setCasts(res.data.messages);
         })
@@ -85,7 +87,7 @@ const CastList = ({channel}: CastListProps) => {
         const concatenatedText = recentCastsTexts.join(' ');
     
         try {
-            const response = await axios.post('http://127.0.0.1:8080/generate_daily_summary', { text: concatenatedText });
+            const response = await axios.post(`http://${config.serverBaseUrl}:8080/generate_daily_summary`, { text: concatenatedText });
             if (response.status === 200 && response.data) {
                 setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
                 console.log('Summary generated:', response.data.summary);
@@ -121,7 +123,7 @@ const CastList = ({channel}: CastListProps) => {
     const concatenatedText = recentCastsTexts.join(' ');
 
     try {
-      const response = await axios.post('http://127.0.0.1:8080/generate_daily_summary', {text: concatenatedText});
+      const response = await axios.post(`http://${config.serverBaseUrl}:8080/generate_daily_summary`, {text: concatenatedText});
       if (response.status === 200 && response.data) {
         setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
         console.log('Summary generated:', response.data.summary);

@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import CastList from './components/CastList';
 import NavBar from "./components/NavBar";
 import axios from "axios";
+import config from './config';
 
 const channels = ['https://warpcast.com/~/channel/onthebrink', 'https://warpcast.com/~/channel/gray', 'https://warpcast.com/~/channel/ethereum', 'https://warpcast.com/~/channel/farcaster', 'https://warpcast.com/~/channel/solana']
 const fids = [249222, 5650, 37, 97, 151, 318610, 319431]
@@ -10,6 +11,7 @@ const fids = [249222, 5650, 37, 97, 151, 318610, 319431]
 const App: React.FC = () => {
   const [currentChannelIndex, setCurrentChannelIndex] = React.useState<number>(0);
   const [allChannels, setAllChannels] = React.useState<Channel[]>([]);
+  const hubble_url = process.env.HUBBLE_URL;
 
   function filterChannels(allChannels: Channel[], url: string) {
     return allChannels.filter(channel => channels.includes(channel.url));
@@ -18,7 +20,7 @@ const App: React.FC = () => {
   useEffect(() => {
     async function fetchChannels() {
       try {
-        axios.get('http://127.0.0.1:8080/channels').then(res => {
+        axios.get(`http://${config.serverBaseUrl}:8080/channels`).then(res => {
           console.log('Channels:', res.data.channels);
           setAllChannels(res.data.channels);
         });
