@@ -6,6 +6,7 @@ use std::env;
 mod models;
 mod hubble;
 mod openai;
+mod anthropic;
 
 #[get("/")]
 async fn index() -> impl Responder {
@@ -39,6 +40,7 @@ async fn main() -> std::io::Result<()> {
             .service(hubble::get_casts_by_mention)
             .service(hubble::get_channels)
             .service(openai::generate_chat)
+            .service(anthropic::generate_chat_anthropic)
     })
     .bind(server_address)?
     .run()
