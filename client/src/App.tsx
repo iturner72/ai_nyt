@@ -5,6 +5,7 @@ import axios from "axios";
 import {Routes, Route, useNavigate} from "react-router-dom";
 import {ArticleList} from "./views/ArticleList/ArticleList";
 import ArticlePage from "./views/ArticlePage/ArticlePage";
+import config from "./config";
 
 const channels = ['https://warpcast.com/~/channel/onthebrink', 'https://warpcast.com/~/channel/gray', 'https://warpcast.com/~/channel/design', 'https://warpcast.com/~/channel/memes']
 const fids = [249222, 5650, 37, 97, 151, 318610, 319431]
@@ -29,7 +30,7 @@ const App: React.FC = () => {
   useEffect(() => {
     async function fetchChannels() {
       try {
-        axios.get(`${BACKEND_URL}/channels`).then(res => {
+        axios.get(`http://${config.serverBaseUrl}:8080/warpcast/channels`).then(res => {
         // axios.get(`${BACKEND_URL}/warpcast/channels`).then(res => {
           console.log('Channels:', res.data.channels);
           setAllChannels(res.data.channels);
