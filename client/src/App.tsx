@@ -11,12 +11,9 @@ const channels = ['https://warpcast.com/~/channel/onthebrink', 'https://warpcast
 const fids = [249222, 5650, 37, 97, 151, 318610, 319431]
 // Ian, Vitalik, Balaji, Nic, Matt, Solana, Ryan
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://12.0.0.1:8080';
-
 const App: React.FC = () => {
   const [currentChannelIndex, setCurrentChannelIndex] = React.useState<number>(0);
   const [allChannels, setAllChannels] = React.useState<Channel[]>([]);
-  const hubble_url = process.env.HUBBLE_URL;
   const navigate = useNavigate();
 
   function filterChannels(allChannels: Channel[], url: string) {
@@ -30,8 +27,7 @@ const App: React.FC = () => {
   useEffect(() => {
     async function fetchChannels() {
       try {
-        axios.get(`http://${config.serverBaseUrl}:8080/warpcast/channels`).then(res => {
-        // axios.get(`${BACKEND_URL}/warpcast/channels`).then(res => {
+        axios.get(`http://${config.serverBaseUrl}:8081/channels`).then(res => {
           console.log('Channels:', res.data.channels);
           setAllChannels(res.data.channels);
         });
@@ -50,15 +46,15 @@ const App: React.FC = () => {
         className={'h-32 relative'}>
         <h1 className={'text-[100px] font-display py-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>ai_nyt</h1>
       </div>
+      <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
+              setCurrentChannelIndex={setCurrentChannelIndex}/>
+      <div className=" bg-stone-200">
+        <CastList channel={channels[currentChannelIndex]}/>
+      </div>
       <Routes>
         <Route path={'/'} element={<ArticleList/>}/>
         <Route path={'/article/:id'} element={<ArticlePage/>}/>
       </Routes>
-      {/*<NavBar channels={channels} currentChannelIndex={currentChannelIndex}*/}
-      {/*        setCurrentChannelIndex={setCurrentChannelIndex}/>*/}
-      {/*<div className=" bg-stone-200">*/}
-      {/*  <CastList channel={channels[currentChannelIndex]}/>*/}
-      {/*</div>*/}
     </div>
   );
 }
