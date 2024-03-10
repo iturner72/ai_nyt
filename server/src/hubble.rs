@@ -28,9 +28,9 @@ async fn get_casts_by_fid(fid: web::Path<u64>) -> impl Responder {
 #[get("/castsByChannel/{channel}")]
 async fn get_casts_by_parent(channel: web::Path<String>) -> impl Responder {
     log::info!("Fetching Casts by Channel");
-
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
     let url = format!("{}:2281/v1/castsByParent?url={}", hubble_url, channel.into_inner());
+
     fetch_and_respond(url).await
 }
 

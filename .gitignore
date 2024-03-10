@@ -123,7 +123,7 @@ _site
 .next
 out
 
-# Nuxt.js build / generate output
+# Nuxt.js build / generate.ts output
 .nuxt
 dist
 

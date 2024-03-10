@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
+import CastEntry from './Cast';
 import axios from 'axios';
-import config from './../config';
 
 interface Cast {
   data: {
@@ -26,6 +26,8 @@ interface Cast {
 interface CastListProps {
   channel: string;
 }
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:8080';
 
 const CastList = ({channel}: CastListProps) => {
   const [castsByFid, setCastsByFid] = useState<Cast[]>([]);
@@ -60,7 +62,11 @@ const CastList = ({channel}: CastListProps) => {
       try {
         console.log('Fetching casts by channel');
 
-        axios.get(`http://${config.serverBaseUrl}:8080/castsByChannel/${encodeURIComponent(channel)}`).then(res => {
+
+        axios.get(`${BACKEND_URL}/castsByChannel/${encodeURIComponent(channel)}`).then(res => {
+
+          // axios.get(`${BACKEND_URL}/hubble/castsByChannel?channel_url=${encodeURIComponent(channel)}`).then(res => {
+
           console.log(`Fetched casts for chennel ${channel}:`, res.data.messages);
           setCasts(res.data.messages);
         })
@@ -70,34 +76,34 @@ const CastList = ({channel}: CastListProps) => {
       } finally {
         setLoading(false);
       }
-        // Find the newest cast's timestamp
-        const newestTimestamp = castsByFid.flat().reduce((newest, cast) => {
-            const castTimestamp = new Date(cast.data.timestamp * 1000);
-            return castTimestamp > newest ? castTimestamp : newest;
-        }, new Date(0));
+      // Find the newest cast's timestamp
+      const newestTimestamp = castsByFid.flat().reduce((newest, cast) => {
+        const castTimestamp = new Date(cast.data.timestamp * 1000);
+        return castTimestamp > newest ? castTimestamp : newest;
+      }, new Date(0));
 
-        // Filter casts from the last 24 hours
-        const oneDayAgo = new Date(newestTimestamp.getTime() - (7 * 24 * 60 * 60 * 1000));
-        const recentCastsTexts = castsByFid.flat().filter(cast => {
-            const castTimestamp = new Date(cast.data.timestamp * 1000);
-            return castTimestamp >= oneDayAgo;
-        }).map(cast => cast.data.castAddBody?.text || '').filter(text => text);
+      // Filter casts from the last 24 hours
+      const oneDayAgo = new Date(newestTimestamp.getTime() - (7 * 24 * 60 * 60 * 1000));
+      const recentCastsTexts = castsByFid.flat().filter(cast => {
+        const castTimestamp = new Date(cast.data.timestamp * 1000);
+        return castTimestamp >= oneDayAgo;
+      }).map(cast => cast.data.castAddBody?.text || '').filter(text => text);
 
-        // Concatenate the texts of all casts
-        const concatenatedText = recentCastsTexts.join(' ');
-    
-        try {
-            const response = await axios.post(`http://${config.serverBaseUrl}:8080/generate_daily_summary`, { text: concatenatedText });
-            if (response.status === 200 && response.data) {
-                setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
-                console.log('Summary generated:', response.data.summary);
-            } else {
-                console.error('Failed to generate summary:', response.status);
-            }
-        } catch (error) {
-            console.error("Error submitting text for summary:", error);
-            setError('Failed to submit text for summary. Please try again.');
+      // Concatenate the texts of all casts
+      const concatenatedText = recentCastsTexts.join(' ');
+
+      try {
+        const response = await axios.post(`${BACKEND_URL}/generate_daily_summary`, {text: concatenatedText});
+        if (response.status === 200 && response.data) {
+          setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
+          console.log('Summary generated:', response.data.summary);
+        } else {
+          console.error('Failed to generate summary:', response.status);
         }
+      } catch (error) {
+        console.error("Error submitting text for summary:", error);
+        setError('Failed to submit text for summary. Please try again.');
+      }
     };
 
     fetchChannelCasts();
@@ -107,83 +113,62 @@ const CastList = ({channel}: CastListProps) => {
   const submitTextForSummary = async () => {
 
     // Find the newest cast's timestamp
-    const newestTimestamp = castsByFid.flat().reduce((newest, cast) => {
-      const castTimestamp = new Date(cast.data.timestamp * 1000);
-      return castTimestamp > newest ? castTimestamp : newest;
-    }, new Date(0));
-
-    // Filter casts from the last 24 hours
-    const oneDayAgo = new Date(newestTimestamp.getTime() - (14 * 24 * 60 * 60 * 1000));
-    const recentCastsTexts = castsByFid.flat().filter(cast => {
-      const castTimestamp = new Date(cast.data.timestamp * 1000);
-      return castTimestamp >= oneDayAgo;
-    }).map(cast => cast.data.castAddBody?.text || '').filter(text => text);
-
-    // Concatenate the texts of all casts
-    const concatenatedText = recentCastsTexts.join(' ');
-
     try {
-      const response = await axios.post(`http://${config.serverBaseUrl}:8080/generate_daily_summary`, {text: concatenatedText});
-      if (response.status === 200 && response.data) {
-        setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
-        console.log('Summary generated:', response.data.summary);
-      } else {
-        console.error('Failed to generate summary:', response.status);
+      const newestTimestamp = casts.flat().reduce((newest, cast) => {
+        const castTimestamp = new Date(cast.data.timestamp * 1000);
+        return castTimestamp > newest ? castTimestamp : newest;
+      }, new Date(0));
+
+      // Filter casts from the last 24 hours
+      const oneDayAgo = new Date(newestTimestamp.getTime() - (14 * 24 * 60 * 60 * 1000));
+      const recentCastsTexts = casts.flat().filter(cast => {
+        const castTimestamp = new Date(cast.data.timestamp * 1000);
+        return castTimestamp >= oneDayAgo;
+      }).map(cast => cast.data.castAddBody?.text || '').filter(text => text);
+
+      // Concatenate the texts of all casts
+      const concatenatedText = recentCastsTexts.join(' ');
+
+      try {
+        const response = await axios.post(`${BACKEND_URL}/generate_daily_summary`, {text: concatenatedText});
+        // const response = await axios.post('http://127.0.0.1:8080/generate_daily_summary', {text: concatenatedText});
+        if (response.status === 200 && response.data) {
+          setSummary(response.data); // Assuming the backend response includes a "summary" field
+          console.log('Summary generated:', response.data);
+        } else {
+          console.error('Failed to generate.ts summary:', response.status);
+        }
+      } catch (error) {
+        console.error("Error submitting text for summary:", error);
+        setError('Failed to submit text for summary. Please try again.');
       }
     } catch (error) {
       console.error("Error submitting text for summary:", error);
-      setError('Failed to submit text for summary. Please try again.');
     }
   };
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
 
   return (
-    <div className="flex flex-row items-start ">
-      <button onClick={submitTextForSummary}>Generate Summary from Casts</button>
-      {summary && (
-        <div>
-          <h2>Daily Summary</h2>
-          <p>{summary}</p>
+    <>
+      <button className={''} onClick={submitTextForSummary}>Generate Summary from Casts</button>
+      <div className=" max-w-[1400px] mx-auto py-10">
+        {summary && (
+          <article className={'text-left text-2xl font-serif leading-10 mx-48 py-20'}>
+            <div
+              className={' h-fit text-end inline-block text-[130px] float-left mt-12 pr-2 font-display'}>{summary.split('').splice(0, 1)}</div>
+            <p className={'clear-right'}>{summary.split('').slice(1)}</p>
+          </article>
+        )}
+        <div className={'grid grid-cols-3 gap-5 w-full'}>
+          {casts.map((cast, index) => (
+            <CastEntry cast={cast} index={index} key={index}/>
+          ))}
         </div>
-      )}
-      <div>
-        {casts.map((cast, index) => {
-          return cast.data ?
-            <div key={index}>
-              <h3>{index + 1}</h3>
-              <div key={cast.hash}>
-                <p>{cast.data?.castAddBody ? cast.data?.castAddBody?.text : 'N/A'}</p>
-              </div>
-            </div>
-            : null;
-        })}
       </div>
-      {/*<div className={'flex flex-col w-full gap-2 '}>*/}
-      {/*    {castsByFid.map((casts, index) => (*/}
-      {/*        <div key={fids[index]} className={'max-w-3xl divide-y divide-slate-400'}>*/}
-      {/*            <h2>FID: {fids[index]}</h2>*/}
-      {/*            {casts.map(cast => (*/}
-      {/*                <div key={cast.hash} className={'h-64 flex justify-between  overflow-hidden p-4 my-2'}>*/}
-      {/*                    <div className={'min-w-[400px] text-left '}>*/}
-      {/*                        {cast.data.castAddBody?.text ? <p>{cast.data.castAddBody.text}</p> :*/}
-      {/*                            <p>No text content</p>}*/}
-      {/*                        <p>Timestamp: {new Date(cast.data.timestamp * 1000).toLocaleString()}</p>*/}
-      {/*                    </div>*/}
-      {/*                    <div className={'w-full'}>*/}
-      {/*                        {cast.data.castAddBody?.embeds.map(embed => (*/}
-      {/*                            <img key={embed.url} src={embed.url} alt={embed.url} className={'w-full h-full object-cover'}/>*/}
-      {/*                        ))}*/}
-      {/*                    </div>*/}
-      {/*                </div>*/}
-      {/*            ))}*/}
-      {/*        </div>*/}
-      {/*    ))}*/}
-      {/*</div>*/}
-    </div>
+    </>
   );
-};
 
+}
 export default CastList;

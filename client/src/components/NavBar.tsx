@@ -6,7 +6,7 @@ interface NavBarProps {
 
 export default function NavBar({channels, currentChannelIndex, setCurrentChannelIndex}: NavBarProps) {
   return (
-    <div className={'sticky top-0'}>
+    <div className={'sticky top-0 z-20'}>
       <div
         className="flex items-center justify-between bg-stone-100 font-sans border-b border-neutral-200 ">
         {

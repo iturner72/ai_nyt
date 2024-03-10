@@ -6,7 +6,8 @@ module.exports = {
   theme: {
     extend: {
         fontFamily: {
-            sans: ['Inter', ...defaultTheme.fontFamily.sans],
+            sans: ['Roboto', ...defaultTheme.fontFamily.sans],
+            header: ['Bebas Neue', ...defaultTheme.fontFamily.sans],
             lora: ['Lora', ...defaultTheme.fontFamily.serif],
             display: ['UnifrakturMaguntia', ...defaultTheme.fontFamily.serif],
         },
