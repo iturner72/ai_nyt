@@ -111,16 +111,16 @@ const CastList = ({ channel }: CastListProps) => {
       <div className="flex items-center justify-center space-x-20 my-2">
         <p className="text-3xl newsreader-bold">Fresh casts from {channelName}</p>
       </div>
-      <div className="w-10/12 mx-auto py-2 bg-stone-100">
+      <div className="w-full sm:w-10/12 mx-auto py-2 bg-stone-100">
         {summary && (
-          <article className="text-left text-2xl font-serif leading-10 mx-48 py-20">
-            <div className="h-fit text-end inline-block text-[130px] float-left mt-12 pr-2 font-display">
+          <article className="text-left text-lg sm:text-2xl font-serif leading-8 sm:leading-10  mx-4 sm:mx-48 py-10 sm:py-20">
+            <div className="h-fit text-end inline-block text-[80px] sm:text-[130px] float-left mt-6 sm:mt-12 pr-2 font-display">
               {summary.split('').splice(0, 1)}
             </div>
             <p className="clear-right">{summary.split('').slice(1)}</p>
           </article>
         )}
-        <div className="grid grid-cols-4 gap-8 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 w-full">
           {casts.map((cast, index) => (
             <CastEntry cast={cast} index={index} key={index} />
           ))}
