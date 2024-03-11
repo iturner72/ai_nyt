@@ -27,7 +27,7 @@ const App: React.FC = () => {
   useEffect(() => {
     async function fetchChannels() {
       try {
-        axios.get(`https://${config.serverBaseUrl}:8081/channels`).then(res => {
+        axios.get(`https://${config.serverBaseUrl}/channels`).then(res => {
           console.log('Channels:', res.data.channels);
           setAllChannels(res.data.channels);
         });
