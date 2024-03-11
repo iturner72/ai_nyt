@@ -151,8 +151,13 @@ const CastList = ({channel}: CastListProps) => {
 
   return (
     <>
-      <button className={''} onClick={submitTextForSummary}>Generate Summary from Casts</button>
-      <div className=" max-w-[1400px] mx-auto py-10">
+      <div className="flex items-center justify-center space-x-20 my-8">
+        <div className="text-left">
+          <p>This button triggers an API call to a Large Language Model, which generates a summary of casts from the past week.</p>
+        </div>
+        <button className="py-2 px-4 bg-stone-500 text-white hover:bg-stone-700" onClick={submitTextForSummary}>Summarize Casts</button>
+      </div>
+      <div className=" w-10/12 mx-auto py-2 bg-stone-100">
         {summary && (
           <article className={'text-left text-2xl font-serif leading-10 mx-48 py-20'}>
             <div
@@ -160,7 +165,7 @@ const CastList = ({channel}: CastListProps) => {
             <p className={'clear-right'}>{summary.split('').slice(1)}</p>
           </article>
         )}
-        <div className={'grid grid-cols-3 gap-5 w-full'}>
+        <div className={'grid grid-cols-4 gap-8 w-full'}>
           {casts.map((cast, index) => (
             <CastEntry cast={cast} index={index} key={index}/>
           ))}
