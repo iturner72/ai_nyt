@@ -47,7 +47,7 @@ const App: React.FC = () => {
       <div className="h-32 w-full relative flex justify-center items-center">
         {/* Make sure the entire div is clickable, or just the title text if you prefer */}
         <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome}></div>
-        <h1 className="text-[60px] font-display py-5 whitespace-nowrap cursor-pointer">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[60px] font-display py-5 whitespace-nowrap cursor-pointer">
           The Network Times
         </h1>
         <InfoIcon 
