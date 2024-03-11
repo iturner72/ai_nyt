@@ -13,7 +13,7 @@ const InformationModal: React.FC<InformationModalProps> = ({ closeModal }) => {
             <h3 className="text-3xl leading-6 font-medium text-gray-900">Lock In</h3>
             <div className="mt-2 px-7 py-3">
               <p className="text-lg text-gray-500">
-                The Network Times was hacked together in a weekend for a Balaji Bounty. The website is a combination of The New York Times and Pirate Wires (River is my GOAT). I strongly believe that LLMs (the current SOTA) should be a complement to human journalists; not a replacement. That being said, this assembly of LLMs will crush the NYT, WSJ, and the like. Stay tuned for exciting new features! 
+                The Network Times was hacked together in a weekend for a Balaji Bounty. The website is a combination of The New York Times and Pirate Wires (River is my GOAT). I strongly believe that LLMs (the current SOTA) should be complements to human journalists; not replacements. That being said, this assembly of LLMs will crush the NYT, WSJ, and the like. Stay tuned for exciting new features (proper postgres db, ai writer personalities, image generation, and more)!
               </p>
             </div>
             <div className="items-center px-4 py-3">

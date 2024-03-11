@@ -142,7 +142,7 @@ export function ArticleList() {
   
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="pt-6 flex flex-row space-x-44">
+      <div className="pt-6 flex flex-row space-x-12">
         <button className="p-3 text-stone-200 newsreader-bold text-xl text-center bg-stone-700 hover:bg-stone-900 rounded" onClick={fetchArticlesForChannelGpt} disabled={loadingGpt}>
           {loadingGpt ? "Loading..." : "generate article with gpt 3.5 turbo"}
         </button>
