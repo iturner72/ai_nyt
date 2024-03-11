@@ -8,6 +8,7 @@ import ArticlePage from "./views/ArticlePage/ArticlePage";
 import InformationModal from './components/InformationModal';
 import InfoIcon from '@mui/icons-material/Info';
 import config from "./config";
+import TerminalComponent from './components/TerminalComponent';
 
 const channels = ['https://warpcast.com/~/channel/onthebrink', 'https://warpcast.com/~/channel/piratewires', 'https://warpcast.com/~/channel/moz', 'https://warpcast.com/~/channel/zynwood', 'https://warpcast.com/~/channel/gray', 'https://warpcast.com/~/channel/all-in']
 const fids = [249223, 5650, 37, 97, 151, 318610, 319431]
@@ -58,6 +59,7 @@ const App: React.FC = () => {
       </div>
       <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
               setCurrentChannelIndex={setCurrentChannelIndex}/>
+      <TerminalComponent />
       <Routes>
         <Route path={'/'} element={<ArticleList />}/>
         <Route path={'/article/:id'} element={<ArticlePage/>}/>
