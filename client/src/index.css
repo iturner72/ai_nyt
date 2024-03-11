@@ -25,29 +25,8 @@ code {
 }
 
 .article {
-    width: calc(33.3333333333% - 27px);
+    width: calc(100%);
     position: relative;
-}
-
-.article ::after {
-    content: "";
-    width: 0.5px;
-    height: 100%;
-    background-color: #000;
-    opacity: 0.5;
-    position: absolute;
-    right: -20.5px;
-    top: 0;
-}
-
-.article ::before {
-    content: "";
-    height: 0.5px;
-    width: 100%;
-    background-color: #000;
-    position: absolute;
-    left: 0;
-    top: -20.5px;
 }
 
 .jacques-francois-shadow-regular {

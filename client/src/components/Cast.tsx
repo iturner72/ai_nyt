@@ -54,19 +54,20 @@ export default function CastEntry({ cast, index }: CastProps) {
   }, [cast.data?.fid]);
 
   return cast.data ? (
-    <div key={index} className={'w-full border-stone-500 min-h-60 flex justify-between p-4 relative text-left bg-stone-200'}>
-      <div>
-        <div className={'newsreader-bold border-b-1 border-stone-400 w-fit '}>
+    <div key={index} className="min-h-20 flex flex-col justify-between p-4 bg-stone-200 border border-stone-500">
+      <div className="mb-4"> {/* Add margin-bottom for spacing on mobile */}
+        <h3 className="font-bold border-b border-stone-400 mb-2 text-sm sm:text-base"> {/* Smaller text on small screens, standard size on sm screens and up */}
           {loading ? (
-            <h3>Loading...</h3>
+            "Loading..."
           ) : (
-            <h3>@{userData?.data?.userDataBody?.value || "No username"}</h3>
+            `@${userData?.data?.userDataBody?.value || "No username"}`
           )}
-        </div>
-        <div key={cast.hash} className={'newsreader-regular mt-1 text-wrap '}>
-          <p className={'break-all hyphens-auto'}>{cast.data?.castAddBody ? cast.data?.castAddBody?.text : 'N/A'}</p>
-        </div>
+        </h3>
+        <p className="text-xs sm:text-sm break-words hyphens-auto"> {/* Smaller text on small screens, standard size on sm screens and up */}
+          {cast.data?.castAddBody ? cast.data?.castAddBody?.text : 'N/A'}
+        </p>
       </div>
     </div>
   ) : null;
+
 }

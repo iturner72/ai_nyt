@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from 'axios';
 import config from './../../config'; // Ensure this path is correct
+
+interface Cast {
+  data: {
+    castAddBody?: {
+      text?: string;
+    };
+  };
+}
 
 interface Article {
   id: number;
@@ -11,13 +20,13 @@ interface Article {
 }
 
 export function ArticleList() {
-  const navigate = useNavigate();
   const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingGpt, setLoadingGpt] = useState(false);
+  const [loadingClaude, setLoadingClaude] = useState(false);
   const [error, setError] = useState('');
 
-  const fetchArticlesForChannel = async () => {
-    setLoading(true);
+  const fetchArticlesForChannelGpt = async () => {
+    setLoadingGpt(true);
     setError('');
     try {
       // Hardcoded URL for testing purposes
@@ -49,9 +58,9 @@ export function ArticleList() {
           // Create a single article from the summary
           const generatedArticle: Article = {
             id: 1,
-            title: "Article 1",
+            title: "summary of this weeks casts",
             content: summary,
-            image: "/images/article1.jpg"
+            image: "/images/article1.png"
           };
           console.log("Generated article:", generatedArticle);
           setArticles([generatedArticle]);
@@ -63,42 +72,100 @@ export function ArticleList() {
         console.error("Failed to fetch data:", error);
         setError("Failed to fetch data. Please try again later.");
       } finally {
-        setLoading(false);
+        setLoadingGpt(false);
       }
     };
-  
-    function handleArticleClick(id: number) {
-      navigate(`/article/${id}`);
-    }
 
+  const fetchArticlesForChannelClaude = async () => {
+    setLoadingClaude(true);
+    setError('');
+    let summary; // Moved here to ensure it's accessible throughout the function
+  
+    try {
+      const channelUrl = "https://warpcast.com/~/channel/onthebrink";
+      const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channelUrl)}`);
+      console.log("Response data:", response.data);
+  
+      let castsArray = response.data.messages || [];
+      console.log("Casts array:", castsArray);
+  
+      // Concatenate texts of all casts, then truncate to prevent exceeding API limits
+      const concatenatedText = castsArray
+        .map((cast: Cast) => cast.data.castAddBody?.text || '')
+        .join(' ')
+        .trim();
+
+      console.log("Concatenated Text:", concatenatedText);
+  
+      try {
+        const summaryResponse = await axios.post(`https://${config.serverBaseUrl}/generate_chat_anthropic`, {
+          model: 'claude-3-opus-20240229',
+          max_tokens: 200,
+          messages: [{ role: 'user', content: concatenatedText }], 
+        }, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+  
+        console.log("Summary response:", summaryResponse.data);
+        summary = summaryResponse.data.content[0].text; // Ensure this matches the structure of the Anthropic API response
+    
+      } catch (error) {
+        console.error("Failed to generate articles with Claude:", error);
+        setError("Failed to generate articles. Please try again.");
+        return; // Exit the function early since we can't proceed without a summary
+      }
+  
+      // Proceed to create an article if a summary was successfully generated
+      if (summary) {
+        const generatedArticle = {
+          id: 1, // Consider using a more dynamic approach for ID if generating multiple articles over time
+          title: "Generated Article with Claude",
+          content: summary,
+          image: "/images/article1.png", // Ensure this image exists or is appropriately handled
+        };
+  
+        console.log("Generated article:", generatedArticle);
+        setArticles([generatedArticle]);
+      } else {
+        console.warn("Summary data is not available or invalid");
+        setError("Failed to generate the article. Please try again later.");
+      }
+  
+    } catch (error) {
+      console.error("Failed to fetch casts data:", error);
+      setError("Failed to fetch data. Please try again later.");
+    } finally {
+      setLoadingClaude(false);
+    }
+  };
+
+  
   return (
-    <div>
-      <button className="pt-6 text-emerald-900 newsreader-bold text-xl" onClick={fetchArticlesForChannel} disabled={loading}>
-        {loading ? "Loading..." : "generate article"}
-      </button>
+    <div className="flex flex-col items-center justify-center">
+      <div className="pt-6 flex flex-row space-x-44">
+        <button className="p-3 text-stone-200 newsreader-bold text-xl text-center bg-stone-700 hover:bg-stone-900 rounded" onClick={fetchArticlesForChannelGpt} disabled={loadingGpt}>
+          {loadingGpt ? "Loading..." : "generate article with gpt 3.5 turbo"}
+        </button>
+        <button className="p-3 text-stone-300 newsreader-bold text-xl text-center bg-stone-700 hover:bg-stone-900 rounded" onClick={fetchArticlesForChannelClaude} disabled={loadingClaude}>
+          {loadingClaude ? "Loading..." : "generate article with claude 3 opus"}
+        </button>
+      </div>
       {error && <div>Error: {error}</div>}
-      <div className="text-left w-10/12 mx-auto px-5 flex flex-wrap justify-between">
-        {articles.map((article, index) => (
-          <article
-            key={index}
-            onClick={() => handleArticleClick(article.id)}
-            className="article text-left text-xl newsreader-regular leading-10 w-full relative my-5"
-          >
-            <img
-              src={article.image}
-              alt={article.title}
-              className="w-full aspect-video object-cover items-center"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "https://via.placeholder.com/400x300";
-              }}
-            />
-            <h2 className="text-[42px] newsreader-bold py-5 w-full border-b-2 border-dashed border-stone-500 font-header font leading-10">
-              {article.title}
-            </h2>
-            <span className="pt-5 font-medium text-stone-700 relative opacity-80 overflow-ellipsis overflow-hidden line-clamp-3 leading-8">
-              {article.content}
-            </span>
-          </article>
+
+      <div className="w-full max-w-4xl mx-auto p-2">
+        {articles.map((article: Article, index: number) => (
+          <div key={index} className="article text-left text-xl newsreader-regular leading-10 w-full relative my-5">
+            {/* Using Link to navigate and pass article data */}
+            <Link to={`/article/${article.id}`} state={{ article }}>
+              <img src={article.image} alt={article.title} className="w-full aspect-video object-cover items-center" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
+              <h2 className="text-[42px] newsreader-bold py-5 w-full border-b-2 border-dashed border-stone-500 font-header font leading-10">
+                {article.title}
+              </h2>
+              <span className="pt-5 font-medium text-stone-700 relative opacity-80 leading-8">
+                {article.content}
+              </span>
+            </Link>
+          </div>
         ))}
       </div>
     </div>
