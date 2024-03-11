@@ -9,8 +9,8 @@ import InformationModal from './components/InformationModal';
 import InfoIcon from '@mui/icons-material/Info';
 import config from "./config";
 
-const channels = ['https://warpcast.com/~/channel/onthebrink', 'https://warpcast.com/~/channel/gray', 'https://warpcast.com/~/channel/design', 'https://warpcast.com/~/channel/memes']
-const fids = [249222, 5650, 37, 97, 151, 318610, 319431]
+const channels = ['https://warpcast.com/~/channel/onthebrink', 'https://warpcast.com/~/channel/piratewires', 'https://warpcast.com/~/channel/moz', 'https://warpcast.com/~/channel/zynwood', 'https://warpcast.com/~/channel/gray', 'https://warpcast.com/~/channel/all-in']
+const fids = [249223, 5650, 37, 97, 151, 318610, 319431]
 // Ian, Vitalik, Balaji, Nic, Matt, Solana, Ryan
 
 const App: React.FC = () => {
@@ -59,7 +59,7 @@ const App: React.FC = () => {
       <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
               setCurrentChannelIndex={setCurrentChannelIndex}/>
       <Routes>
-        <Route path={'/'} element={<ArticleList/>}/>
+        <Route path={'/'} element={<ArticleList />}/>
         <Route path={'/article/:id'} element={<ArticlePage/>}/>
       </Routes>
       <div className="bg-stone-100">

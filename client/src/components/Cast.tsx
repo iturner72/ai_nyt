@@ -56,7 +56,7 @@ export default function CastEntry({ cast, index }: CastProps) {
   return cast.data ? (
     <div key={index} className={'w-full border-stone-500 min-h-60 flex justify-between p-4 relative text-left bg-stone-200'}>
       <div>
-        <div className={' border-b-1 border-stone-400 w-fit '}>
+        <div className={'newsreader-bold border-b-1 border-stone-400 w-fit '}>
           {loading ? (
             <h3>Loading...</h3>
           ) : (
