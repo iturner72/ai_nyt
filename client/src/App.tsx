@@ -19,6 +19,11 @@ const App: React.FC = () => {
   const [allChannels, setAllChannels] = React.useState<Channel[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [showTerminal, setShowTerminal] = useState(false);
+
+  const toggleTerminal = () => {
+    setShowTerminal(!showTerminal);
+  };
 
   function filterChannels(allChannels: Channel[], url: string) {
     return allChannels.filter(channel => channels.includes(channel.url));
@@ -59,7 +64,12 @@ const App: React.FC = () => {
       </div>
       <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
               setCurrentChannelIndex={setCurrentChannelIndex}/>
-      <TerminalComponent />
+      <div className="w-10/12 pt-4">
+        {showTerminal && <TerminalComponent />}
+        <button className="pb-4" onClick={toggleTerminal} >
+          {showTerminal ? 'hide terminal' : 'show terminal'}
+        </button>
+      </div>
       <Routes>
         <Route path={'/'} element={<ArticleList />}/>
         <Route path={'/article/:id'} element={<ArticlePage/>}/>

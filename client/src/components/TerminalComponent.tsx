@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactTerminal } from 'react-terminal';
+import { ReactTerminal, TerminalContextProvider } from 'react-terminal';
 
 const TerminalComponent: React.FC = () => {
   const commands = {
@@ -14,24 +14,35 @@ const TerminalComponent: React.FC = () => {
       }
     },
     clear: () => {
-        return '';
+      return '';
     },
   };
 
   const welcomeMessage = 'gigachad';
   const errorMessage = 'Unknown command. Type "help" to see available commands.';
 
+  const customTheme = {
+    themeBGColor: '#1c1917',
+    themeToolbarColor: '#e7e5e4',
+    themeColor: '#FFFEFC',
+    themePromptColor: '#0d9488',
+  };
+
   return (
-    <div className="w-10/12 h-96 pt-6">
-      <ReactTerminal
-        commands={commands}
-        welcomeMessage={welcomeMessage}
-        errorMessage={errorMessage}
-        theme="dark"
-      />
-    </div>
+    <TerminalContextProvider>
+      <div className="w-full h-96 pb-4"> 
+        <ReactTerminal
+          commands={commands}
+          welcomeMessage={welcomeMessage}
+          errorMessage={errorMessage}
+          themes={{
+            'my-custom-theme': customTheme,
+          }}
+          theme="my-custom-theme"
+        />
+      </div>
+    </TerminalContextProvider>
   );
 };
 
 export default TerminalComponent;
-
