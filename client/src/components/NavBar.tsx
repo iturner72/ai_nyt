@@ -14,7 +14,7 @@ export default function NavBar({channels, currentChannelIndex, setCurrentChannel
             <button
               key={index}
               onClick={() => setCurrentChannelIndex(index)}
-              className={`w-full text-left border-t border-r p-2 border-stone-700 last:border-r first:border-l font-semibold border-b ${currentChannelIndex === index ? 'bg-stone-200 border-stone-500 text-stone-900' : 'bg-stone-900 text-stone-50'}`}>
+              className={`w-full text-left  h-10 border-t border-r p-2 border-stone-700 last:border-r first:border-l font-semibold border-b ${currentChannelIndex === index ? 'bg-stone-200 border-stone-500 text-stone-900' : 'bg-stone-900 text-stone-50'}`}>
               /{channel.split('/').pop()}
             </button>
           ))
