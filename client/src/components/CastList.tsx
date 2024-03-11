@@ -62,7 +62,7 @@ const CastList = ({channel}: CastListProps) => {
         console.log('Fetching casts by channel');
 
 
-        axios.get(`https://${config.serverBaseUrl}:8081/castsByChannel/${encodeURIComponent(channel)}`).then(res => {
+        axios.get(`http://${config.serverBaseUrl}:8081/castsByChannel/${encodeURIComponent(channel)}`).then(res => {
 
           // axios.get(`${BACKEND_URL}/hubble/castsByChannel?channel_url=${encodeURIComponent(channel)}`).then(res => {
 
@@ -92,7 +92,7 @@ const CastList = ({channel}: CastListProps) => {
       const concatenatedText = recentCastsTexts.join(' ');
 
       try {
-        const response = await axios.post(`https://${config.serverBaseUrl}:8081/generate_daily_summary`, {text: concatenatedText});
+        const response = await axios.post(`http://${config.serverBaseUrl}:8081/generate_daily_summary`, {text: concatenatedText});
         if (response.status === 200 && response.data) {
           setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
           console.log('Summary generated:', response.data.summary);
@@ -129,7 +129,7 @@ const CastList = ({channel}: CastListProps) => {
       const concatenatedText = recentCastsTexts.join(' ');
 
       try {
-        const response = await axios.post(`https://${config.serverBaseUrl}:8081/generate_daily_summary`, {text: concatenatedText});
+        const response = await axios.post(`http://${config.serverBaseUrl}:8081/generate_daily_summary`, {text: concatenatedText});
         // const response = await axios.post('http://127.0.0.1:8080/generate_daily_summary', {text: concatenatedText});
         if (response.status === 200 && response.data) {
           setSummary(response.data); // Assuming the backend response includes a "summary" field
