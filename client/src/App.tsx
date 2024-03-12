@@ -97,7 +97,7 @@ const App: React.FC = () => {
         </div>
       )}
       <Routes>
-        <Route path={'/'} element={<ArticleList />}/>
+        <Route path={'/'} element={<ArticleList channel={channels[currentChannelIndex]} />}/>
         <Route path={'/article/:id'} element={<ArticlePage/>}/>
       </Routes>
       <div className="bg-stone-100">

@@ -11,6 +11,10 @@ interface Cast {
   };
 }
 
+interface ArticleListProps {
+  channel: string;
+}
+
 interface Article {
   id: number;
   title: string;
@@ -18,7 +22,7 @@ interface Article {
   image: string;
 }
 
-export function ArticleList() {
+export function ArticleList({ channel }: ArticleListProps) {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loadingGpt, setLoadingGpt] = useState(false);
   const [loadingClaude, setLoadingClaude] = useState(false);
@@ -29,8 +33,7 @@ export function ArticleList() {
     setError('');
     try {
       // Hardcoded URL for testing purposes
-      const channelUrl = "https://warpcast.com/~/channel/onthebrink";
-      const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channelUrl)}`);
+      const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channel)}`);
       const responseData = response.data;
       console.log("Response data:", responseData);
 
@@ -81,8 +84,7 @@ export function ArticleList() {
     let summary; // Moved here to ensure it's accessible throughout the function
   
     try {
-      const channelUrl = "https://warpcast.com/~/channel/onthebrink";
-      const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channelUrl)}`);
+      const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channel)}`);
       console.log("Response data:", response.data);
   
       let castsArray = response.data.messages || [];
