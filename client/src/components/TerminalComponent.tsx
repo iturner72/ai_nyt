@@ -1,10 +1,20 @@
 import React from 'react';
 import { ReactTerminal, TerminalContextProvider } from 'react-terminal';
 
-const TerminalComponent: React.FC = () => {
+
+interface TerminalComponentProps {
+  onSearch: (username: string) => void;
+}
+
+const TerminalComponent: React.FC<TerminalComponentProps> = ({ onSearch }) => {
+
   const commands = {
     help: () => {
       return 'Available commands:\n- help\n- greet <name>\n- clear';
+    },
+    grep: (username: string) => {
+      onSearch(username);
+      return `Searching for casts by username: ${username}`;
     },
     greet: (...args: string[]) => {
       if (args.length > 0) {

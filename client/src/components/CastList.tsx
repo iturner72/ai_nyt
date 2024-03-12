@@ -26,9 +26,10 @@ interface Cast {
 
 interface CastListProps {
   channel: string;
+  searchUsername: string;
 }
 
-const CastList = ({ channel }: CastListProps) => {
+const CastList = ({ channel, searchUsername }: CastListProps) => {
   const [allCasts, setAllCasts] = useState<Cast[]>([]);
   const [displayCasts, setDisplayCasts] = useState<Cast[]>([]);
   const [startIndex, setStartIndex] = useState(0);
@@ -49,9 +50,11 @@ const CastList = ({ channel }: CastListProps) => {
         const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channel)}`);
         const fetchedCasts = response.data.messages;
 
-        console.log(`Fetched casts for channel ${channel}:`, response.data.messages);
-        setAllCasts(fetchedCasts);
-        setDisplayCasts(fetchedCasts.slice(0, 40));
+        const sortedCasts = fetchedCasts.sort((a: any, b: any) => b.data.timestamp - a.data.timestamp);
+
+        console.log(`Fetched casts for channel ${channel}:`, sortedCasts);
+        setAllCasts(sortedCasts);
+        setDisplayCasts(sortedCasts.slice(0, 120));
       } catch (error) {
         setError('Failed to fetch channel casts. Please try again.');
       } finally {
@@ -106,6 +109,18 @@ const CastList = ({ channel }: CastListProps) => {
       console.error("Error submitting text for summary:", error);
     }
   };
+
+
+  useEffect(() => {
+    if (searchUsername) {
+      const filteredCasts = allCasts.filter((cast) =>
+        cast.data?.castAddBody?.text?.includes(`@${searchUsername}`)
+      );
+      setDisplayCasts(filteredCasts);
+    } else {
+      setDisplayCasts(allCasts.slice(startIndex, startIndex + 40));
+    }
+  }, [searchUsername, allCasts, startIndex]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;

@@ -20,10 +20,31 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const [showTerminal, setShowTerminal] = useState(false);
+  const [searchUsername, setSearchUsername] = useState<string>('');
+
+  const handleSearch = (username: string) => {
+    setSearchUsername(username);
+    console.log('username: ', username);
+  };
 
   const toggleTerminal = () => {
-    setShowTerminal(!showTerminal);
+    setShowTerminal((prevShowTerminal) => !prevShowTerminal);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'y') {
+        event.preventDefault();
+        toggleTerminal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   function filterChannels(allChannels: Channel[], url: string) {
     return allChannels.filter(channel => channels.includes(channel.url));
@@ -53,7 +74,14 @@ const App: React.FC = () => {
       <div className="h-32 w-full relative flex justify-center items-center">
         {/* Make sure the entire div is clickable, or just the title text if you prefer */}
         <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome}></div>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[60px] font-display py-5 whitespace-nowrap cursor-pointer">
+        <button
+          onClick={toggleTerminal}
+          className="absolute left-6 top-1/2 transform -translate-y-1/2 text-stone-900 text-2xl focus:outline-none"
+          style={{ fontSize: '72px' }}
+        >
+          {showTerminal ? '⌨' : '⌨'}
+        </button>
+        <h1 className="text-4xl sm:text-4xl md:text-6xl lg:text-[60px] font-display py-5 whitespace-nowrap cursor-pointer">
           The Network Times
         </h1>
         <InfoIcon 
@@ -64,25 +92,21 @@ const App: React.FC = () => {
       </div>
       <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
               setCurrentChannelIndex={setCurrentChannelIndex}/>
-      <div className="w-10/12 pt-4">
-        {showTerminal && <TerminalComponent />}
-        <button className="pb-4" onClick={toggleTerminal} >
-          {showTerminal ? 'hide terminal' : 'show terminal'}
-        </button>
-      </div>
+      {showTerminal && (
+        <div className="w-10/12 pt-4">
+          <TerminalComponent onSearch={handleSearch} />
+        </div>
+      )}
       <Routes>
         <Route path={'/'} element={<ArticleList />}/>
         <Route path={'/article/:id'} element={<ArticlePage/>}/>
       </Routes>
       <div className="bg-stone-100">
-        <CastList channel={channels[currentChannelIndex]}/>
+        <CastList channel={channels[currentChannelIndex]} searchUsername={searchUsername} />
       </div>
       {isModalOpen && <InformationModal closeModal={() => setIsModalOpen(false)} />}
     </div>
   );
-
-
-
 }
 
 export default App;
