@@ -142,9 +142,6 @@ export function ArticleList() {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="pt-4 flex flex-col md:flex-row space-y-4 items-center md:space-y-0 md:space-x-4">
-        <button className="p-3 text-stone-200 newsreader-bold text-sm md:text-base text-center bg-stone-700 hover:bg-stone-900 rounded" onClick={fetchArticlesForChannelGpt} disabled={loadingGpt}>
-          {loadingGpt ? "loading..." : "gpt 3.5 turbo"}
-        </button>
         <button className="p-3 text-stone-300 newsreader-bold text-sm md:text-base text-center bg-stone-700 hover:bg-stone-900 rounded" onClick={fetchArticlesForChannelClaude} disabled={loadingClaude}>
           {loadingClaude ? "loading..." : "claude 3 opus"}
         </button>
