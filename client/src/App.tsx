@@ -76,7 +76,7 @@ const App: React.FC = () => {
         <button
           onClick={toggleTerminal}
           className="absolute left-4 sm:left-6 top-1/2 transform -translate-y-1/2 text-stone-900 text-2xl focus:outline-none"
-          style={{ fontSize: 'calc(1.5rem + 1.5vw)' }}
+          style={{ fontSize: 'calc(2.5rem + 2.5vw)' }}
         >
           {showTerminal ? '⌨' : '⌨'}
         </button>
