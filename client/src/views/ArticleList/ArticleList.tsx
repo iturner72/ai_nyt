@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import config from './../../config'; // Ensure this path is correct
@@ -13,6 +13,7 @@ interface Cast {
 
 interface ArticleListProps {
   channel: string;
+  channels: string[];
 }
 
 interface Article {
@@ -22,17 +23,27 @@ interface Article {
   image: string;
 }
 
-export function ArticleList({ channel }: ArticleListProps) {
+export function ArticleList({ channel, channels }: ArticleListProps) {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loadingGpt, setLoadingGpt] = useState(false);
   const [loadingClaude, setLoadingClaude] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+      const placeholderArticles: Article[] = channels.map((channel, index) => ({
+        id: index + 1,
+        title: `Placeholder Article ${index + 1}`,
+        content: `Click the button to generate a summary for the ${channel} channel.`,
+        image: `/images/placeholder_${index + 1}.png`,
+      }));
+
+      setArticles(placeholderArticles);
+  }, [channels]);
+
   const fetchArticlesForChannelGpt = async () => {
     setLoadingGpt(true);
     setError('');
     try {
-      // Hardcoded URL for testing purposes
       const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channel)}`);
       const responseData = response.data;
       console.log("Response data:", responseData);
@@ -57,7 +68,6 @@ export function ArticleList({ channel }: ArticleListProps) {
         }
 
         if (summary) {
-          // Create a single article from the summary
           const generatedArticle: Article = {
             id: 1,
             title: "summary of this weeks casts",
@@ -78,10 +88,10 @@ export function ArticleList({ channel }: ArticleListProps) {
       }
     };
 
-  const fetchArticlesForChannelClaude = async () => {
+  const fetchArticlesForChannelClaude = async (channelUrl: string) => {
     setLoadingClaude(true);
     setError('');
-    let summary; // Moved here to ensure it's accessible throughout the function
+    let summary; 
   
     try {
       const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channel)}`);
@@ -108,21 +118,20 @@ export function ArticleList({ channel }: ArticleListProps) {
         });
   
         console.log("Summary response:", summaryResponse.data);
-        summary = summaryResponse.data.content[0].text; // Ensure this matches the structure of the Anthropic API response
+        summary = summaryResponse.data.content[0].text; 
     
       } catch (error) {
         console.error("Failed to generate articles with Claude:", error);
         setError("Failed to generate articles. Please try again.");
-        return; // Exit the function early since we can't proceed without a summary
+        return; 
       }
   
-      // Proceed to create an article if a summary was successfully generated
       if (summary) {
         const generatedArticle = {
-          id: 1, // Consider using a more dynamic approach for ID if generating multiple articles over time
-          title: "Generated Article with Claude",
+          id: Date.now(), 
+          title: `generated article for ${channelUrl}`,
           content: summary,
-          image: "/images/article1.png", // Ensure this image exists or is appropriately handled
+          image: "/images/article1.png", 
         };
   
         console.log("Generated article:", generatedArticle);
@@ -140,33 +149,30 @@ export function ArticleList({ channel }: ArticleListProps) {
     }
   };
 
-  
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="pt-4 flex flex-col md:flex-row space-y-4 items-center md:space-y-0 md:space-x-4">
-        <button className="p-3 text-stone-300 newsreader-bold text-sm md:text-base text-center bg-stone-700 hover:bg-stone-900 rounded" onClick={fetchArticlesForChannelClaude} disabled={loadingClaude}>
-          {loadingClaude ? "loading..." : "claude 3 opus"}
-        </button>
-      </div>
       {error && <div>Error: {error}</div>}
 
-      <div className="w-full max-w-4xl mx-auto p-2">
-        {articles.map((article: Article, index: number) => (
-          <div key={index} className="article text-left text-xl newsreader-regular leading-10 w-full relative my-5">
-            {/* Using Link to navigate and pass article data */}
-            <Link to={`/article/${article.id}`} state={{ article }}>
-              <img src={article.image} alt={article.title} className="w-full aspect-video object-cover items-center" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
-              <h2 className="text-[42px] newsreader-bold py-5 w-full border-b-2 border-dashed border-stone-500 font-header font leading-10">
-                {article.title}
-              </h2>
-              <span className="pt-5 font-medium text-stone-700 relative opacity-80 leading-8">
-                {article.content}
-              </span>
-            </Link>
-          </div>
-        ))}
+      <div className="w-10/12 max-w-7xl mx-auto p-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pt-2 gap-6">
+          {articles.map((article: Article, index: number) => (
+            <div key={index} className="article text-left text-xl newsreader-regular leading-10 w-full relative">
+              <Link
+                to={`/article/${article.id}`}
+                state={{ channelUrl: channels[index] }}
+              >
+                <img src={article.image} alt={article.title} className="w-full aspect-video object-cover items-center" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
+                <h2 className="text-2xl newsreader-bold py-3 w-full border-b-2 border-dashed border-stone-500 font-header font leading-8">
+                  {article.title}
+                </h2>
+                <span className="pt-3 font-medium text-stone-700 relative opacity-80 leading-6 line-clamp-3">
+                  {article.content}
+                </span>
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
-
 }
