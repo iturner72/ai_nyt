@@ -28,13 +28,15 @@ export function ArticleList({ channel, channels }: ArticleListProps) {
   const [loadingGpt, setLoadingGpt] = useState(false);
   const [loadingClaude, setLoadingClaude] = useState(false);
   const [error, setError] = useState('');
+  const [channelName, setChannelName] = useState('');
+
 
   useEffect(() => {
       const placeholderArticles: Article[] = channels.map((channel, index) => ({
         id: index + 1,
-        title: `Placeholder Article ${index + 1}`,
-        content: `Click the button to generate a summary for the ${channel} channel.`,
-        image: `/images/placeholder_${index + 1}.png`,
+        title: `TODO Title ${index + 1}`,
+        content: `create ${channel.split('/').pop()} weekly digest`,
+        image: `/images/i_${index + 1}.jpeg`,
       }));
 
       setArticles(placeholderArticles);
@@ -150,18 +152,18 @@ export function ArticleList({ channel, channels }: ArticleListProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col w-10/12 items-center justify-center">
       {error && <div>Error: {error}</div>}
 
-      <div className="w-10/12 max-w-7xl mx-auto p-2">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pt-2 gap-6">
+      <div className="max-w-7xl mx-auto pt-12 pb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pt-2 gap-16">
           {articles.map((article: Article, index: number) => (
             <div key={index} className="article text-left text-xl newsreader-regular leading-10 w-full relative">
               <Link
                 to={`/article/${article.id}`}
                 state={{ channelUrl: channels[index] }}
               >
-                <img src={article.image} alt={article.title} className="w-full aspect-video object-cover items-center" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
+                <img src={article.image} alt={article.title} className="h-56 w-56 items-center w-1/2 object-cover" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
                 <h2 className="text-2xl newsreader-bold py-3 w-full border-b-2 border-dashed border-stone-500 font-header font leading-8">
                   {article.title}
                 </h2>

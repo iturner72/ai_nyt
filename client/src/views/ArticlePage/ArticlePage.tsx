@@ -25,6 +25,8 @@ export default function ArticlePage() {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [channelName, setChannelName] = useState('');
+  const [modelName, setModelName] = useState('');
 
   useEffect(() => {
     const fetchArticlesForChannelClaude = async () => {
@@ -33,6 +35,8 @@ export default function ArticlePage() {
 
       try {
         const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channelUrl)}`);
+        const channelName = channelUrl.split('/').pop() || '';
+        setChannelName(channelName);
         console.log("Response data:", response.data);
 
         let castsArray = response.data.messages || [];
@@ -56,11 +60,13 @@ export default function ArticlePage() {
 
           console.log("Summary response:", summaryResponse.data);
           const summary = summaryResponse.data.content[0].text;
+          const modelName = 'Claude 3 Opus';
+          setModelName(modelName);
 
           if (summary) {
             const generatedArticle = {
               id: id ? parseInt(id, 10) : Date.now(),
-              title: `Generated Article for ${channelUrl}`,
+              title: `${channelUrl}`,
               content: summary,
               image: "/images/article1.png",
             };
@@ -90,7 +96,11 @@ export default function ArticlePage() {
 
 
   if (loading) {
-    return <div>loading...</div>;
+    return (
+      <div className="flex items-center h-screen">
+        <div className="animate-spin rounded-full w-44 h-44 md:w-72 md:h-72 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
   
   if (error) {
@@ -101,18 +111,29 @@ export default function ArticlePage() {
     return <div>article not found.</div>
   }
 
+
   return (
-    <div className="px-4 sm:px-8 lg:px-16 py-10">
+    <div className="w-10/12 px-4 sm:px-8 lg:px-16 py-2">
       <div className="max-w-full lg:max-w-[1400px] mx-auto">
-        <article className="text-left text-xl sm:text-2xl lg:text-3xl font-serif leading-relaxed lg:leading-10 mx-auto py-10 lg:py-20">
-          <h1 className="text-3xl lg:text-5xl mb-4">{article.title}</h1>
-          <img
-            src={article.image}
-            alt={article.title}
-            className="max-w-full h-auto"
-            onError={(e) => ((e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
-          />
-          <p>{article.content}</p>
+        <article className="text-left text-xl sm:text-2xl lg:text-3xl font-serif leading-relaxed lg:leading-10 mx-auto py-6 lg:py-2">
+          <div className="mt-8">
+            <h1 className="newsreader-bold text-2xl lg:text-5xl mb-2">weekly {channelName} digest</h1>
+            <p className="newsreader-regular text-lg mb-2">by {modelName}</p>
+            <p className="text-stone-500 text-sm">(3 min. read)</p>
+          </div>
+          <div className="flex flex-col md:flex-row">
+            <div className="newsreader-regular text-sm md:w-2/3 md:pr-8">
+              <p>{article.content}</p>
+            </div>
+            <div className="md:w-1/3">
+              <img
+                src={article.image}
+                alt={article.title}
+                className="max-w-full h-auto"
+                onError={(e) => ((e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
+              />
+            </div>
+          </div>
         </article>
       </div>
     </div>
