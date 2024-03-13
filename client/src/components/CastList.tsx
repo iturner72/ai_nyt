@@ -1,5 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import CastEntry from './Cast';
 import axios from 'axios';
+import config from './../config';
 
 interface Cast {
   data: {
@@ -24,164 +26,147 @@ interface Cast {
 
 interface CastListProps {
   channel: string;
+  searchUsername: string;
 }
 
-const CastList = ({channel}: CastListProps) => {
+const CastList = ({ channel, searchUsername }: CastListProps) => {
+  const [allCasts, setAllCasts] = useState<Cast[]>([]);
+  const [displayCasts, setDisplayCasts] = useState<Cast[]>([]);
+  const [startIndex, setStartIndex] = useState(0);
   const [castsByFid, setCastsByFid] = useState<Cast[]>([]);
   const [casts, setCasts] = useState<Cast[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [summary, setSummary] = useState<string>('');
-
-  // useEffect(() => {
-  //     const fetchCasts = async () => {
-  //         setLoading(true)
-  //         try {
-  //             const castPromises = fids.map(fid =>
-  //                 axios.get(`http://127.0.0.1:8080/castsByFid/${fid}`).then(res => res.data.messages)
-  //             );
-  //             const castsResults = await Promise.all(castPromises);
-  //             setCastsByFid(castsResults);
-  //         } catch (error) {
-  //             setError('Failed to fetch casts. Please try again.');
-  //         } finally {
-  //             setLoading(false);
-  //         }
-  //     };
-  //
-  //     fetchCasts();
-  // }, []);
+  const [page, setPage] = useState<number>(1);
+  const channelName = channel.split('/').pop();
 
   useEffect(() => {
     const fetchChannelCasts = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
         console.log('Fetching casts by channel');
 
-        axios.get(`http://127.0.0.1:8080/castsByChannel/${encodeURIComponent(channel)}`).then(res => {
-          console.log(`Fetched casts for chennel ${channel}:`, res.data.messages);
-          setCasts(res.data.messages);
-        })
+        const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channel)}`);
+        const fetchedCasts = response.data.messages;
 
+        const sortedCasts = fetchedCasts.sort((a: any, b: any) => b.data.timestamp - a.data.timestamp);
+
+        console.log(`Fetched casts for channel ${channel}:`, sortedCasts);
+        setAllCasts(sortedCasts);
+        setDisplayCasts(sortedCasts.slice(0, 120));
       } catch (error) {
         setError('Failed to fetch channel casts. Please try again.');
       } finally {
         setLoading(false);
       }
-        // Find the newest cast's timestamp
-        const newestTimestamp = castsByFid.flat().reduce((newest, cast) => {
-            const castTimestamp = new Date(cast.data.timestamp * 1000);
-            return castTimestamp > newest ? castTimestamp : newest;
-        }, new Date(0));
-
-        // Filter casts from the last 24 hours
-        const oneDayAgo = new Date(newestTimestamp.getTime() - (7 * 24 * 60 * 60 * 1000));
-        const recentCastsTexts = castsByFid.flat().filter(cast => {
-            const castTimestamp = new Date(cast.data.timestamp * 1000);
-            return castTimestamp >= oneDayAgo;
-        }).map(cast => cast.data.castAddBody?.text || '').filter(text => text);
-
-        // Concatenate the texts of all casts
-        const concatenatedText = recentCastsTexts.join(' ');
-    
-        try {
-            const response = await axios.post('http://127.0.0.1:8080/generate_daily_summary', { text: concatenatedText });
-            if (response.status === 200 && response.data) {
-                setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
-                console.log('Summary generated:', response.data.summary);
-            } else {
-                console.error('Failed to generate summary:', response.status);
-            }
-        } catch (error) {
-            console.error("Error submitting text for summary:", error);
-            setError('Failed to submit text for summary. Please try again.');
-        }
     };
 
     fetchChannelCasts();
-  }, [channel]);
+  }, [channel, page]);
 
+  const updateDisplayedCasts = (newStartIndex: number) => {
+      setStartIndex(newStartIndex);
+      setDisplayCasts(allCasts.slice(newStartIndex, newStartIndex + 40));
+  };
+
+  useEffect(() => {
+    setStartIndex(0);
+    setDisplayCasts(allCasts.slice(0, 40));
+  }, [allCasts]);
 
   const submitTextForSummary = async () => {
-
     // Find the newest cast's timestamp
-    const newestTimestamp = castsByFid.flat().reduce((newest, cast) => {
-      const castTimestamp = new Date(cast.data.timestamp * 1000);
-      return castTimestamp > newest ? castTimestamp : newest;
-    }, new Date(0));
-
-    // Filter casts from the last 24 hours
-    const oneDayAgo = new Date(newestTimestamp.getTime() - (14 * 24 * 60 * 60 * 1000));
-    const recentCastsTexts = castsByFid.flat().filter(cast => {
-      const castTimestamp = new Date(cast.data.timestamp * 1000);
-      return castTimestamp >= oneDayAgo;
-    }).map(cast => cast.data.castAddBody?.text || '').filter(text => text);
-
-    // Concatenate the texts of all casts
-    const concatenatedText = recentCastsTexts.join(' ');
-
     try {
-      const response = await axios.post('http://127.0.0.1:8080/generate_daily_summary', {text: concatenatedText});
-      if (response.status === 200 && response.data) {
-        setSummary(response.data.summary); // Assuming the backend response includes a "summary" field
-        console.log('Summary generated:', response.data.summary);
-      } else {
-        console.error('Failed to generate summary:', response.status);
+      const newestTimestamp = casts.reduce((newest, cast) => {
+        const castTimestamp = new Date(cast.data.timestamp * 1000);
+        return castTimestamp > newest ? castTimestamp : newest;
+      }, new Date(0));
+
+      // Filter casts from the last 14 days
+      const fourteenDaysAgo = new Date(newestTimestamp.getTime() - (14 * 24 * 60 * 60 * 1000));
+      const recentCastsTexts = casts.filter(cast => {
+        const castTimestamp = new Date(cast.data.timestamp * 1000);
+        return castTimestamp >= fourteenDaysAgo;
+      }).map(cast => cast.data.castAddBody?.text || '').filter(text => text);
+
+      // Concatenate the texts of all casts
+      const concatenatedText = recentCastsTexts.join(' ');
+
+      try {
+        const response = await axios.post(`https://${config.serverBaseUrl}/generate_daily_summary`, { text: concatenatedText });
+        if (response.status === 200 && response.data) {
+          setSummary(response.data);
+          console.log('Summary generated:', response.data);
+        } else {
+          console.error('Failed to generate summary:', response.status);
+        }
+      } catch (error) {
+        console.error("Error submitting text for summary:", error);
+        setError('Failed to submit text for summary. Please try again.');
       }
     } catch (error) {
       console.error("Error submitting text for summary:", error);
-      setError('Failed to submit text for summary. Please try again.');
     }
   };
+
+
+  useEffect(() => {
+    if (searchUsername) {
+      const filteredCasts = allCasts.filter((cast) =>
+        cast.data?.castAddBody?.text?.includes(`@${searchUsername}`)
+      );
+      setDisplayCasts(filteredCasts);
+    } else {
+      setDisplayCasts(allCasts.slice(startIndex, startIndex + 40));
+    }
+  }, [searchUsername, allCasts, startIndex]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-
   return (
-    <div className="flex flex-row items-start ">
-      <button onClick={submitTextForSummary}>Generate Summary from Casts</button>
-      {summary && (
-        <div>
-          <h2>Daily Summary</h2>
-          <p>{summary}</p>
-        </div>
-      )}
-      <div>
-        {casts.map((cast, index) => {
-          return cast.data ?
-            <div key={index}>
-              <h3>{index + 1}</h3>
-              <div key={cast.hash}>
-                <p>{cast.data?.castAddBody ? cast.data?.castAddBody?.text : 'N/A'}</p>
-              </div>
-            </div>
-            : null;
-        })}
+    <>
+      <div className="flex items-center justify-center space-x-20 my-2">
+        <p className="text-3xl newsreader-bold">fresh casts from {channelName}</p>
       </div>
-      {/*<div className={'flex flex-col w-full gap-2 '}>*/}
-      {/*    {castsByFid.map((casts, index) => (*/}
-      {/*        <div key={fids[index]} className={'max-w-3xl divide-y divide-slate-400'}>*/}
-      {/*            <h2>FID: {fids[index]}</h2>*/}
-      {/*            {casts.map(cast => (*/}
-      {/*                <div key={cast.hash} className={'h-64 flex justify-between  overflow-hidden p-4 my-2'}>*/}
-      {/*                    <div className={'min-w-[400px] text-left '}>*/}
-      {/*                        {cast.data.castAddBody?.text ? <p>{cast.data.castAddBody.text}</p> :*/}
-      {/*                            <p>No text content</p>}*/}
-      {/*                        <p>Timestamp: {new Date(cast.data.timestamp * 1000).toLocaleString()}</p>*/}
-      {/*                    </div>*/}
-      {/*                    <div className={'w-full'}>*/}
-      {/*                        {cast.data.castAddBody?.embeds.map(embed => (*/}
-      {/*                            <img key={embed.url} src={embed.url} alt={embed.url} className={'w-full h-full object-cover'}/>*/}
-      {/*                        ))}*/}
-      {/*                    </div>*/}
-      {/*                </div>*/}
-      {/*            ))}*/}
-      {/*        </div>*/}
-      {/*    ))}*/}
-      {/*</div>*/}
-    </div>
+      <div className="w-full sm:w-10/12 mx-auto py-2 bg-stone-100">
+        {summary && (
+          <article className="text-left text-lg sm:text-2xl font-serif leading-8 sm:leading-10 mx-4 sm:mx-48 py-10 sm:py-20">
+            <div className="h-fit text-end inline-block text-[80px] sm:text-[130px] float-left mt-6 sm:mt-12 pr-2 font-display">
+              {summary.split('').splice(0, 1)}
+            </div>
+            <p className="clear-right">{summary.split('').slice(1)}</p>
+          </article>
+        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 w-full">
+          {displayCasts.map((cast, index) => (
+            <CastEntry cast={cast} index={index} key={index} />
+          ))}
+        </div>
+        {/* Navigation Buttons */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => updateDisplayedCasts(startIndex - 40)}
+            disabled={startIndex === 0}
+            className="newsreader-regular mr-2 px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => updateDisplayedCasts(startIndex + 40)}
+            disabled={startIndex + 40 >= allCasts.length}
+            className="newsreader-regular px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </>
   );
+
+
+
 };
 
 export default CastList;
