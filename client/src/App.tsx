@@ -19,7 +19,7 @@ const App: React.FC = () => {
   const [allChannels, setAllChannels] = React.useState<Channel[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [showTerminal, setShowTerminal] = useState(false);
+  const [showTerminal, setShowTerminal] = useState(true);
   const [searchUsername, setSearchUsername] = useState<string>('');
 
   const handleSearch = (username: string) => {

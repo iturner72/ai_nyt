@@ -155,15 +155,16 @@ export function ArticleList({ channel, channels }: ArticleListProps) {
     <div className="flex flex-col w-10/12 items-center justify-center">
       {error && <div>Error: {error}</div>}
 
-      <div className="max-w-7xl mx-auto pt-12 pb-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pt-2 gap-16">
+      <div className="max-w-7xl mx-auto pt-6 pb-4">
+        <div className="newsreader-bold text-emerald-800 text-2xl pb-4 "> click any channel below to generate a weekly digest ( open source models coming soon !!! ) </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 pt-2 gap-2">
           {articles.map((article: Article, index: number) => (
             <div key={index} className="article text-left text-xl newsreader-regular leading-10 w-full relative">
               <Link
                 to={`/article/${article.id}`}
                 state={{ channelUrl: channels[index] }}
               >
-                <img src={article.image} alt={article.title} className="h-56 w-56 items-center w-1/2 object-cover" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
+                <img src={article.image} alt={article.title} className="h-72 w-72 items-center w-1/2 object-cover" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
                 <h2 className="text-2xl newsreader-bold py-3 w-full border-b-2 border-dashed border-stone-500 font-header font leading-8">
                   {article.title}
                 </h2>

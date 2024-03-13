@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ReactTerminal, TerminalContextProvider } from 'react-terminal';
 
 
@@ -10,7 +10,7 @@ const TerminalComponent: React.FC<TerminalComponentProps> = ({ onSearch }) => {
 
   const commands = {
     help: () => {
-      return 'Available commands:\n- help\n- greet <name>\n- clear';
+      return 'Available commands: ctrl + y (toggle open), help, greet <name>, clear';
     },
     grep: (username: string) => {
       onSearch(username);
@@ -28,7 +28,8 @@ const TerminalComponent: React.FC<TerminalComponentProps> = ({ onSearch }) => {
     },
   };
 
-  const welcomeMessage = 'gigachad';
+  const welcomeMessage = 'gigachad ~ ';
+
   const errorMessage = 'Unknown command. Type "help" to see available commands.';
 
   const customTheme = {
@@ -37,6 +38,7 @@ const TerminalComponent: React.FC<TerminalComponentProps> = ({ onSearch }) => {
     themeColor: '#FFFEFC',
     themePromptColor: '#0d9488',
   };
+
 
   return (
     <TerminalContextProvider>
