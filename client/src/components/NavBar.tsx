@@ -13,7 +13,7 @@ export default function NavBar({ channels, currentChannelIndex, setCurrentChanne
 
   return (
     <div className="sticky top-0 z-20 w-full flex justify-center">
-      <div className="w-10/12 overflow-x-auto">
+      <div className="w-full md:w-10/12 overflow-x-auto">
         <div className="flex items-center justify-between bg-stone-100 font-sans border-b border-neutral-200">
           {channels.map((channel, index) => (
             <button
