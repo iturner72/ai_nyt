@@ -75,22 +75,22 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center text-center bg-stone-100">
-      <div className="h-16 md:h-32 w-full relative flex justify-center items-center">
+      <div className="bg-black h-16 w-full relative flex justify-center items-center">
         <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome}></div>
         <button
           onClick={toggleTerminal}
-          className="absolute left-4 sm:left-6 top-1/2 transform -translate-y-1/2 text-stone-900 text-2xl focus:outline-none"
+          className="text-white absolute left-4 sm:left-6 top-1/2 transform -translate-y-1/2 text-2xl focus:outline-none"
           style={{ fontSize: 'calc(1.75rem + 1.75vw)' }}
         >
           {showTerminal ? '⌨' : '⌨'}
         </button>
-        <h1 className="text-3xl md:text-6xl lg:text-[60px] font-display py-5 whitespace-nowrap cursor-pointer">
+        <h1 className="text-3xl text-white md:text-3xl lg:text-[30px] font-display py-5 whitespace-nowrap cursor-pointer">
           The Network Times
         </h1>
         <InfoIcon 
           onClick={() => setIsModalOpen(true)}
           aria-label="Information"
-          style={{ position: 'absolute', right: 'calc(1rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#0c0a09', fontSize: 'calc(1.25rem + 1vw)' }}
+          style={{ position: 'absolute', right: 'calc(1rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(1.25rem + 1vw)' }}
         />
       </div>
       <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
