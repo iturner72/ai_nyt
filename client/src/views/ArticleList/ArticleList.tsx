@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import ChangeLog from './../../components/ChangeLog';
 import axios from 'axios';
 import config from './../../config'; // Ensure this path is correct
 
@@ -30,6 +31,15 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   const [loadingClaude, setLoadingClaude] = useState(false);
   const [error, setError] = useState('');
   const [channelName, setChannelName] = useState('');
+  const [isChangelogOpen, setIsChangelogOpen] = useState(false);
+
+  const openChangelog = () => {
+    setIsChangelogOpen(true);
+  };
+
+  const closeChangelog = () => {
+    setIsChangelogOpen(false);
+  };
 
 
   useEffect(() => {
@@ -155,9 +165,25 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   return (
     <div className="flex flex-col w-10/12 items-center justify-center">
       {error && <div>Error: {error}</div>}
-
+  
       <div className="max-w-7xl mx-auto pt-6 pb-4">
-        <div className="newsreader-bold text-emerald-800 text-md md:text-2xl pb-4 "> click any channel below to generate a weekly digest ( open source models coming soon !!! ) </div>
+        <div className="flex flex-row items-center space-x-4 md:space-x-56">
+        <div className="newsreader-bold text-teal-900 text-md md:text-2xl pb-4">
+          click any channel below to generate a weekly digest (open source models coming soon !!!)
+        </div>
+  
+        {/* Add the "View Changelog" button and the ChangelogModal component */}
+        <div className="flex justify-end mb-4">
+          <button
+            className="bg-stone-800 hover:bg-teal-900 newsreader-regular text-md text-stone-300 px-4 py-2 rounded"
+            onClick={openChangelog}
+          >
+            view changelog
+          </button>
+        </div>
+        </div>
+        {isChangelogOpen && <ChangeLog onClose={closeChangelog} />}
+  
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 pt-2 gap-2">
           {articles.map((article: Article, index: number) => (
             <div key={index} className="article text-left text-xl newsreader-regular pb-8 leading-10 w-full relative">
@@ -166,7 +192,12 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
                 state={{ channelUrl: channels[index] }}
                 onClick={() => onArticleClick(index)}
               >
-                <img src={article.image} alt={article.title} className="h-80 w-80 items-center w-1/2 object-cover" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="h-80 w-80 items-center w-1/2 object-cover"
+                  onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
+                />
                 <h2 className="text-2xl newsreader-bold py-3 w-full border-b-2 border-dashed border-stone-500 font-header font leading-8">
                   {article.title}
                 </h2>
