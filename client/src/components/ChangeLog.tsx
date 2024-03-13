@@ -7,7 +7,7 @@ interface ChangeLogProps {
 const ChangeLog: React.FC<ChangeLogProps> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="relative bg-white w-11/12 md:w-3/4 lg:w-2/6 h-3/6 p-6 shadow-lg rounded-none">
+      <div className="relative bg-white w-11/12 md:w-3/4 lg:w-3/6 h-bvh p-6 shadow-lg rounded-none">
         <button
           className="absolute top-2 right-2 text-stone-700 hover:text-teal-900"
           onClick={onClose}
