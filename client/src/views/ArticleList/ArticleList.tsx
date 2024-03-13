@@ -157,16 +157,16 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
       {error && <div>Error: {error}</div>}
 
       <div className="max-w-7xl mx-auto pt-6 pb-4">
-        <div className="newsreader-bold text-emerald-800 text-2xl pb-4 "> click any channel below to generate a weekly digest ( open source models coming soon !!! ) </div>
+        <div className="newsreader-bold text-emerald-800 text-md md:text-2xl pb-4 "> click any channel below to generate a weekly digest ( open source models coming soon !!! ) </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 pt-2 gap-2">
           {articles.map((article: Article, index: number) => (
-            <div key={index} className="article text-left text-xl newsreader-regular leading-10 w-full relative">
+            <div key={index} className="article text-left text-xl newsreader-regular pb-8 leading-10 w-full relative">
               <Link
                 to={`/article/${article.id}`}
                 state={{ channelUrl: channels[index] }}
                 onClick={() => onArticleClick(index)}
               >
-                <img src={article.image} alt={article.title} className="h-72 w-72 items-center w-1/2 object-cover" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
+                <img src={article.image} alt={article.title} className="h-80 w-80 items-center w-1/2 object-cover" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
                 <h2 className="text-2xl newsreader-bold py-3 w-full border-b-2 border-dashed border-stone-500 font-header font leading-8">
                   {article.title}
                 </h2>

@@ -98,7 +98,7 @@ export default function ArticlePage() {
   if (loading) {
     return (
       <div className="flex items-center h-screen">
-        <div className="animate-spin rounded-full w-44 h-44 md:w-72 md:h-72 border-t-2 border-b-2 border-gray-900"></div>
+        <div className="animate-spin rounded-full w-56 h-56 md:w-72 md:h-72 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     );
   }
