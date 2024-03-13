@@ -1,0 +1,92 @@
+\documentclass{article} % decribes the type of document
+\usepackage{graphicx} % images
+\graphicspath{ {./../pix/} } % set the default location of images
+\usepackage{geometry} % change default margins
+\usepackage{underscore} % underscores
+\usepackage{multicol} % side by side list and figures
+\usepackage{ulem} % shorthand for \uline (underline)
+\usepackage{listings} % add code to document
+\usepackage[hidelinks]{hyperref} % for hyperlinks
+\usepackage[utf8]{inputenc} % no idea
+\usepackage[english]{babel} % no idea
+\usepackage[]{amsthm} % no idea
+\usepackage[]{amssymb} % no idea
+\usepackage{xcolor} % for colors
+\definecolor{Maroon}{RGB}{178, 0, 0}
+\definecolor{DarkGreen}{RGB}{3, 168, 97}
+\usepackage{xurl} % fixes hbox error for long urls
+\usepackage{caption} % for bold and italic figure captions
+\usepackage{nomencl} % for nomenclature page
+\usepackage{amsmath} % for equation blocks w/o numbers
+\usepackage{tabularx} % for tables
+\usepackage{adjustbox} % for smaller tables
+
+% Fancy Math for rounding symbols
+\usepackage{mathtools, nccmath}
+\DeclarePairedDelimiter{\nint}\lfloor\rceil
+
+\DeclarePairedDelimiter{\abs}\lvert\rvert
+
+% Listings styles packages defined in ./listingsstyles.tex
+\usepackage{listingsstyles}
+\makenomenclature % for nomencl page
+\bibliographystyle{ieeetr} % for bibliography in the IEEE format
+
+% Define nomenclature groups
+\usepackage{etoolbox}
+\renewcommand{\nomgroup}[1]{%
+    \item[\bfseries
+    \ifstrequal{#1}{S}{Symbols}{%
+    \ifstrequal{#1}{A}{Acronyms}{}}%
+]}
+\geometry{
+    left=1.0in,
+    right=1.0in,
+    top=1.0in,
+    bottom=1.0in,
+    a4paper,
+%    showframe % Show the layout of the page
+}
+% Comment out sections that you don't want to compile
+\includeonly{
+    chapters/bounty,
+    chapters/week1,
+    chapters/week2,
+    chapters/references
+}
+
+
+\title{\vspace{5cm}The Network Times}
+\author{Ian Turner}
+
+\begin{document}
+\lstset{language=[LaTeX]TeX} % Set the language as TeX or LaTeX for listings
+
+\maketitle
+
+%\newpage
+%\tableofcontents
+%
+%\newpage
+%\addcontentsline{toc}{section}{Nomenclature}
+%\label{sec:nomenclature}
+%\printnomenclature
+%
+%\newpage
+%\addcontentsline{toc}{section}{List of Figures}
+%\listoffigures
+%
+%\newpage
+%\addcontentsline{toc}{section}{List of Tables}
+%\listoftables
+
+\include{chapters/bounty}
+\include{chapters/week1}
+\include{chapters/week2}
+
+\clearpage
+\addcontentsline{toc}{section}{References}
+\bibliography{chapters/references} 
+\label{sec:references}
+
+\end{document}

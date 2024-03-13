@@ -1,3 +1,26 @@
+# LaTeX
+
+# LaTeX build files
+*.aux
+*.log
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.out
+*.toc
+*.bbl
+*.blg
+
+# LaTeX intermediate files
+*.dvi
+*.ps
+*.pdf
+
+# LaTeX auto-generated files
+*.backup
+*.bak
+*.swp
+
 # Rust
 **/server/target/
 **/*.rs.bk

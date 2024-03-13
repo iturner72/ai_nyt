@@ -1,0 +1,65 @@
+% Define language style for file tree
+\lstdefinelanguage{FileTree}{
+  morestring=[b]',
+  morestring=[b]",
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  moredelim=[s][\color{blue}\bfseries]{:}{\ },
+  morekeywords={File,Dir},
+  morekeywords=[2]{Path},
+  morekeywords=[3]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+  morekeywords=[4]{},
+}
+
+% Set the default style for file tree listings
+\lstset{
+  basicstyle=\small\ttfamily,
+  keywordstyle=[1]\color{teal}\bfseries,
+  keywordstyle=[2]\color{blue},
+  keywordstyle=[3]\color{violet},
+  keywordstyle=[4]\color{magenta},
+  commentstyle=\color{gray},
+  stringstyle=\color{olive},
+  showstringspaces=false,
+  upquote=true,
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2,
+  frame=none,
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  captionpos=b,
+  belowcaptionskip=10pt,
+  aboveskip=10pt,
+}
+
+% Python style listings
+\lstdefinestyle{pythoncode}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    otherkeywords={self},
+    keywordstyle=\ttfamily\small,
+    emph={MyClass, __init__},
+    emphstyle=\ttfamily\small\color{blue},
+    stringstyle=\color{red},
+    frame=tb,
+    showstringspaces=fasle
+}
+
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{gray!10},
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{green!60!black},
+  keywordstyle=\color{blue},
+  stringstyle=\color{orange},
+  escapeinside={(*@}{@*)}, % allows to escape to LaTeX within listing
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=5pt,
+  tabsize=4,
+  showspaces=false,
+  showstringspaces=false,
+  breaklines=true
+}
