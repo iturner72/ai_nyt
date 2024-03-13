@@ -14,6 +14,7 @@ interface Cast {
 interface ArticleListProps {
   channel: string;
   channels: string[];
+  onArticleClick: (channelIndex: number) => void;
 }
 
 interface Article {
@@ -23,7 +24,7 @@ interface Article {
   image: string;
 }
 
-export function ArticleList({ channel, channels }: ArticleListProps) {
+export function ArticleList({ channel, channels, onArticleClick }: ArticleListProps) {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loadingGpt, setLoadingGpt] = useState(false);
   const [loadingClaude, setLoadingClaude] = useState(false);
@@ -163,6 +164,7 @@ export function ArticleList({ channel, channels }: ArticleListProps) {
               <Link
                 to={`/article/${article.id}`}
                 state={{ channelUrl: channels[index] }}
+                onClick={() => onArticleClick(index)}
               >
                 <img src={article.image} alt={article.title} className="h-72 w-72 items-center w-1/2 object-cover" onError={(e) => (e.currentTarget as HTMLImageElement).src = "https://via.placeholder.com/400x300"} />
                 <h2 className="text-2xl newsreader-bold py-3 w-full border-b-2 border-dashed border-stone-500 font-header font leading-8">

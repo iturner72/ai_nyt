@@ -22,6 +22,10 @@ const App: React.FC = () => {
   const [showTerminal, setShowTerminal] = useState(false);
   const [searchUsername, setSearchUsername] = useState<string>('');
 
+  const handleArticleClick = (channelIndex: number) => {
+    setCurrentChannelIndex(channelIndex);
+  };
+
   const handleSearch = (username: string) => {
     setSearchUsername(username);
     console.log('username: ', username);
@@ -97,7 +101,7 @@ const App: React.FC = () => {
         </div>
       )}
       <Routes>
-        <Route path={'/'} element={<ArticleList channel={channels[currentChannelIndex]} channels={channels} />}/>
+        <Route path={'/'} element={<ArticleList channel={channels[currentChannelIndex]} channels={channels} onArticleClick={handleArticleClick} />}/>
         <Route path={'/article/:id'} element={<ArticlePage/>}/>
       </Routes>
       <div className="bg-stone-100">
