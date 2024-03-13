@@ -19,8 +19,8 @@ async fn main() -> std::io::Result<()> {
     dotenv().ok();
     env_logger::init();
 
-    let server_host = env::var("SERVER_HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
-    let server_port = env::var("SERVER_PORT").unwrap_or_else(|_| "8080".to_string());
+    let server_host = env::var("SERVER_HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
+    let server_port = env::var("SERVER_PORT").unwrap_or_else(|_| "8081".to_string());
     let server_address = format!("{}:{}", server_host, server_port);
 
     HttpServer::new(|| {
@@ -34,6 +34,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .service(index)
             .service(hubble::get_username_proofs_by_fid)
+            .service(hubble::get_user_data_by_fid)
             .service(hubble::get_cast_by_id)
             .service(hubble::get_casts_by_fid)
             .service(hubble::get_casts_by_parent)
