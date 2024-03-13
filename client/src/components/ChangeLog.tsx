@@ -27,9 +27,9 @@ const ChangeLog: React.FC<ChangeLogProps> = ({ onClose }) => {
             />
           </svg>
         </button>
-        <h2 className="newsreader-bold text-5xl font-bold pt-10 mb-4">change log & feature roadmap</h2>
-        <div className="newsreader-regular mb-6">
-          <h3 className="newsreader-bold text-3xl font-semibold mb-2">change log</h3>
+        <h2 className="alumni-sans-bold text-5xl font-bold pt-10 mb-4">change log & feature roadmap</h2>
+        <div className="alumni-sans-regular mb-6">
+          <h3 className="alumni-sans-bold text-3xl font-semibold mb-2">change log</h3>
           <ul className="text-xl pl-6">
             <li>casts by channel tabs to navbar</li>
             <li>add support for gpt 3.5 turbo</li>
@@ -40,8 +40,8 @@ const ChangeLog: React.FC<ChangeLogProps> = ({ onClose }) => {
           </ul>
         </div>
         <div>
-          <h3 className="newsreader-bold text-3xl font-semibold mb-2">feature roadmap</h3>
-          <ol className="newsreader-regular text-xl pl-6">
+          <h3 className="alumni-sans-bold text-3xl font-semibold mb-2">feature roadmap</h3>
+          <ol className="alumni-sans-regular text-xl pl-6">
             <li>add git (maybe...) to changelog</li>
             <li>add mistral model</li>
             <li>create write personalities</li>

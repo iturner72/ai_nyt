@@ -117,12 +117,12 @@ export default function ArticlePage() {
       <div className="max-w-full lg:max-w-[1400px] mx-auto">
         <article className="text-left text-xl sm:text-2xl lg:text-3xl font-serif leading-relaxed lg:leading-10 mx-auto py-6 lg:py-2">
           <div className="mt-8">
-            <h1 className="newsreader-bold text-2xl lg:text-5xl mb-2">weekly {channelName} digest</h1>
-            <p className="newsreader-regular text-lg mb-2">by {modelName}</p>
+            <h1 className="alumni-sans-bold text-2xl lg:text-5xl mb-2">weekly {channelName} digest</h1>
+            <p className="alumni-sans-regular text-lg mb-2">by {modelName}</p>
             <p className="text-stone-500 text-sm">(3 min. read)</p>
           </div>
           <div className="flex flex-col md:flex-row">
-            <div className="newsreader-regular text-sm md:w-2/3 md:pr-8">
+            <div className="alumni-sans-regular text-sm md:w-2/3 md:pr-8">
               <p>{article.content}</p>
             </div>
             <div className="md:w-1/3">

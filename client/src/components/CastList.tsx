@@ -128,7 +128,7 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
   return (
     <>
       <div className="flex items-center justify-center space-x-20 my-6">
-        <p className="text-3xl newsreader-bold">fresh casts from {channelName}</p>
+        <p className="text-3xl alumni-sans-bold">fresh casts from {channelName}</p>
       </div>
       <div className="w-full sm:w-10/12 mx-auto py-2 bg-stone-100">
         {summary && (
@@ -149,14 +149,14 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
           <button
             onClick={() => updateDisplayedCasts(startIndex - 40)}
             disabled={startIndex === 0}
-            className="newsreader-regular mr-2 px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
+            className="alumni-sans-regular mr-2 px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
           >
             Previous
           </button>
           <button
             onClick={() => updateDisplayedCasts(startIndex + 40)}
             disabled={startIndex + 40 >= allCasts.length}
-            className="newsreader-regular px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
+            className="alumni-sans-regular px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
           >
             Next
           </button>

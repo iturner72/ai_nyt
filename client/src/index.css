@@ -50,3 +50,21 @@ code {
   font-weight: 666;
   font-style: normal;
 }
+
+
+// <uniquifier>: Use a unique and descriptive class name
+// <weight>: Use a value from 100 to 900
+
+.alumni-sans-regular {
+  font-family: "Alumni Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.alumni-sans-bold {
+  font-family: "Alumni Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 800;
+  font-style: normal;
+}
