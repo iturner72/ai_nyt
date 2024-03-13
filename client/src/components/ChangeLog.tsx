@@ -42,6 +42,7 @@ const ChangeLog: React.FC<ChangeLogProps> = ({ onClose }) => {
         <div>
           <h3 className="newsreader-bold text-3xl font-semibold mb-2">feature roadmap</h3>
           <ol className="newsreader-regular text-xl pl-6">
+            <li>add git (maybe...) to changelog</li>
             <li>add mistral model</li>
             <li>create write personalities</li>
             <li>implement user authentication and personalization</li>
