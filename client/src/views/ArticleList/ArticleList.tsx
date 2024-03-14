@@ -160,11 +160,11 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   return (
     <div className="flex flex-col w-full items-center justify-center">
       {error && <div>Error: {error}</div>}
-      <div className="w-full mx-auto pt-6 pb-4">
+      <div className="w-full mx-auto pt-2 pb-4">
         {isChangelogOpen && <ChangeLog onClose={closeChangelog} />}
         <div className="flex w-full items-center flex-col md:flex-row">
           {article && (
-            <div className="alumni-sans-regular text-3xl md:w-5/12 md:pr-8">
+            <div className="alumni-sans-regular text-3xl pb-2 md:w-5/12 md:pr-8">
               <h2>{article.title}</h2>
               <p>{article.content}</p>
             </div>
@@ -175,7 +175,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
                   return (
-                    <div key={index} className="text-left alumni-sans-regular pb-2 leading-6 w-44 md:w-80 flex-shrink-0">
+                    <div key={index} className="text-left alumni-sans-regular leading-6 w-40 md:w-80 flex-shrink-0">
                       <Link
                         to={`/article/${article.id}`} // This might need to be dynamic based on the fetched article
                         state={{ channelUrl: chan }}
@@ -186,7 +186,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
                         <img
                           src={`/images/i_${index + 1}.jpeg`} // Assuming this is the correct path for your images
                           alt={`Channel ${chan}`}
-                          className="h-44 w-44 md:h-96 md:w-80 object-cover"
+                          className="h-40 w-40 md:h-96 md:w-80 object-cover"
                           onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
                         />
                         <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
