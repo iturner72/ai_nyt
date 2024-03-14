@@ -53,21 +53,23 @@ export default function CastEntry({ cast, index }: CastProps) {
     fetchUserData();
   }, [cast.data?.fid]);
 
-  return cast.data ? (
-    <div key={index} className="min-h-20 flex flex-col justify-between p-4 bg-stone-200 border border-stone-500">
-      <div className="mb-4"> {/* Add margin-bottom for spacing on mobile */}
-        <h3 className="font-bold border-b border-stone-400 mb-2 text-sm sm:text-base"> {/* Smaller text on small screens, standard size on sm screens and up */}
-          {loading ? (
-            "Loading..."
-          ) : (
-            `@${userData?.data?.userDataBody?.value || "No username"}`
-          )}
-        </h3>
-        <p className="text-xs sm:text-sm break-words hyphens-auto"> {/* Smaller text on small screens, standard size on sm screens and up */}
-          {cast.data?.castAddBody ? cast.data?.castAddBody?.text : 'N/A'}
-        </p>
-      </div>
+return cast.data ? (
+  <div key={index} className="flex flex-col text-left p-4 pl-6 bg-stone-200 border border-stone-500">
+    <div className="flex-grow">
+      <p className="alumni-sans-regular text-xs md:text-xl break-words hyphens-auto" style={{ lineHeight: 1.172 }}>
+        {cast.data?.castAddBody ? cast.data?.castAddBody?.text : 'N/A'}
+      </p>
     </div>
-  ) : null;
-
+    <div className="flex flex-row items-center justify-between mt-4">
+      <h3 className="alumni-sans-bold text-stone-500 text-sm md:text-xl">
+        {loading ? (
+          "Loading..."
+        ) : (
+          `@${userData?.data?.userDataBody?.value || "No username"}`
+        )}
+      </h3>
+      <img src="/images/fc.jpeg" alt="Farcaster" className="w-6 h-6 ml-2" />
+    </div>
+  </div>
+) : null;
 }
