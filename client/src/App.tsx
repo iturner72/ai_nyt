@@ -104,7 +104,7 @@ const App: React.FC = () => {
         <Route path={'/'} element={<ArticleList channel={channels[currentChannelIndex]} channels={channels} onArticleClick={handleArticleClick} />}/>
         <Route path={'/article/:id'} element={<ArticlePage/>}/>
       </Routes>
-      <div className="bg-stone-100">
+      <div className="bg-stone-100 p-4">
         <CastList channel={channels[currentChannelIndex]} searchUsername={searchUsername} />
       </div>
       {isModalOpen && <InformationModal closeModal={() => setIsModalOpen(false)} />}
