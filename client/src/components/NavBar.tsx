@@ -23,7 +23,7 @@ return (
             <button
               key={index}
               onClick={() => handleTabClick(index)}
-              className={`w-full text-center border-t h-8 text-md pl-1 font-semibold ${
+              className={`w-full text-center border-t h-8 text-md pr-2 pl-2 font-semibold ${
                 currentChannelIndex === index ? 'border-b-2 border-black' : 'border-stone-700'
               }`}
               style={{ backgroundColor }}
