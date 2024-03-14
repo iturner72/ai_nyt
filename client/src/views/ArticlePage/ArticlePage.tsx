@@ -121,7 +121,7 @@ export default function ArticlePage() {
             <p className="text-stone-500 text-sm">(3 min. read)</p>
           </div>
           <div className="flex flex-col md:flex-row">
-            <div className="alumni-sans-regular text-sm md:w-2/3 md:pr-8">
+            <div className="alumni-sans-regular text-xl md:w-2/3 md:pr-8">
               <p>{article.content}</p>
             </div>
             <div className="md:w-1/3">

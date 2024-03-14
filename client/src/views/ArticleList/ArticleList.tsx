@@ -190,26 +190,33 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
               {/* Display channels as clickable images */}
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
-                  return (
-                    <div key={index} className="text-left alumni-sans-regular pb-8 leading-10 w-80 flex-shrink-0">
-                      <button
-                        onClick={() => onArticleClick(index)}
-                        className="flex flex-col items-center justify-center"
-                        style={{ backgroundColor }} // Apply the background color
-                      >
-                        <img
-                          src={`/images/i_${index + 1}.jpeg`} // Adjust image source based on your data
-                          alt={`Channel ${chan}`}
-                          className="h-96 w-80 object-cover"
-                          onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
-                        />
-                        <span className="text-left pl-2 text-md alumni-sans-regular py-1 w-full leading-5">
-                          /{chan.split('/').pop() || ''}
-                        </span>
-                      </button>
-                    </div>
-                  );
-              })}
+      return (
+        <div key={index} className="text-left alumni-sans-regular pb-8 leading-6 w-80 flex-shrink-0">
+          <Link
+            to={`/article/${article.id}`} // This might need to be dynamic based on the fetched article
+            state={{ channelUrl: chan }}
+            onClick={() => onArticleClick(index)} // Trigger the API call and update the article state
+            style={{ backgroundColor }} // Apply background color dynamically
+            className="block" // Add display block to ensure the background color fills the space
+          >
+            <img
+              src={`/images/i_${index + 1}.jpeg`} // Assuming this is the correct path for your images
+              alt={`Channel ${chan}`}
+              className="h-96 w-80 object-cover"
+              onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
+            />
+            <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
+              /{chan.split('/').pop() || ''}
+            </span>
+          </Link>
+        </div>
+      );
+    })}
+
+
+
+
+
             </div>
           </div>
         </div>
