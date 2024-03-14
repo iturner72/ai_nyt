@@ -169,13 +169,13 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
               <p>{article.content}</p>
             </div>
           )}
-          <div className="md:w-full overflow-x-auto">
-            <div className="flex flex-row space-x-4">
+         <div className="md:w-full overflow-x-auto">
+            <div className="flex flex-wrap md:flex-nowrap md:flex-row gap-4 justify-center items-center md:justify-start">
               {/* Display channels as clickable images */}
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
                   return (
-                    <div key={index} className="text-left alumni-sans-regular pb-8 leading-6 w-80 flex-shrink-0">
+                    <div key={index} className="text-left alumni-sans-regular pb-2 leading-6 w-44 md:w-80 flex-shrink-0">
                       <Link
                         to={`/article/${article.id}`} // This might need to be dynamic based on the fetched article
                         state={{ channelUrl: chan }}
@@ -186,7 +186,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
                         <img
                           src={`/images/i_${index + 1}.jpeg`} // Assuming this is the correct path for your images
                           alt={`Channel ${chan}`}
-                          className="h-96 w-80 object-cover"
+                          className="h-44 w-44 md:h-96 md:w-80 object-cover"
                           onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
                         />
                         <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
