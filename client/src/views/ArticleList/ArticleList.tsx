@@ -163,11 +163,11 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   };
 
   return (
-    <div className="flex flex-col w-10/12 items-center justify-center">
+    <div className="flex flex-col w-full items-center justify-center">
       {error && <div>Error: {error}</div>}
   
-      <div className="max-w-7xl mx-auto pt-6 pb-4">
-        <div className="flex flex-row items-center space-x-4 md:space-x-56">
+      <div className="w-full mx-auto pt-6 pb-4">
+        <div className="flex flex-row items-center space-x-4 md:space-x-56 pl-12">
         <div className="alumni-sans-bold text-teal-900 text-md md:text-2xl pb-4">
           click any channel below to generate a weekly digest (open source models coming soon !!!)
         </div>
@@ -183,30 +183,41 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
         </div>
         </div>
         {isChangelogOpen && <ChangeLog onClose={closeChangelog} />}
-  
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 pt-2 gap-2">
-          {articles.map((article: Article, index: number) => (
-            <div key={index} className="article text-left text-xl alumni-sans-regular pb-8 leading-10 w-full relative">
-              <Link
-                to={`/article/${article.id}`}
-                state={{ channelUrl: channels[index] }}
-                onClick={() => onArticleClick(index)}
-              >
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  className="h-80 w-80 items-center w-1/2 object-cover"
-                  onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
-                />
-                <h2 className="text-2xl alumni-sans-bold py-3 w-full border-b-2 border-dashed border-stone-500 font-header font leading-8">
-                  {article.title}
-                </h2>
-                <span className="pt-3 font-medium text-stone-700 relative opacity-80 leading-6 line-clamp-3">
-                  {article.content}
-                </span>
-              </Link>
+        <div className="flex w-full flex-col md:flex-row">
+          <div className="alumni-sans-regular text-sm md:w-1/3 md:pr-8">
+            {articles.map((article: Article, index: number) => (
+              <div>
+              <h2 key={index}>{article.title}</h2>
+              <p key={index}>{article.content}</p>
+              </div>
+            ))}
+          </div>
+          <div className="md:w-full overflow-x-auto">
+            <div className="flex flex-row space-x-4">
+              {articles.map((article: Article, index: number) => (
+                <div key={index} className="text-left text-xl alumni-sans-regular pb-8 leading-10 w-80 flex-shrink-0">
+                  <Link
+                    to={`/article/${article.id}`}
+                    state={{ channelUrl: channels[index] }}
+                    onClick={() => onArticleClick(index)}
+                  >
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="h-96 w-80 object-cover"
+                      onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
+                    />
+                    <h2 className="text-2xl alumni-sans-bold py-3 w-full border-b-2 border-dashed border-stone-500 font-header font leading-8">
+                      {article.title}
+                    </h2>
+                    <span className="pt-3 font-medium text-stone-700 relative opacity-80 leading-6 line-clamp-3">
+                      {article.content}
+                    </span>
+                  </Link>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </div>

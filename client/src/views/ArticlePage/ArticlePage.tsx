@@ -111,7 +111,6 @@ export default function ArticlePage() {
     return <div>article not found.</div>
   }
 
-
   return (
     <div className="w-10/12 px-4 sm:px-8 lg:px-16 py-2">
       <div className="max-w-full lg:max-w-[1400px] mx-auto">
@@ -130,7 +129,7 @@ export default function ArticlePage() {
                 src={article.image}
                 alt={article.title}
                 className="max-w-full h-auto"
-                onError={(e) => ((e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
+                onError={(e) => ((e.target as HTMLImageElement).src = "https://via.placeholder.com/400x300")}
               />
             </div>
           </div>

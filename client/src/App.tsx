@@ -75,7 +75,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center text-center bg-stone-100">
-      <div className="bg-black h-22 w-full relative flex justify-center items-center">
+      <div className="header h-22 w-full relative flex justify-center items-center">
         <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome}></div>
         <button
           onClick={toggleTerminal}
