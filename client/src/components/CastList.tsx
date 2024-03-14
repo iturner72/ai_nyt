@@ -127,7 +127,7 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-center space-x-20 my-6">
+      <div className="flex items-center justify-center space-x-20 pb-2">
         <p className="text-3xl alumni-sans-bold">fresh casts from {channelName}</p>
       </div>
       <div className="w-full sm:w-10/12 mx-auto py-2 bg-stone-100">

@@ -160,23 +160,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   return (
     <div className="flex flex-col w-full items-center justify-center">
       {error && <div>Error: {error}</div>}
-  
       <div className="w-full mx-auto pt-6 pb-4">
-        <div className="flex flex-row items-center space-x-4 md:space-x-56 pl-12">
-        <div className="alumni-sans-bold text-teal-900 text-md md:text-2xl pb-4">
-          click any channel below to generate a weekly digest (open source models coming soon !!!)
-        </div>
-  
-        {/* Add the "View Changelog" button and the ChangelogModal component */}
-        <div className="flex justify-end mb-4">
-          <button
-            className="bg-stone-800 hover:bg-teal-900 alumni-sans-regular text-md text-stone-300 px-4 py-2 rounded"
-            onClick={openChangelog}
-          >
-            view changelog
-          </button>
-        </div>
-        </div>
         {isChangelogOpen && <ChangeLog onClose={closeChangelog} />}
         <div className="flex w-full items-center flex-col md:flex-row">
           {article && (
@@ -190,35 +174,40 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
               {/* Display channels as clickable images */}
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
-      return (
-        <div key={index} className="text-left alumni-sans-regular pb-8 leading-6 w-80 flex-shrink-0">
-          <Link
-            to={`/article/${article.id}`} // This might need to be dynamic based on the fetched article
-            state={{ channelUrl: chan }}
-            onClick={() => onArticleClick(index)} // Trigger the API call and update the article state
-            style={{ backgroundColor }} // Apply background color dynamically
-            className="block" // Add display block to ensure the background color fills the space
-          >
-            <img
-              src={`/images/i_${index + 1}.jpeg`} // Assuming this is the correct path for your images
-              alt={`Channel ${chan}`}
-              className="h-96 w-80 object-cover"
-              onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
-            />
-            <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
-              /{chan.split('/').pop() || ''}
-            </span>
-          </Link>
-        </div>
-      );
-    })}
-
-
-
-
-
+                  return (
+                    <div key={index} className="text-left alumni-sans-regular pb-8 leading-6 w-80 flex-shrink-0">
+                      <Link
+                        to={`/article/${article.id}`} // This might need to be dynamic based on the fetched article
+                        state={{ channelUrl: chan }}
+                        onClick={() => onArticleClick(index)} // Trigger the API call and update the article state
+                        style={{ backgroundColor }} // Apply background color dynamically
+                        className="block" // Add display block to ensure the background color fills the space
+                      >
+                        <img
+                          src={`/images/i_${index + 1}.jpeg`} // Assuming this is the correct path for your images
+                          alt={`Channel ${chan}`}
+                          className="h-96 w-80 object-cover"
+                          onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
+                        />
+                        <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
+                          /{chan.split('/').pop() || ''}
+                        </span>
+                      </Link>
+                    </div>
+                  );
+                })}
             </div>
           </div>
+        </div>
+        <div className="flex flex-row items-center justify-center pt-4">
+        <div className="flex w-full justify-end pr-4">
+          <button
+            className="bg-stone-800 hover:bg-teal-900 alumni-sans-regular text-md text-stone-300 px-4 py-2 rounded"
+            onClick={openChangelog}
+          >
+            view changelog
+          </button>
+        </div>
         </div>
       </div>
     </div>
