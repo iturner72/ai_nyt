@@ -75,7 +75,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center text-center bg-stone-100">
-      <div className="bg-black h-16 w-full relative flex justify-center items-center">
+      <div className="bg-black h-22 w-full relative flex justify-center items-center">
         <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome}></div>
         <button
           onClick={toggleTerminal}
@@ -84,7 +84,7 @@ const App: React.FC = () => {
         >
           {showTerminal ? '⌨' : '⌨'}
         </button>
-        <h1 className="text-3xl text-white md:text-3xl lg:text-[30px] font-display py-5 whitespace-nowrap cursor-pointer">
+        <h1 className="text-3xl text-white md:text-3xl lg:text-[42px] font-display py-5 whitespace-nowrap cursor-pointer">
           The Network Times
         </h1>
         <InfoIcon 
