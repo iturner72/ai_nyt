@@ -64,3 +64,19 @@ code {
   font-weight: 800;
   font-style: normal;
 }
+
+.buttonStyle = {
+  backgroundColor: '#fff';
+  color: 'red';
+  padding: '10px 20px';
+  margin: '5px';
+  border: 'none';
+  borderBottom: '2px solid #000';
+  cursor: 'pointer';
+  fontSize: '1rem';
+  fontWeight: 'bold';
+  textTransform: 'uppercase';
+  display: 'inline-block';
+  textDecoration: 'none';
+  borderRadius: '0';
+};

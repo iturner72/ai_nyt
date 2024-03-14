@@ -26,12 +26,19 @@ interface Article {
 }
 
 export function ArticleList({ channel, channels, onArticleClick }: ArticleListProps) {
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [article, setArticle] = useState<Article>({
+    id: 0,
+    title: "welcome !",
+    content: "click any channel to generate a weekly digest.",
+    image: "/images/article1.png",
+  });
+
   const [loadingGpt, setLoadingGpt] = useState(false);
   const [loadingClaude, setLoadingClaude] = useState(false);
   const [error, setError] = useState('');
   const [channelName, setChannelName] = useState('');
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
+  const backgroundColors = ['#fff205','#ff5050', '#01fff4', '#7cff01', '#d8d8d8', '#ff529d' ];
 
   const openChangelog = () => {
     setIsChangelogOpen(true);
@@ -40,18 +47,6 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   const closeChangelog = () => {
     setIsChangelogOpen(false);
   };
-
-
-  useEffect(() => {
-      const placeholderArticles: Article[] = channels.map((channel, index) => ({
-        id: index + 1,
-        title: `TODO Title ${index + 1}`,
-        content: `create ${channel.split('/').pop()} weekly digest`,
-        image: `/images/i_${index + 1}.jpeg`,
-      }));
-
-      setArticles(placeholderArticles);
-  }, [channels]);
 
   const fetchArticlesForChannelGpt = async () => {
     setLoadingGpt(true);
@@ -88,7 +83,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
             image: "/images/article1.png"
           };
           console.log("Generated article:", generatedArticle);
-          setArticles([generatedArticle]);
+          setArticle(generatedArticle);
         } else {
           console.warn("Summary data is not available or invalid");
           setError("Failed to generate the article. Please try again later.");
@@ -148,7 +143,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
         };
   
         console.log("Generated article:", generatedArticle);
-        setArticles([generatedArticle]);
+        setArticle(generatedArticle);
       } else {
         console.warn("Summary data is not available or invalid");
         setError("Failed to generate the article. Please try again later.");
@@ -183,39 +178,38 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
         </div>
         </div>
         {isChangelogOpen && <ChangeLog onClose={closeChangelog} />}
-        <div className="flex w-full flex-col md:flex-row">
-          <div className="alumni-sans-regular text-sm md:w-1/3 md:pr-8">
-            {articles.map((article: Article, index: number) => (
-              <div>
-              <h2 key={index}>{article.title}</h2>
-              <p key={index}>{article.content}</p>
-              </div>
-            ))}
-          </div>
+        <div className="flex w-full items-center flex-col md:flex-row">
+          {article && (
+            <div className="alumni-sans-regular text-3xl md:w-5/12 md:pr-8">
+              <h2>{article.title}</h2>
+              <p>{article.content}</p>
+            </div>
+          )}
           <div className="md:w-full overflow-x-auto">
             <div className="flex flex-row space-x-4">
-              {articles.map((article: Article, index: number) => (
-                <div key={index} className="text-left text-xl alumni-sans-regular pb-8 leading-10 w-80 flex-shrink-0">
-                  <Link
-                    to={`/article/${article.id}`}
-                    state={{ channelUrl: channels[index] }}
-                    onClick={() => onArticleClick(index)}
-                  >
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="h-96 w-80 object-cover"
-                      onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
-                    />
-                    <h2 className="text-2xl alumni-sans-bold py-3 w-full border-b-2 border-dashed border-stone-500 font-header font leading-8">
-                      {article.title}
-                    </h2>
-                    <span className="pt-3 font-medium text-stone-700 relative opacity-80 leading-6 line-clamp-3">
-                      {article.content}
-                    </span>
-                  </Link>
-                </div>
-              ))}
+              {/* Display channels as clickable images */}
+              {channels.map((chan, index) => {
+                const backgroundColor = backgroundColors[index % backgroundColors.length];
+                  return (
+                    <div key={index} className="text-left alumni-sans-regular pb-8 leading-10 w-80 flex-shrink-0">
+                      <button
+                        onClick={() => onArticleClick(index)}
+                        className="flex flex-col items-center justify-center"
+                        style={{ backgroundColor }} // Apply the background color
+                      >
+                        <img
+                          src={`/images/i_${index + 1}.jpeg`} // Adjust image source based on your data
+                          alt={`Channel ${chan}`}
+                          className="h-96 w-80 object-cover"
+                          onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
+                        />
+                        <span className="text-left pl-2 text-md alumni-sans-regular py-1 w-full leading-5">
+                          /{chan.split('/').pop() || ''}
+                        </span>
+                      </button>
+                    </div>
+                  );
+              })}
             </div>
           </div>
         </div>
