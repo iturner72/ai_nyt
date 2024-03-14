@@ -169,7 +169,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
               <p>{article.content}</p>
             </div>
           )}
-         <div className="md:w-full overflow-x-auto">
+         <div className="md:w-full overflow-x-auto md:pt-2">
             <div className="flex flex-wrap md:flex-nowrap md:flex-row gap-4 justify-center items-center md:justify-start">
               {/* Display channels as clickable images */}
               {channels.map((chan, index) => {
