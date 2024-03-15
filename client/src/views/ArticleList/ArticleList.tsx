@@ -160,8 +160,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   return (
     <div className="flex flex-col w-full items-center justify-center">
       {error && <div>Error: {error}</div>}
-      <div className="w-full mx-auto pt-2 pb-4">
-        {isChangelogOpen && <ChangeLog onClose={closeChangelog} />}
+      <div className="w-full mx-auto pt-2">
         <div className="flex w-full items-center flex-col md:flex-row">
           {article && (
             <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-4xl pl-8 pb-2 md:w-5/12 md:pr-8">
@@ -170,7 +169,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
             </div>
           )}
          <div className="md:w-full overflow-x-auto md:pt-2">
-            <div className="flex flex-wrap md:flex-nowrap md:flex-row gap-4 justify-center items-center md:justify-start">
+            <div className="flex flex-wrap md:flex-nowrap md:flex-row gap-4 justify-center items-center md:justify-start overflow-hidden md:overflow-visible">
               {/* Display channels as clickable images */}
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
@@ -198,16 +197,6 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
                 })}
             </div>
           </div>
-        </div>
-        <div className="flex flex-row items-center justify-center pt-4">
-        <div className="flex w-full justify-end pr-4">
-          <button
-            className="bg-stone-800 hover:bg-teal-900 alumni-sans-regular text-md text-stone-300 px-4 py-2 rounded"
-            onClick={openChangelog}
-          >
-            view changelog
-          </button>
-        </div>
         </div>
       </div>
     </div>
