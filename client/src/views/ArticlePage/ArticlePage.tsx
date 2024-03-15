@@ -12,9 +12,22 @@ interface Article {
 interface Cast {
   data: {
     castAddBody?: {
+      embeds: any[];
+      embedsDeprecated: any[];
+      mentions: number[];
+      mentionsPositions: number[];
+      parentCastId?: {
+        fid: number;
+        hash: string;
+      };
       text?: string;
     };
+    fid: number;
+    network: string;
+    timestamp: number;
+    type: string;
   };
+  hash: string;
 }
 
 export default function ArticlePage() {
@@ -42,10 +55,20 @@ export default function ArticlePage() {
         let castsArray = response.data.messages || [];
         console.log("Casts array:", castsArray);
 
-        const concatenatedText = castsArray
-          .map((cast: Cast) => cast.data.castAddBody?.text || '')
-          .join(' ')
-          .trim();
+        const newestTimestamp = castsArray.reduce((newest: Date, cast: Cast) => {
+          const castTimestamp = new Date(cast.data.timestamp * 1000);
+          return castTimestamp > newest ? castTimestamp : newest;
+        }, new Date(0));
+
+        const oneWeekAgo = new Date(newestTimestamp.getTime() - (7 * 24 * 60 * 60 * 1000));
+        const filteredCasts = castsArray.filter((cast: Cast) => {
+          const castTimestamp = new Date(cast.data.timestamp * 1000);
+          return castTimestamp >= oneWeekAgo;
+        }).map((cast: Cast) => cast.data.castAddBody?.text || '').filter((text: string) => text);;
+
+        console.log("filteredCasts:", filteredCasts);
+
+        const concatenatedText = filteredCasts.join(' ');
 
         console.log("Concatenated Text:", concatenatedText);
 

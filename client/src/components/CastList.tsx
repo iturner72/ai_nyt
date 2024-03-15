@@ -84,10 +84,10 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
       }, new Date(0));
 
       // Filter casts from the last 14 days
-      const fourteenDaysAgo = new Date(newestTimestamp.getTime() - (14 * 24 * 60 * 60 * 1000));
+      const sevenDaysAgo = new Date(newestTimestamp.getTime() - (7 * 24 * 60 * 60 * 1000));
       const recentCastsTexts = casts.filter(cast => {
         const castTimestamp = new Date(cast.data.timestamp * 1000);
-        return castTimestamp >= fourteenDaysAgo;
+        return castTimestamp >= sevenDaysAgo;
       }).map(cast => cast.data.castAddBody?.text || '').filter(text => text);
 
       // Concatenate the texts of all casts

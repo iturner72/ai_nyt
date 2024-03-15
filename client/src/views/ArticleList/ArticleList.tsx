@@ -7,9 +7,22 @@ import config from './../../config'; // Ensure this path is correct
 interface Cast {
   data: {
     castAddBody?: {
+      embeds: any[];
+      embedsDeprecated: any[];
+      mentions: number[];
+      mentionsPositions: number[];
+      parentCastId?: {
+        fid: number;
+        hash: string;
+      };
       text?: string;
     };
+    fid: number;
+    network: string;
+    timestamp: number;
+    type: string;
   };
+  hash: string;
 }
 
 interface ArticleListProps {
@@ -109,7 +122,14 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
       console.log("Casts array:", castsArray);
   
       // Concatenate texts of all casts, then truncate to prevent exceeding API limits
-      const concatenatedText = castsArray
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const filteredCasts = castsArray.filter((cast: Cast) => {
+        const castTimestamp = new Date(cast.data.timestamp * 1000);
+        return castTimestamp >= oneWeekAgo;
+      });
+
+      const concatenatedText = filteredCasts
         .map((cast: Cast) => cast.data.castAddBody?.text || '')
         .join(' ')
         .trim();
