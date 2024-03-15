@@ -29,7 +29,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   const [article, setArticle] = useState<Article>({
     id: 0,
     title: "welcome !",
-    content: "click any channel to generate a weekly digest.",
+    content: "click a channel to generate weekly digest.",
     image: "/images/article1.png",
   });
 
@@ -164,7 +164,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
         {isChangelogOpen && <ChangeLog onClose={closeChangelog} />}
         <div className="flex w-full items-center flex-col md:flex-row">
           {article && (
-            <div className="alumni-sans-regular text-3xl pb-2 md:w-5/12 md:pr-8">
+            <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-4xl pl-8 pb-2 md:w-5/12 md:pr-8">
               <h2>{article.title}</h2>
               <p>{article.content}</p>
             </div>

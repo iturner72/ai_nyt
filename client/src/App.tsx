@@ -9,6 +9,7 @@ import InformationModal from './components/InformationModal';
 import InfoIcon from '@mui/icons-material/Info';
 import config from "./config";
 import TerminalComponent from './components/TerminalComponent';
+import { ReactComponent as Title } from './icons/Title.svg';
 
 const channels = ['https://warpcast.com/~/channel/onthebrink', 'https://warpcast.com/~/channel/piratewires', 'https://warpcast.com/~/channel/moz', 'https://warpcast.com/~/channel/zynwood', 'https://warpcast.com/~/channel/gray', 'https://warpcast.com/~/channel/all-in']
 const fids = [249223, 5650, 37, 97, 151, 318610, 319431]
@@ -74,23 +75,14 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center text-center bg-stone-100">
-      <div className="header h-22 w-full relative flex justify-center items-center">
+    <div className="flex flex-col text-left bg-stone-100">
+      <div className="header h-24 md:h-16 items-center w-full relative flex pl-4">
         <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome}></div>
-        <button
-          onClick={toggleTerminal}
-          className="text-white absolute left-4 sm:left-6 top-1/2 transform -translate-y-1/2 text-2xl focus:outline-none"
-          style={{ fontSize: 'calc(1.75rem + 1.75vw)' }}
-        >
-          {showTerminal ? '⌨' : '⌨'}
-        </button>
-        <h1 className="text-3xl text-white md:text-3xl lg:text-[42px] font-display py-5 whitespace-nowrap cursor-pointer">
-          The Network Times
-        </h1>
+        <Title />
         <InfoIcon 
           onClick={() => setIsModalOpen(true)}
           aria-label="Information"
-          style={{ position: 'absolute', right: 'calc(1rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(1.25rem + 1vw)' }}
+          style={{ position: 'absolute', right: 'calc(0.25rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
         />
       </div>
       <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
