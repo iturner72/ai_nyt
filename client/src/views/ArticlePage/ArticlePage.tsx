@@ -70,13 +70,16 @@ export default function ArticlePage() {
 
         const concatenatedText = filteredCasts.join(' ');
 
+
+        const instructionText = `You are The Network Times. This means that you are the new media which will replace the New York Times, Washington Post, Wall Street Journal, and the like. I would like for you to summarize the following Casts in a weekly digest named ${channelName} digest (in lowercase) as a journalist who works for a publication at a higher caliber than those just mentioned: (you have a token limit of 250)\n` + concatenatedText
+
         console.log("Concatenated Text:", concatenatedText);
 
         try {
           const summaryResponse = await axios.post(`https://${config.serverBaseUrl}/generate_chat_anthropic`, {
             model: 'claude-3-sonnet-20240229',
             max_tokens: 250,
-            messages: [{ role: 'user', content: concatenatedText }],
+            messages: [{ role: 'user', content: instructionText }],
           }, {
             headers: { 'Content-Type': 'application/json' },
           });
