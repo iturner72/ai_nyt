@@ -74,7 +74,7 @@ export default function ArticlePage() {
 
         try {
           const summaryResponse = await axios.post(`https://${config.serverBaseUrl}/generate_chat_anthropic`, {
-            model: 'claude-3-opus-20240229',
+            model: 'claude-3-sonnet-20240229',
             max_tokens: 250,
             messages: [{ role: 'user', content: concatenatedText }],
           }, {
@@ -83,7 +83,7 @@ export default function ArticlePage() {
 
           console.log("Summary response:", summaryResponse.data);
           const summary = summaryResponse.data.content[0].text;
-          const modelName = 'Claude 3 Opus';
+          const modelName = 'Claude 3 Sonnet';
           setModelName(modelName);
 
           if (summary) {
