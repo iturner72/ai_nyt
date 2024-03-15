@@ -14,7 +14,6 @@
 # LaTeX intermediate files
 *.dvi
 *.ps
-*.pdf
 
 # LaTeX auto-generated files
 *.backup
