@@ -4,8 +4,13 @@ import axios from 'axios';
 import config from './../../config';
 
 interface Article {
+  id: number;
   title: string;
-  content: string;
+  subtitle: string;
+  sections: {
+    heading: string;
+    paragraphs: string[];
+  }[];
   image: string;
 }
 
@@ -71,14 +76,27 @@ export default function ArticlePage() {
         const concatenatedText = filteredCasts.join(' ');
 
 
-        const instructionText = `You are The Network Times. This means that you are the new media which will replace the New York Times, Washington Post, Wall Street Journal, and the like. I would like for you to summarize the following Casts in a weekly digest named ${channelName} digest (in lowercase) as a journalist who works for a publication at a higher caliber than those just mentioned. The article should have the title and a small summary, then an article length response with proper paragraphs just like an article in the Times would read.: (you have a token limit of 1250)\n` + concatenatedText
+        const instructionText = `You are The Network Times. This means that you are the new media which will replace the New York Times, Washington Post, Wall Street Journal, and the like. I would like for you to summarize the following Casts in a weekly digest named ${channelName} digest (in lowercase) as a journalist who works for a publication at a higher caliber than those just mentioned. Please format your response with the following tags:
+        
+        <title>Article Title</title>
+        <subtitle>Article Subtitle</subtitle>
+        <section>
+        <heading>Section Heading</heading>
+        <paragraph>Section paragraph content...</paragraph>
+        </section>
+        
+        The article should have a title, a subtitle, and then multiple sections, each with a heading and paragraphs, just like an article in the Times would read. You have a token limit of 1337.
+        
+        Casts to summarize:
+        ` + concatenatedText;
+
 
         console.log("Concatenated Text:", concatenatedText);
 
         try {
           const summaryResponse = await axios.post(`https://${config.serverBaseUrl}/generate_chat_anthropic`, {
             model: 'claude-3-haiku-20240307',
-            max_tokens: 1250,
+            max_tokens: 1337,
             messages: [{ role: 'user', content: instructionText }],
           }, {
             headers: { 'Content-Type': 'application/json' },
@@ -90,10 +108,22 @@ export default function ArticlePage() {
           setModelName(modelName);
 
           if (summary) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(summary, 'text/html');
+
+            const subtitle = doc.querySelector('subtitle')?.textContent || '';
+
+            const sections = Array.from(doc.querySelectorAll('section')).map((section) => {
+              const heading = section.querySelector('heading')?.textContent || '';
+              const paragraphs = Array.from(section.querySelectorAll('paragraph')).map((p) => p.textContent || '');
+              return { heading, paragraphs };
+            });
+          
             const generatedArticle = {
               id: id ? parseInt(id, 10) : Date.now(),
-              title: `${channelUrl}`,
-              content: summary,
+              title: `${channelName}`,
+              subtitle,
+              sections,
               image: "/images/article1.png",
             };
 
@@ -138,19 +168,28 @@ export default function ArticlePage() {
   }
 
   return (
-    <div className="w-10/12 px-4 sm:px-8 lg:px-16 py-2">
-      <div className="max-w-full lg:max-w-[1400px] mx-auto">
+    <div className="w-11/12 px-4 sm:px-8 lg:px-16 py-2">
+      <div className="max-w-full lg:max-w-[2200px] mx-auto">
         <article className="text-left text-xl sm:text-2xl lg:text-3xl font-serif leading-relaxed lg:leading-10 mx-auto py-6 lg:py-2">
           <div className="mt-8">
-            <h1 className="alumni-sans-bold text-2xl lg:text-5xl mb-2">weekly {channelName} digest</h1>
-            <p className="alumni-sans-regular text-lg mb-2">by {modelName}</p>
+            <h1 className="alumni-sans-bold text-4xl lg:text-5xl mb-2">weekly {channelName} digest</h1>
+            <p className="alumni-sans-regular text-xl mb-2">by {modelName}</p>
             <p className="text-stone-500 text-sm">(3 min. read)</p>
           </div>
           <div className="flex flex-col md:flex-row">
-            <div className="alumni-sans-regular text-xl md:w-2/3 md:pr-8">
-              <p>{article.content}</p>
+            <div className="alumni-sans-regular text-xl md:text-4xl md:w-11/12 md:pr-8">
+              <h2 className="text-2xl font-bold mb-4">{article.title}</h2>
+              <h3 className="text-xl font-semibold mb-6">{article.subtitle}</h3>
+              {article.sections.map((section, index) => (
+                <div key={index} className="mb-8">
+                  <h4 className="text-3xl font-semibold mb-2">{section.heading}</h4>
+                  {section.paragraphs.map((paragraph, pIndex) => (
+                    <p key={pIndex} className="mb-4 md:text-2xl">{paragraph}</p>
+                  ))}
+                </div>
+              ))}
             </div>
-            <div className="md:w-1/3">
+            <div className="md:w-7/12 pt-8">
               <img
                 src={article.image}
                 alt={article.title}
@@ -163,4 +202,6 @@ export default function ArticlePage() {
       </div>
     </div>
   );
+
+  
 }
