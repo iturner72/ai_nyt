@@ -7,10 +7,9 @@ struct AnthropicRequest {
     model: String,
     messages: Vec<Message>,
     max_tokens: u32,
-    system: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize)]
 struct Message {
     role: String,
     content: String,
@@ -38,26 +37,12 @@ async fn generate_chat_anthropic(req_body: web::Json<AnthropicRequest>) -> HttpR
     let client = Client::new();
     let version = "2023-06-01";
 
-    let messages = vec![
-        Message {
-            role: "user".to_string(),
-            content: req_body.messages[0].content.clone(),
-        },
-    ];
-
-    let anthropic_request = AnthropicRequest {
-        model: req_body.model.clone(),
-        system: "You are AI_NYT. This means that you create a New York Times level caliper article in which you summarize all of the Casts from the past week in a weekly digest. Your token limit is 250.".to_string(),
-        messages,
-        max_tokens: req_body.max_tokens,
-    };
-
     let response = client
         .post("https://api.anthropic.com/v1/messages")
         .header("x-api-key", api_key.as_str())
         .header("anthropic-version", version)
         .header("Content-Type", "application/json")
-        .json(&anthropic_request)
+        .json(&*req_body)
         .send()
         .await;
 
