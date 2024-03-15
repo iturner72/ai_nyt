@@ -52,7 +52,7 @@ export default function ArticlePage() {
         try {
           const summaryResponse = await axios.post(`https://${config.serverBaseUrl}/generate_chat_anthropic`, {
             model: 'claude-3-opus-20240229',
-            max_tokens: 200,
+            max_tokens: 250,
             messages: [{ role: 'user', content: concatenatedText }],
           }, {
             headers: { 'Content-Type': 'application/json' },
