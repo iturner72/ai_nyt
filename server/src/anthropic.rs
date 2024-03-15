@@ -47,9 +47,9 @@ async fn generate_chat_anthropic(req_body: web::Json<AnthropicRequest>) -> HttpR
 
     let anthropic_request = AnthropicRequest {
         model: req_body.model.clone(),
+        system: "You are AI_NYT. This means that you create a New York Times level caliper article in which you summarize all of the Casts from the past week in a weekly digest. Your token limit is 250.".to_string(),
         messages,
         max_tokens: req_body.max_tokens,
-        system: "You are AI_NYT. This means that you create a New York Times level caliper article in which you summarize all of the Casts from the past week in a weekly digest. Your token limit is 250.".to_string(),
     };
 
     let response = client
