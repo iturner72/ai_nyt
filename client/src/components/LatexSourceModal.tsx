@@ -9,14 +9,14 @@ const LatexSourceModal: React.FC<LatexSourceModalProps> = ({ closeModal }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg">
+      <div className="bg-white p-4 rounded-lg shadow-lg w-10/12">
         <h2 className="text-3xl font-bold mb-4">LaTeX Source Code</h2>
         <pre className="bg-gray-100 text-xl p-4 rounded-md mb-4">
           {
 
 `\\documentclass{article}
 \\begin{document}
-\\textbf{Feel free to contribute!}
+\\textbf{contribute!}
 \\end{document}`
 
           }
