@@ -1,5 +1,5 @@
 const config = {
-    serverBaseUrl: 'api.thenetworktimes.xyz' || 'http://localhost:8080'
+    serverBaseUrl: 'REACT_APP_SERVER_BASE_URL' || 'http://localhost:8080'
 };
 
 export default config;
