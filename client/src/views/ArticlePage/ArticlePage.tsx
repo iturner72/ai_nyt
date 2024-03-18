@@ -104,7 +104,7 @@ export default function ArticlePage() {
 
           console.log("Summary response:", summaryResponse.data);
           const summary = summaryResponse.data.content[0].text;
-          const modelName = 'Claude 3 Sonnet';
+          const modelName = 'Claude 3 Haiku';
           setModelName(modelName);
 
           if (summary) {
