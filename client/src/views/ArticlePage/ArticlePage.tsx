@@ -51,6 +51,13 @@ export default function ArticlePage() {
       setLoading(true);
       setError('');
 
+      const storedArticle = localStorage.getItem(`article_${channelUrl}`);
+      if (storedArticle) {
+        setArticle(JSON.parse(storedArticle));
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channelUrl)}`);
         const channelName = channelUrl.split('/').pop() || '';
@@ -129,6 +136,7 @@ export default function ArticlePage() {
 
             console.log("Generated article:", generatedArticle);
             setArticle(generatedArticle);
+            localStorage.setItem(`article_${channelUrl}`, JSON.stringify(generatedArticle));
           } else {
             console.warn("Summary data is not available or invalid");
             setError("Failed to generate the article. Please try again later.");

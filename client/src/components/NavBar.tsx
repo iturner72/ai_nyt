@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface NavBarProps {
   channels: string[];
@@ -7,8 +8,11 @@ interface NavBarProps {
 }
 
 export default function NavBar({ channels, currentChannelIndex, setCurrentChannelIndex }: NavBarProps) {
+  const navigate = useNavigate();
+
   const handleTabClick = (tabIndex: number) => {
     setCurrentChannelIndex(tabIndex);
+    navigate('/');
   };
 
 return (
