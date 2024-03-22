@@ -72,7 +72,7 @@ export default function ArticlePage() {
           return castTimestamp > newest ? castTimestamp : newest;
         }, new Date(0));
 
-        const oneWeekAgo = new Date(newestTimestamp.getTime() - (7 * 24 * 60 * 60 * 1000));
+        const oneWeekAgo = new Date(newestTimestamp.getTime() - (21 * 24 * 60 * 60 * 1000));
         const filteredCasts = castsArray.filter((cast: Cast) => {
           const castTimestamp = new Date(cast.data.timestamp * 1000);
           return castTimestamp >= oneWeekAgo;
