@@ -92,7 +92,7 @@ export default function ArticlePage() {
         <paragraph>Section paragraph content...</paragraph>
         </section>
         
-        The article should have a title, a subtitle, and then multiple sections, each with a heading and paragraphs, just like an article in the Times would read. You have a token limit of 3337.
+        The article should have a title, a subtitle, and then multiple sections, each with a heading and paragraphs, just like an article in the Times would read. You have a token limit of 2337.
         
         Casts to summarize:
         ` + concatenatedText;
@@ -103,7 +103,7 @@ export default function ArticlePage() {
         try {
           const summaryResponse = await axios.post(`https://${config.serverBaseUrl}/generate_chat_anthropic`, {
             model: 'claude-3-haiku-20240307',
-            max_tokens: 3337,
+            max_tokens: 2337,
             messages: [{ role: 'user', content: instructionText }],
           }, {
             headers: { 'Content-Type': 'application/json' },
