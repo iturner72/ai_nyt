@@ -92,7 +92,7 @@ export default function ArticlePage() {
         <paragraph>Section paragraph content...</paragraph>
         </section>
         
-        The article should have a title, a subtitle, and then multiple sections, each with a heading and paragraphs, just like an article in the Times would read. You have a token limit of 1337.
+        The article should have a title, a subtitle, and then multiple sections, each with a heading and paragraphs, just like an article in the Times would read. You have a token limit of 3337.
         
         Casts to summarize:
         ` + concatenatedText;
