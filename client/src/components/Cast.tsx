@@ -1,7 +1,7 @@
 import { Cast } from "../types/Casts";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import config from './../config';
+import config2 from './../config2';
 
 interface CastProps {
   cast: Cast;
@@ -34,7 +34,7 @@ export default function CastEntry({ cast, index }: CastProps) {
     const fetchUserData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`https://${config.serverBaseUrl}/userDataByFid`, {
+        const response = await axios.get(`https://${config2.serverBaseUrl}/userDataByFid`, {
           params: {
             fid: cast.data?.fid,
             user_data_type: 6,

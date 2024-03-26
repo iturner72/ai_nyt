@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ChangeLog from './../../components/ChangeLog';
 import axios from 'axios';
-import config from './../../config'; // Ensure this path is correct
+import config2 from './../../config2'; // Ensure this path is correct
 
 interface Cast {
   data: {

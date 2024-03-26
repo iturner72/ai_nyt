@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import config from './../../config';
+import config2 from './../../config2';
 
 interface Article {
   id: number;
@@ -54,7 +54,7 @@ export default function ArticlePage() {
       setArticleContent('');
 
       try {
-        const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channelUrl)}`);
+        const response = await axios.get(`https://${config2.serverBaseUrl}/castsByChannel/${encodeURIComponent(channelUrl)}`);
         const channelName = channelUrl.split('/').pop() || '';
         setChannelName(channelName);
         console.log("Response data:", response.data);
@@ -94,7 +94,7 @@ export default function ArticlePage() {
         console.log("Concatenated Text:", concatenatedText);
 
         try {
-            const response = await fetch(`https://${config.serverBaseUrl}/generate_chat_anthropic`, {
+            const response = await fetch(`https://${config2.serverBaseUrl}/generate_chat_anthropic`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

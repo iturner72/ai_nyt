@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CastEntry from './Cast';
 import axios from 'axios';
-import config from './../config';
+import config2 from './../config2';
 
 interface Cast {
   data: {
@@ -47,7 +47,7 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
       try {
         console.log('Fetching casts by channel');
 
-        const response = await axios.get(`https://${config.serverBaseUrl}/castsByChannel/${encodeURIComponent(channel)}`);
+        const response = await axios.get(`https://${config2.serverBaseUrl}/castsByChannel/${encodeURIComponent(channel)}`);
         const fetchedCasts = response.data.messages;
 
         const sortedCasts = fetchedCasts.sort((a: any, b: any) => b.data.timestamp - a.data.timestamp);
@@ -94,7 +94,7 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
       const concatenatedText = recentCastsTexts.join(' ');
 
       try {
-        const response = await axios.post(`https://${config.serverBaseUrl}/generate_daily_summary`, { text: concatenatedText });
+        const response = await axios.post(`https://${config2.serverBaseUrl}/generate_daily_summary`, { text: concatenatedText });
         if (response.status === 200 && response.data) {
           setSummary(response.data);
           console.log('Summary generated:', response.data);
