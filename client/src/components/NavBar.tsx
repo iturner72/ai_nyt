@@ -1,7 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useProfile } from '@farcaster/auth-kit';
-import { SignIn } from './SignIn';
 
 interface NavBarProps {
   channels: string[];
@@ -10,7 +8,6 @@ interface NavBarProps {
 }
 
 export default function NavBar({ channels, currentChannelIndex, setCurrentChannelIndex }: NavBarProps) {
-  const { isAuthenticated, profile } = useProfile();
   const navigate = useNavigate();
 
   const handleTabClick = (tabIndex: number) => {
@@ -20,7 +17,6 @@ export default function NavBar({ channels, currentChannelIndex, setCurrentChanne
 
 return (
   <div className="sticky top-0 z-20 w-full flex justify-center">
-    {isAuthenticated ? (
     <div className="w-full overflow-x-auto">
       <div className="flex items-center text-2xl alumni-sans-bold justify-between bg-stone-100 font-sans border-b border-neutral-200">
         {channels.map((channel, index) => {
@@ -42,9 +38,6 @@ return (
         })}
       </div>
     </div>
-    ) : (
-      <SignIn />
-    )}
   </div>
 );
 

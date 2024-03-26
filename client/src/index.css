@@ -80,3 +80,12 @@ code {
   textDecoration: 'none';
   borderRadius: '0';
 };
+
+.signin-button {
+  cursor: pointer;
+}
+
+.signin-wrapper {
+  position: relative;
+  z-index: 1000;
+}

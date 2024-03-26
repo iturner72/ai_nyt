@@ -1,3 +1,4 @@
+// App.tsx
 import React, { useState, useEffect } from 'react';
 import CastList from './components/CastList';
 import NavBar from "./components/NavBar";
@@ -6,25 +7,23 @@ import {Routes, Route, useNavigate} from "react-router-dom";
 import {ArticleList} from "./views/ArticleList/ArticleList";
 import ArticlePage from "./views/ArticlePage/ArticlePage";
 import InfoIcon from '@mui/icons-material/Info';
-import config from "./config";
+import config2 from "./config2";
 import TerminalComponent from './components/TerminalComponent';
 import { ReactComponent as Title } from './icons/Title.svg';
 import LatexSourceModal from './components/LatexSourceModal';
 import { AuthKitProvider } from '@farcaster/auth-kit';
-import { createAppClient, viemConnector } from '@farcaster/auth-client';
 import '@farcaster/auth-kit/styles.css';
+import { SignIn } from './components/SignIn';
 
-const appClient = createAppClient({
-  relay: 'https://relay.farcaster.xyz',
-  ethereum: viemConnector({
+const currentUrl = window.location.origin;
+const siweUri = `${currentUrl}/login`;
+const domain = currentUrl.replace(/^https?:\/\//, '');
+
+const config = {
+    domain: domain,
+    siweUri: siweUri,
     rpcUrl: process.env.OP_MAINNET_RPC_URL,
-  }),
-});
-
-const config2 = {
-    domain: 'thenetworktimes.xyz',
-    siweUri: 'https://thenetworktimes.xyz/login',
-    appClient,
+    relay: 'https://relay.farcaster.xyz',
 };
 
 const channels = ['https://warpcast.com/~/channel/onthebrink', 'https://warpcast.com/~/channel/piratewires', 'https://warpcast.com/~/channel/moz', 'https://warpcast.com/~/channel/zynwood', 'https://warpcast.com/~/channel/gray', 'https://warpcast.com/~/channel/all-in']
@@ -78,7 +77,7 @@ const App: React.FC = () => {
   useEffect(() => {
     async function fetchChannels() {
       try {
-        axios.get(`https://${config.serverBaseUrl}/channels`).then(res => {
+        axios.get(`https://${config2.serverBaseUrl}/channels`).then(res => {
           console.log('Channels:', res.data.channels);
           setAllChannels(res.data.channels);
         });
@@ -91,16 +90,19 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <AuthKitProvider config={config2}>
+    <AuthKitProvider config={config}>
       <div className="flex flex-col items-center justify-center text-left bg-stone-100">
-        <div className="header h-24 md:h-16 items-center w-full relative flex pl-4">
-          <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome}></div>
+        <div className="header h-24 md:h-20 items-center w-full relative flex pl-4">
+          <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome} style={{ pointerEvents: 'none' }}></div>
           <Title />
           <InfoIcon 
             onClick={() => setIsModalOpen(true)}
             aria-label="Information"
             style={{ position: 'absolute', right: 'calc(0.25rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
           />
+          <div className="signin-wrapper text-red-500" style={{ position: 'absolute', right: 'calc(3.25rem + 1vw)' }}>
+            <SignIn />
+          </div>
         </div>
         <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
                 setCurrentChannelIndex={setCurrentChannelIndex}/>
@@ -112,6 +114,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path={'/'} element={<ArticleList channel={channels[currentChannelIndex]} channels={channels} onArticleClick={handleArticleClick} />}/>
           <Route path={'/article/:id'} element={<ArticlePage/>}/>
+          <Route path={'/login'} element={<SignIn />}/>
         </Routes>
         <div className="bg-stone-100 p-4">
           <CastList channel={channels[currentChannelIndex]} searchUsername={searchUsername} />
