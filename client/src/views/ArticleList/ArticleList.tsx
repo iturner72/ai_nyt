@@ -36,6 +36,7 @@ interface Article {
   title: string;
   content: string;
   image: string;
+  timestamp: number;
 }
 
 export function ArticleList({ channel, channels, onArticleClick }: ArticleListProps) {
@@ -44,6 +45,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
     title: "welcome !",
     content: "click a channel to generate weekly digest.",
     image: "/images/article1.png",
+    timestamp: 0,
   });
 
   const [error, setError] = useState('');

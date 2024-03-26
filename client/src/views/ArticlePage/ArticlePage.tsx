@@ -12,6 +12,7 @@ interface Article {
     paragraphs: string[];
   }[];
   image: string;
+  timestamp: number;
 }
 
 interface Cast {
@@ -46,13 +47,24 @@ export default function ArticlePage() {
   const [channelName, setChannelName] = useState('');
   const [modelName, setModelName] = useState('');
 
+  const isArticleExpired = (storedArticle: string | null) => {
+    if (!storedArticle) return true;
+
+    const { timestamp } = JSON.parse(storedArticle);
+    const currentTime = new Date().getTime();
+    const expirationTime = 24 * 60 * 60 * 1000;
+
+    return currentTime - timestamp > expirationTime;
+  };
+
+
   useEffect(() => {
     const fetchArticlesForChannelClaude = async () => {
       setLoading(true);
       setError('');
 
       const storedArticle = localStorage.getItem(`article_${channelUrl}`);
-      if (storedArticle) {
+      if (storedArticle && !isArticleExpired(storedArticle)) {
         setArticle(JSON.parse(storedArticle));
         setLoading(false);
         return;
@@ -132,6 +144,7 @@ export default function ArticlePage() {
               subtitle,
               sections,
               image: "/images/article1.png",
+              timestamp: new Date().getTime(),
             };
 
             console.log("Generated article:", generatedArticle);
