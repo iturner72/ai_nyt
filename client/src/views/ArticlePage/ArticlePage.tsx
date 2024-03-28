@@ -58,6 +58,18 @@ export default function ArticlePage() {
     return currentTime - timestamp > expirationTime;
   };
 
+  // Periodically check for and clear expired data
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const storedArticle = localStorage.getItem(`article_${channelUrl}`);
+      if (storedArticle && isArticleExpired(storedArticle)) {
+        localStorage.removeItem(`article_${channelUrl}`);
+      }
+    }, 120000); // Check every 2 minutes
+
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, [channelUrl]);
+
 
   useEffect(() => {
     const fetchArticlesForChannelClaude = async () => {
