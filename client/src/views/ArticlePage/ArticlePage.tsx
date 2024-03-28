@@ -46,14 +46,14 @@ export default function ArticlePage() {
   const [error, setError] = useState('');
   const [channelName, setChannelName] = useState('');
   const [modelName, setModelName] = useState('');
+  const expirationTime = 1 * 2 * 60 * 1000;
 
   const isArticleExpired = (storedArticle: string | null) => {
     if (!storedArticle) return true;
 
     const { timestamp } = JSON.parse(storedArticle);
     const currentTime = new Date().getTime();
-    const expirationTime1 = 24 * 60 * 60 * 1000;
-    const expirationTime = 1 * 2 * 60 * 1000;
+//    const expirationTime1 = 24 * 60 * 60 * 1000;
 
     return currentTime - timestamp > expirationTime;
   };
@@ -65,7 +65,7 @@ export default function ArticlePage() {
       if (storedArticle && isArticleExpired(storedArticle)) {
         localStorage.removeItem(`article_${channelUrl}`);
       }
-    }, 120000); // Check every 2 minutes
+    }, expirationTime); // Check every 2 minutes
 
     return () => clearInterval(interval); // Clear interval on component unmount
   }, [channelUrl]);
