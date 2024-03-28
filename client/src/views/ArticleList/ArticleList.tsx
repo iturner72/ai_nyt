@@ -43,7 +43,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   const [article, setArticle] = useState<Article>({
     id: 0,
     title: "welcome !",
-    content: "click a channel to generate weekly digest.",
+    content: "try clicking a logo !",
     image: "/images/article1.png",
     timestamp: 0,
   });
