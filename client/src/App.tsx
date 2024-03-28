@@ -93,7 +93,7 @@ const App: React.FC = () => {
     <AuthKitProvider config={config}>
       <div className="flex flex-col items-center justify-center text-left bg-stone-100">
         <div className="header h-24 md:h-20 items-center w-full relative flex pl-4">
-          <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome} style={{ pointerEvents: 'none' }}></div>
+          <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome} ></div>
           <Title />
           <InfoIcon 
             onClick={() => setIsModalOpen(true)}
