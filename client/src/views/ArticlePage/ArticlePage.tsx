@@ -223,6 +223,4 @@ export default function ArticlePage() {
       </div>
     </div>
   );
-
-  
 }

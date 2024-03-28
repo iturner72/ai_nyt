@@ -1,5 +1,5 @@
 const config = {
-    serverBaseUrl: process.env.REACT_APP_SERVER_BASE_URL || 'http://localhost:8080'
+    serverBaseUrl: 'you thought' || 'http://localhost:8080'
 };
 
 export default config;
