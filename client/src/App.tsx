@@ -14,6 +14,7 @@ import LatexSourceModal from './components/LatexSourceModal';
 import { AuthKitProvider } from '@farcaster/auth-kit';
 import '@farcaster/auth-kit/styles.css';
 import { SignIn } from './components/SignIn';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const currentUrl = window.location.origin;
 const siweUri = `${currentUrl}/login`;
@@ -37,6 +38,11 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   const [showTerminal, setShowTerminal] = useState(false);
   const [searchUsername, setSearchUsername] = useState<string>('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prevIsMobileMenuOpen) => !prevIsMobileMenuOpen);
+  };
 
   const handleArticleClick = (channelIndex: number) => {
     setCurrentChannelIndex(channelIndex);
@@ -95,13 +101,36 @@ const App: React.FC = () => {
         <div className="header h-24 md:h-20 items-center w-full relative flex pl-4">
           <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome} ></div>
           <Title />
-          <InfoIcon 
-            onClick={() => setIsModalOpen(true)}
-            aria-label="Information"
-            style={{ position: 'absolute', right: 'calc(0.25rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
-          />
-          <div className="signin-wrapper text-red-500" style={{ position: 'absolute', right: 'calc(3.25rem + 1vw)' }}>
-            <SignIn />
+
+          <div className="md:hidden">
+            <MenuIcon
+              onClick={toggleMobileMenu}
+              aria-label="Menu"
+              style={{ position: 'absolute', right: 'calc(0.25rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
+            />
+          </div>
+          {isMobileMenuOpen && (
+            <div className="header flex flex-col items-center justify-center space-y-4 mobile-menu absolute right-0 top-20 p-4 z-30">
+              <InfoIcon
+                onClick={() => setIsModalOpen(true)}
+                aria-label="Information"
+                style={{ color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
+              />
+              <div className="signin-wrapper">
+                <SignIn />
+              </div>
+            </div>
+          )}
+          <div className="hidden md:block">
+            <InfoIcon
+              onClick={() => setIsModalOpen(true)}
+              aria-label="Information"
+              style={{ position: 'absolute', right: 'calc(0.25rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
+            />
+
+            <div className="signin-wrapper" style={{ position: 'absolute', bottom: '17%', right: 'calc(3.25rem + 1vw)' }}>
+              <SignIn />
+            </div>
           </div>
         </div>
         <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
