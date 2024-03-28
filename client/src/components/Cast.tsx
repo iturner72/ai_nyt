@@ -79,7 +79,7 @@ export default function CastEntry({ cast, index }: CastProps) {
             <img
               src={userPfpData.data.userDataBody.value}
               alt="User PFP"
-              className="w-12 h-12 rounded-full mr-2"
+              className="w-12 h-12 rounded-full object-cover object-center mr-2"
             />
           ) : (
             <div className="w-12 h-12 rounded-full bg-gray-300 mr-2" />
