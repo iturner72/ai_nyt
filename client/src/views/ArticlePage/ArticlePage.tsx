@@ -52,7 +52,8 @@ export default function ArticlePage() {
 
     const { timestamp } = JSON.parse(storedArticle);
     const currentTime = new Date().getTime();
-    const expirationTime = 24 * 60 * 60 * 1000;
+    const expirationTime1 = 24 * 60 * 60 * 1000;
+    const expirationTime = 1 * 2 * 60 * 1000;
 
     return currentTime - timestamp > expirationTime;
   };
