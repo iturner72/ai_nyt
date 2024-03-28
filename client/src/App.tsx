@@ -95,63 +95,60 @@ const App: React.FC = () => {
     fetchChannels();
   }, []);
 
-  return (
-    <AuthKitProvider config={config}>
-      <div className="flex flex-col items-center justify-center text-left bg-stone-100">
-        <div className="header h-24 md:h-20 items-center w-full relative flex pl-4">
-          <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome} ></div>
-          <Title />
 
-          <div className="md:hidden">
-            <MenuIcon
-              onClick={toggleMobileMenu}
-              aria-label="Menu"
-              style={{ position: 'absolute', right: 'calc(0.25rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
-            />
-          </div>
-          {isMobileMenuOpen && (
-            <div className="header flex flex-col items-center justify-center space-y-4 mobile-menu absolute right-0 top-20 p-4 z-30">
-              <InfoIcon
-                onClick={() => setIsModalOpen(true)}
-                aria-label="Information"
-                style={{ color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
-              />
-              <div className="signin-wrapper">
-                <SignIn />
-              </div>
-            </div>
-          )}
-          <div className="hidden md:block">
-            <InfoIcon
-              onClick={() => setIsModalOpen(true)}
-              aria-label="Information"
-              style={{ position: 'absolute', right: 'calc(0.25rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
-            />
+return (
+  <AuthKitProvider config={config}>
+    <div className="flex flex-col items-center justify-center text-left bg-stone-100">
+      <div className="header h-24 md:h-20 items-center w-full relative flex pl-4">
+        <div className="absolute left-0 top-0 w-full h-full" onClick={navigateHome} ></div>
+        <Title />
 
-            <div className="signin-wrapper" style={{ position: 'absolute', bottom: '17%', right: 'calc(3.25rem + 1vw)' }}>
-              <SignIn />
-            </div>
+        <div className="md:hidden">
+          <MenuIcon
+            onClick={toggleMobileMenu}
+            aria-label="Menu"
+            style={{ position: 'absolute', right: 'calc(0.25rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
+          />
+        </div>
+        <div className={`signin-wrapper md:hidden ${isMobileMenuOpen ? 'header flex flex-col items-center space-y-4' : 'hidden'}`} style={{ position: 'absolute', top: '100%', right: '0', padding: '1rem', zIndex: '30' }}>
+          <InfoIcon
+            onClick={() => setIsModalOpen(true)}
+            aria-label="Information"
+            style={{ color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
+          />
+          <SignIn />
+        </div>
+        <div className="hidden md:block">
+          <InfoIcon
+            onClick={() => setIsModalOpen(true)}
+            aria-label="Information"
+            style={{ position: 'absolute', right: 'calc(0.25rem + 1vw)', top: '50%', transform: 'translateY(-50%)', color: '#ffffff', fontSize: 'calc(0.95rem + 1vw)' }}
+          />
+          <div className="signin-wrapper" style={{ position: 'absolute', bottom: '17%', right: 'calc(3.25rem + 1vw)' }}>
+            <SignIn />
           </div>
         </div>
-        <NavBar channels={channels} currentChannelIndex={currentChannelIndex} 
-                setCurrentChannelIndex={setCurrentChannelIndex}/>
-        {showTerminal && (
-          <div className="w-10/12 pt-4">
-            <TerminalComponent onSearch={handleSearch} />
-          </div>
-        )}
-        <Routes>
-          <Route path={'/'} element={<ArticleList channel={channels[currentChannelIndex]} channels={channels} onArticleClick={handleArticleClick} />}/>
-          <Route path={'/article/:id'} element={<ArticlePage/>}/>
-          <Route path={'/login'} element={<SignIn />}/>
-        </Routes>
-        <div className="bg-stone-100 p-4">
-          <CastList channel={channels[currentChannelIndex]} searchUsername={searchUsername} />
-        </div>
-        {isModalOpen && <LatexSourceModal closeModal={() => setIsModalOpen(false)} />}
       </div>
-    </AuthKitProvider>
-  );
+      <NavBar channels={channels} currentChannelIndex={currentChannelIndex}
+        setCurrentChannelIndex={setCurrentChannelIndex} />
+      {showTerminal && (
+        <div className="w-10/12 pt-4">
+          <TerminalComponent onSearch={handleSearch} />
+        </div>
+      )}
+      <Routes>
+        <Route path={'/'} element={<ArticleList channel={channels[currentChannelIndex]} channels={channels} onArticleClick={handleArticleClick} />} />
+        <Route path={'/article/:id'} element={<ArticlePage />} />
+        <Route path={'/login'} element={<SignIn />} />
+      </Routes>
+      <div className="bg-stone-100 p-4">
+        <CastList channel={channels[currentChannelIndex]} searchUsername={searchUsername} />
+      </div>
+      {isModalOpen && <LatexSourceModal closeModal={() => setIsModalOpen(false)} />}
+    </div>
+  </AuthKitProvider>
+);
+
 }
 
 export default App;
