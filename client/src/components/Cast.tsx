@@ -70,24 +70,19 @@ export default function CastEntry({ cast, index }: CastProps) {
   }, [cast.data?.fid]);
 
   return cast.data ? (
-    <div key={index} className="flex flex-col text-left p-4 pl-6 bg-stone-200 border border-stone-500">
-      <div className="flex-grow">
-        <p className="alumni-sans-regular text-lg md:text-xl break-words hyphens-auto" style={{ lineHeight: 1.172 }}>
-          {cast.data?.castAddBody ? cast.data?.castAddBody?.text : 'N/A'}
-        </p>
-      </div>
-      <div className="flex flex-row items-center justify-between mt-4">
+    <div key={index} className="flex flex-col text-left p-4 pl-4 bg-stone-200 border border-stone-500">
+      <div className="flex flex-row items-center justify-between">
         <div className="flex items-center">
           {pfpLoading ? (
-            <div className="w-8 h-8 rounded-full bg-gray-300 animate-pulse mr-2" />
+            <div className="w-12 h-12 rounded-full bg-gray-300 animate-pulse mr-2" />
           ) : userPfpData?.data?.userDataBody?.value ? (
             <img
               src={userPfpData.data.userDataBody.value}
               alt="User PFP"
-              className="w-8 h-8 rounded-full mr-2"
+              className="w-12 h-12 rounded-full mr-2"
             />
           ) : (
-            <div className="w-8 h-8 rounded-full bg-gray-300 mr-2" />
+            <div className="w-12 h-12 rounded-full bg-gray-300 mr-2" />
           )}
           <h3 className="alumni-sans-bold text-stone-500 text-lg md:text-xl">
             {loading ? (
@@ -98,6 +93,11 @@ export default function CastEntry({ cast, index }: CastProps) {
           </h3>
         </div>
         <img src="/images/fc.jpeg" alt="Farcaster" className="w-6 h-6 ml-2" />
+      </div>
+      <div className="flex-grow pt-2">
+        <p className="alumni-sans-regular text-lg md:text-xl break-words hyphens-auto" style={{ lineHeight: 1.172 }}>
+          {cast.data?.castAddBody ? cast.data?.castAddBody?.text : 'N/A'}
+        </p>
       </div>
     </div>
   ) : null;
