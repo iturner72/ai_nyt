@@ -2,6 +2,7 @@ import { Cast } from "../types/Casts";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import config2 from './../config2';
+import Linkify from 'react-linkify';
 
 interface CastProps {
   cast: Cast;
@@ -24,6 +25,11 @@ interface UserData {
   signature: string;
   signatureScheme: string;
   signer: string;
+}
+
+function getDomain(url: string): string {
+  const domain = new URL(url).hostname;
+  return domain.startsWith('www.') ? domain.slice(4) : domain;
 }
 
 export default function CastEntry({ cast, index }: CastProps) {
@@ -96,7 +102,23 @@ export default function CastEntry({ cast, index }: CastProps) {
       </div>
       <div className="flex-grow pt-2">
         <p className="alumni-sans-regular text-lg md:text-xl break-words hyphens-auto" style={{ lineHeight: 1.172 }}>
-          {cast.data?.castAddBody ? cast.data?.castAddBody?.text : 'N/A'}
+          {cast.data?.castAddBody ? (
+            <Linkify
+              componentDecorator={(decoratedHref, decoratedText, key) => (
+                <a
+                  href={decoratedHref}
+                  key={key}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontWeight: 'bold', color: '#0d9488' }}
+                >
+                  {getDomain(decoratedHref)}
+                </a>
+              )}
+            >
+              {cast.data?.castAddBody?.text}
+            </Linkify>
+          ) : 'N/A'}
         </p>
       </div>
     </div>
