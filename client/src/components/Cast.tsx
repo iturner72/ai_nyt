@@ -98,7 +98,9 @@ export default function CastEntry({ cast, index }: CastProps) {
             )}
           </h3>
         </div>
-        <img src="/images/fc.jpeg" alt="Farcaster" className="w-6 h-6 ml-2" />
+        <a href={`https://warpcast.com/${userData?.data?.userDataBody?.value}/${cast.hash}`} target="_blank" rel="noopener noreferrer">
+          <img src="/images/fc.jpeg" alt="Farcaster" className="w-6 h-6 ml-2" />
+        </a>
       </div>
       <div className="flex-grow pt-2">
         <p className="alumni-sans-regular text-lg md:text-xl break-words hyphens-auto" style={{ lineHeight: 1.172 }}>
@@ -123,4 +125,5 @@ export default function CastEntry({ cast, index }: CastProps) {
       </div>
     </div>
   ) : null;
+
 }
