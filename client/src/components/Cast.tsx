@@ -99,7 +99,7 @@ export default function CastEntry({ cast, index }: CastProps) {
           </h3>
         </div>
         <a href={`https://warpcast.com/${userData?.data?.userDataBody?.value}/${cast.hash}`} target="_blank" rel="noopener noreferrer">
-          <img src="/images/fc.jpeg" alt="Farcaster" className="w-6 h-6 ml-2" />
+          <img src="/images/fc.png" alt="Farcaster" className="w-8 h-8 ml-2" />
         </a>
       </div>
       <div className="flex-grow pt-2">
@@ -122,6 +122,23 @@ export default function CastEntry({ cast, index }: CastProps) {
             </Linkify>
           ) : 'N/A'}
         </p>
+        {cast.data?.castAddBody?.embeds && cast.data.castAddBody.embeds.length > 0 && (
+          <div className="mt-f">
+            {cast.data.castAddBody.embeds.map((embed: any, index: number) => {
+              if (embed && embed.url && embed.url.includes('i.imgur')) {
+                return (
+                  <img
+                    key={index}
+                    src={embed.url}
+                    alt={`Embed ${index}`}
+                    className="w-full h-auto"
+                  />
+                );
+              }
+              return null;
+            })}
+          </div>
+        )}
       </div>
     </div>
   ) : null;
