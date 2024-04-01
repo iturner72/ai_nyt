@@ -128,7 +128,14 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
   return (
     <>
       <div className="flex items-center justify-center space-x-20 pb-2">
-        <p className="text-3xl alumni-sans-bold">fresh casts from {channelName}</p>
+        <a
+          href={`https://warpcast.com/~/channel/${channelName}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-2xl alumni-sans-bold text-indigo-700 hover:underline"
+        >
+          /{channelName}
+        </a>
       </div>
       <div className="w-full sm:w-10/12 mx-auto py-2 bg-stone-100">
         {summary && (
