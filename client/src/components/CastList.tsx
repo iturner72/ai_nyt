@@ -132,7 +132,7 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
           href={`https://warpcast.com/~/channel/${channelName}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-2xl alumni-sans-bold text-indigo-700 hover:underline"
+          className="text-2xl alumni-sans-bold text-indigo-800 hover:underline"
         >
           /{channelName}
         </a>

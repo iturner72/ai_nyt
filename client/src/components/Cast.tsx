@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import config2 from './../config2';
 import Linkify from 'react-linkify';
+import ImageDetails from "./ImageDetails";
 
 interface CastProps {
   cast: Cast;
@@ -90,11 +91,13 @@ export default function CastEntry({ cast, index }: CastProps) {
           ) : (
             <div className="w-12 h-12 rounded-full bg-gray-300 mr-2" />
           )}
-          <h3 className="alumni-sans-bold text-stone-500 text-lg md:text-xl">
+          <h3 className="alumni-sans-bold text-indigo-800 text-lg md:text-xl">
             {loading ? (
-              <div className="w-24 h-6 bg-gray-300 animate-pulse" />
+              <div className="w-24 h-6 bg-stone-400 animate-pulse" />
             ) : (
-              `@${userData?.data?.userDataBody?.value || "No username"}`
+              <a href={`https://warpcast.com/${userData?.data?.userDataBody?.value}`} target="_blank" rel="noopener noreferrer">
+                @{userData?.data?.userDataBody?.value || "No username"}
+              </a>
             )}
           </h3>
         </div>
@@ -123,15 +126,14 @@ export default function CastEntry({ cast, index }: CastProps) {
           ) : 'N/A'}
         </p>
         {cast.data?.castAddBody?.embeds && cast.data.castAddBody.embeds.length > 0 && (
-          <div className="mt-f">
+          <div className="mt-2">
             {cast.data.castAddBody.embeds.map((embed: any, index: number) => {
               if (embed && embed.url && embed.url.includes('i.imgur')) {
                 return (
-                  <img
+                  <ImageDetails
                     key={index}
                     src={embed.url}
                     alt={`Embed ${index}`}
-                    className="w-full h-auto"
                   />
                 );
               }
