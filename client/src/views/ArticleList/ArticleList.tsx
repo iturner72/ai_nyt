@@ -52,10 +52,10 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   const backgroundColors = ['#fff205','#ff5050', '#01fff4', '#7cff01', '#d8d8d8', '#ff529d' ];
 
   return (
-    <div className="flex flex-col md:flex-row w-full items-center justify-center pb-2">
+    <div className="flex flex-col w-full items-center justify-center pb-2">
       {error && <div>Error: {error}</div>}
-      <div className="w-full mx-auto pt-2 pl-4 pr-4 md:pl-8 md:pr-44">
-        <div className="flex flex-col md:flex-row w-full">
+      <div className="w-full mx-auto pt-2">
+        <div className="flex flex-col w-full">
           <div className="md:w-full md:pr-4">
             {article && (
               <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-3xl pl-2 pb-2">
@@ -63,12 +63,12 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
                 <p>{article.content}</p>
               </div>
             )}
-            <div className="grid grid-cols-3 md:grid-cols-4 gap-4 justify-center items-center md:justify-start overflow-hidden md:overflow-visible">
+            <div className="grid grid-cols-3 md:flex md:flex-row md:items-center md:justify-center gap-4 justify-center items-center md:justify-start overflow-hidden md:overflow-visible">
               {/* Display channels as clickable images */}
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
                 return (
-                  <div key={index} className="text-left alumni-sans-regular w-28 md:w-64 flex-shrink-0">
+                  <div key={index} className="text-left alumni-sans-regular w-28 md:w-40 flex-shrink-0">
                     <Link
                       to={`/article/${article.id}`}
                       state={{ channelUrl: chan }}
@@ -79,7 +79,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
                       <img
                         src={`/images/i_${index + 1}.jpeg`}
                         alt={`Channel ${chan}`}
-                        className="h-28 w-28 md:h-64 md:w-64 object-cover"
+                        className="h-28 w-28 md:h-40 md:w-40 object-cover"
                         onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
                       />
                       <span className="pl-1 text-md alumni-sans-regular py-1 w-full">

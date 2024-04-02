@@ -127,7 +127,7 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-center space-x-20 pb-2">
+      <div className="flex items-center justify-center pb-0 pt-2">
         <a
           href={`https://warpcast.com/~/channel/${channelName}`}
           target="_blank"
@@ -138,7 +138,7 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
         </a>
       </div>
       <div className="flex justify-center w-full py-2 bg-stone-100">
-        <div className="w-full md:w-7/12">
+        <div className="w-full md:w-5/12">
           {summary && (
             <article className="text-left text-lg sm:text-2xl font-serif leading-8 sm:leading-10 mx-4 sm:mx-48 py-10 sm:py-20">
               <div className="h-fit text-end inline-block text-[80px] sm:text-[130px] float-left mt-6 sm:mt-12 pr-2 font-display">

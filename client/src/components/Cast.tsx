@@ -114,7 +114,7 @@ export default function CastEntry({ cast, index }: CastProps) {
         </a>
       </div>
       <div className="flex-grow pt-2">
-        <p className="alumni-sans-regular text-lg md:text-2xl break-words hyphens-auto" style={{ lineHeight: 1.172 }}>
+        <p className="alumni-sans-regular text-lg md:text-xl break-words hyphens-auto" style={{ lineHeight: 1.122 }}>
           {cast.data?.castAddBody ? (
             <Linkify
               componentDecorator={(decoratedHref, decoratedText, key) => (
