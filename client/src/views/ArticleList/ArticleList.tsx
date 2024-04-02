@@ -52,7 +52,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   const backgroundColors = ['#fff205','#ff5050', '#01fff4', '#7cff01', '#d8d8d8', '#ff529d' ];
 
   return (
-    <div className="flex flex-col w-full items-center justify-center pb-2">
+    <div className="flex flex-col w-full items-center justify-center pb-2 pl-4 pr-4">
       {error && <div>Error: {error}</div>}
       <div className="w-full mx-auto pt-2">
         <div className="flex flex-col w-full">
@@ -68,7 +68,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
                 return (
-                  <div key={index} className="text-left alumni-sans-regular w-28 md:w-40 flex-shrink-0">
+                  <div key={index} className="text-left alumni-sans-regular w-24 md:w-40 flex-shrink-0">
                     <Link
                       to={`/article/${article.id}`}
                       state={{ channelUrl: chan }}
@@ -79,7 +79,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
                       <img
                         src={`/images/i_${index + 1}.jpeg`}
                         alt={`Channel ${chan}`}
-                        className="h-28 w-28 md:h-40 md:w-40 object-cover"
+                        className="h-24 w-24 md:h-40 md:w-40 object-cover"
                         onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
                       />
                       <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
