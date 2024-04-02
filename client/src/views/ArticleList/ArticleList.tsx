@@ -42,8 +42,8 @@ interface Article {
 export function ArticleList({ channel, channels, onArticleClick }: ArticleListProps) {
   const [article, setArticle] = useState<Article>({
     id: 0,
-    title: "welcome !",
-    content: "try clicking a logo !",
+    title: "welcome!",
+    content: "try clicking a logo!",
     image: "/images/article1.png",
     timestamp: 0,
   });
@@ -58,7 +58,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
       <div className="w-full mx-auto pt-2">
         <div className="flex w-full items-center flex-col md:flex-row">
           {article && (
-            <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-4xl pl-8 pb-2 md:w-5/12 md:pr-8">
+            <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-3xl pl-2 pb-2 md:w-3/12 md:pr-2">
               <h2>{article.title}</h2>
               <p>{article.content}</p>
             </div>
@@ -69,7 +69,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
                   return (
-                    <div key={index} className="text-left alumni-sans-regular leading-6 w-40 md:w-80 flex-shrink-0">
+                    <div key={index} className="text-left alumni-sans-regular w-28 md:w-52 flex-shrink-0">
                       <Link
                         to={`/article/${article.id}`} // This might need to be dynamic based on the fetched article
                         state={{ channelUrl: chan }}
@@ -80,7 +80,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
                         <img
                           src={`/images/i_${index + 1}.jpeg`} // Assuming this is the correct path for your images
                           alt={`Channel ${chan}`}
-                          className="h-40 w-40 md:h-96 md:w-80 object-cover"
+                          className="h-28 w-28 md:h-52 md:w-52 object-cover"
                           onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
                         />
                         <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
