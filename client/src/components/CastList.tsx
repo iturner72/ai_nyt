@@ -137,43 +137,42 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
           /{channelName}
         </a>
       </div>
-      <div className="w-full sm:w-10/12 mx-auto py-2 bg-stone-100">
-        {summary && (
-          <article className="text-left text-lg sm:text-2xl font-serif leading-8 sm:leading-10 mx-4 sm:mx-48 py-10 sm:py-20">
-            <div className="h-fit text-end inline-block text-[80px] sm:text-[130px] float-left mt-6 sm:mt-12 pr-2 font-display">
-              {summary.split('').splice(0, 1)}
-            </div>
-            <p className="clear-right">{summary.split('').slice(1)}</p>
-          </article>
-        )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 w-full">
-          {displayCasts.map((cast, index) => (
-            <CastEntry cast={cast} index={index} key={index} />
-          ))}
-        </div>
-        {/* Navigation Buttons */}
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => updateDisplayedCasts(startIndex - 40)}
-            disabled={startIndex === 0}
-            className="alumni-sans-regular mr-2 px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
-          >
-            Previous
-          </button>
-          <button
-            onClick={() => updateDisplayedCasts(startIndex + 40)}
-            disabled={startIndex + 40 >= allCasts.length}
-            className="alumni-sans-regular px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
-          >
-            Next
-          </button>
+      <div className="flex justify-center w-full py-2 bg-stone-100">
+        <div className="w-full md:w-7/12">
+          {summary && (
+            <article className="text-left text-lg sm:text-2xl font-serif leading-8 sm:leading-10 mx-4 sm:mx-48 py-10 sm:py-20">
+              <div className="h-fit text-end inline-block text-[80px] sm:text-[130px] float-left mt-6 sm:mt-12 pr-2 font-display">
+                {summary.split('').splice(0, 1)}
+              </div>
+              <p className="clear-right">{summary.split('').slice(1)}</p>
+            </article>
+          )}
+          <div className="flex flex-col space-y-4">
+            {displayCasts.map((cast, index) => (
+              <CastEntry cast={cast} index={index} key={index} />
+            ))}
+          </div>
+          {/* Navigation Buttons */}
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => updateDisplayedCasts(startIndex - 40)}
+              disabled={startIndex === 0}
+              className="alumni-sans-regular mr-2 px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => updateDisplayedCasts(startIndex + 40)}
+              disabled={startIndex + 40 >= allCasts.length}
+              className="alumni-sans-regular px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </>
   );
-
-
-
 };
 
 export default CastList;

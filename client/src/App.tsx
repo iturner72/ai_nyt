@@ -141,9 +141,6 @@ return (
         <Route path={'/article/:id'} element={<ArticlePage />} />
         <Route path={'/login'} element={<SignIn />} />
       </Routes>
-      <div className="bg-stone-100 p-4">
-        <CastList channel={channels[currentChannelIndex]} searchUsername={searchUsername} />
-      </div>
       {isModalOpen && <LatexSourceModal closeModal={() => setIsModalOpen(false)} />}
     </div>
   </AuthKitProvider>

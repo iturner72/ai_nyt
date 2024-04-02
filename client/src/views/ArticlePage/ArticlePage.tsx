@@ -201,7 +201,7 @@ export default function ArticlePage() {
   }
 
   return (
-    <div className="w-11/12 px-4 sm:px-8 lg:px-16 py-2">
+    <div className="w-11/12 px-4 sm:px-8 lg:px-16 py-2 pb-64">
       <div className="max-w-full lg:max-w-[2200px] mx-auto">
         <article className="text-left text-xl sm:text-2xl lg:text-3xl font-serif leading-relaxed lg:leading-10 mx-auto py-6 lg:py-2">
           <div className="mt-8">

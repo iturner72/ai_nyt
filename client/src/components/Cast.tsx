@@ -4,6 +4,7 @@ import axios from "axios";
 import config2 from './../config2';
 import Linkify from 'react-linkify';
 import ImageDetails from "./ImageDetails";
+import { TwitterTweetEmbed } from "react-twitter-embed";
 
 interface CastProps {
   cast: Cast;
@@ -26,6 +27,11 @@ interface UserData {
   signature: string;
   signatureScheme: string;
   signer: string;
+}
+
+function getTweetId(url: string): string | null {
+  const match = url.match(/\/(\d+)(?:\?.*)?$/);
+  return match ? match[1] : null;
 }
 
 function getDomain(url: string): string {
@@ -108,7 +114,7 @@ export default function CastEntry({ cast, index }: CastProps) {
         </a>
       </div>
       <div className="flex-grow pt-2">
-        <p className="alumni-sans-regular text-lg md:text-xl break-words hyphens-auto" style={{ lineHeight: 1.172 }}>
+        <p className="alumni-sans-regular text-lg md:text-2xl break-words hyphens-auto" style={{ lineHeight: 1.172 }}>
           {cast.data?.castAddBody ? (
             <Linkify
               componentDecorator={(decoratedHref, decoratedText, key) => (
@@ -138,6 +144,15 @@ export default function CastEntry({ cast, index }: CastProps) {
                     alt={`Embed ${index}`}
                   />
                 );
+              } else if (embed && embed.url && embed.url.includes('twitter.com')) {
+                const tweetId = getTweetId(embed.url);
+                if (tweetId) {
+                  return (
+                    <div key={index} className="mt-4">
+                      <TwitterTweetEmbed tweetId={tweetId} />
+                    </div>
+                  );
+                }
               }
               return null;
             })}
@@ -146,5 +161,4 @@ export default function CastEntry({ cast, index }: CastProps) {
       </div>
     </div>
   ) : null;
-
 }

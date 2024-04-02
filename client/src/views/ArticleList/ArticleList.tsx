@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ChangeLog from './../../components/ChangeLog';
 import axios from 'axios';
-import config2 from './../../config2'; // Ensure this path is correct
+import config2 from './../../config2';
+import CastList from './../../components/CastList';
 
 interface Cast {
   data: {
@@ -47,50 +48,51 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
     image: "/images/article1.png",
     timestamp: 0,
   });
-
   const [error, setError] = useState('');
   const backgroundColors = ['#fff205','#ff5050', '#01fff4', '#7cff01', '#d8d8d8', '#ff529d' ];
 
-
   return (
-    <div className="flex flex-col w-full items-center justify-center">
+    <div className="flex flex-col md:flex-row w-full items-center justify-center pb-2">
       {error && <div>Error: {error}</div>}
-      <div className="w-full mx-auto pt-2">
-        <div className="flex w-full items-center flex-col md:flex-row">
-          {article && (
-            <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-3xl pl-2 pb-2 md:w-3/12 md:pr-2">
-              <h2>{article.title}</h2>
-              <p>{article.content}</p>
-            </div>
-          )}
-         <div className="md:w-full overflow-x-auto md:pt-2">
-            <div className="flex flex-wrap md:flex-nowrap md:flex-row gap-4 justify-center items-center md:justify-start overflow-hidden md:overflow-visible">
+      <div className="w-full mx-auto pt-2 pl-4 pr-4 md:pl-8 md:pr-44">
+        <div className="flex flex-col md:flex-row w-full">
+          <div className="md:w-full md:pr-4">
+            {article && (
+              <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-3xl pl-2 pb-2">
+                <h2>{article.title}</h2>
+                <p>{article.content}</p>
+              </div>
+            )}
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-4 justify-center items-center md:justify-start overflow-hidden md:overflow-visible">
               {/* Display channels as clickable images */}
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
-                  return (
-                    <div key={index} className="text-left alumni-sans-regular w-28 md:w-52 flex-shrink-0">
-                      <Link
-                        to={`/article/${article.id}`} // This might need to be dynamic based on the fetched article
-                        state={{ channelUrl: chan }}
-                        onClick={() => onArticleClick(index)} // Trigger the API call and update the article state
-                        style={{ backgroundColor }} // Apply background color dynamically
-                        className="block" // Add display block to ensure the background color fills the space
-                      >
-                        <img
-                          src={`/images/i_${index + 1}.jpeg`} // Assuming this is the correct path for your images
-                          alt={`Channel ${chan}`}
-                          className="h-28 w-28 md:h-52 md:w-52 object-cover"
-                          onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
-                        />
-                        <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
-                          /{chan.split('/').pop() || ''}
-                        </span>
-                      </Link>
-                    </div>
-                  );
-                })}
+                return (
+                  <div key={index} className="text-left alumni-sans-regular w-28 md:w-64 flex-shrink-0">
+                    <Link
+                      to={`/article/${article.id}`}
+                      state={{ channelUrl: chan }}
+                      onClick={() => onArticleClick(index)}
+                      style={{ backgroundColor }}
+                      className="block"
+                    >
+                      <img
+                        src={`/images/i_${index + 1}.jpeg`}
+                        alt={`Channel ${chan}`}
+                        className="h-28 w-28 md:h-64 md:w-64 object-cover"
+                        onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
+                      />
+                      <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
+                        /{chan.split('/').pop() || ''}
+                      </span>
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
+          </div>
+          <div className="md:w-full">
+            <CastList channel={channel} searchUsername="" />
           </div>
         </div>
       </div>
