@@ -83,11 +83,13 @@ export default function CastEntry({ cast, index }: CastProps) {
           {pfpLoading ? (
             <div className="w-12 h-12 rounded-full bg-gray-300 animate-pulse mr-2" />
           ) : userPfpData?.data?.userDataBody?.value ? (
-            <img
-              src={userPfpData.data.userDataBody.value}
-              alt="User PFP"
-              className="w-12 h-12 rounded-full object-cover object-center mr-2"
-            />
+            <a href={`https://warpcast.com/${userData?.data?.userDataBody?.value}`} target="_blank" rel="noopener noreferrer">
+              <img
+                src={userPfpData.data.userDataBody.value}
+                alt="User PFP"
+                className="w-12 h-12 rounded-full object-cover object-center mr-2"
+              />
+            </a>
           ) : (
             <div className="w-12 h-12 rounded-full bg-gray-300 mr-2" />
           )}
