@@ -58,17 +58,47 @@ async fn get_casts_by_parent(
     let channel_url = channel.into_inner();
 
     let page = query.get("page").cloned().unwrap_or(1);
-    let limit = query.get("limit").cloned().unwrap_or(40);
-    
-    let offset = (page - 1) * limit;
+    let page_size = query.get("pageSize").cloned().unwrap_or(20);
+
+    let offset = (page - 1) * page_size;
+    let limit = page_size;
 
     let url = format!(
         "{}:2281/v1/castsByParent?url={}&offset={}&limit={}",
         hubble_url, channel_url, offset, limit
     );
 
-    fetch_and_respond(url).await
+    let client = Client::new();
+    match client.get(&url).send().await {
+        Ok(response) if response.status().is_success() => {
+            match response.json::<serde_json::Value>().await {
+                Ok(json) => {
+                    let messages = json["messages"].as_array().unwrap_or(&Vec::new()).clone();
+                    let total_casts = messages.len();
+                    let total_pages = (total_casts as f64 / page_size as f64).ceil() as u64;
+
+                    let paginated_casts = messages;
+
+                    let pagination = serde_json::json!({
+                        "currentPage": page,
+                        "pageSize": page_size,
+                        "totalCasts": total_casts,
+                        "totalPages": total_pages,
+                    });
+
+                    HttpResponse::Ok().json(serde_json::json!({
+                        "messages": paginated_casts,
+                        "pagination": pagination,
+                    }))
+                }
+                Err(_) => HttpResponse::InternalServerError().finish(),
+            }
+        }
+        _ => HttpResponse::InternalServerError().finish(),
+    }
 }
+
+
 
 #[get("/castsByMention/{fid}")]
 async fn get_casts_by_mention(fid: web::Path<u64>) -> impl Responder {

@@ -1,3 +1,4 @@
+//main.rs
 use actix_cors::Cors;
 use actix_web::{get, App, HttpServer, Responder};
 use dotenv::dotenv;
@@ -7,6 +8,9 @@ mod models;
 mod hubble;
 mod openai;
 mod anthropic;
+mod submit_cast;
+mod message;
+mod username_proof;
 
 #[get("/")]
 async fn index() -> impl Responder {
@@ -40,6 +44,7 @@ async fn main() -> std::io::Result<()> {
             .service(hubble::get_casts_by_parent)
             .service(hubble::get_casts_by_mention)
             .service(hubble::get_channels)
+//            .service(submit_cast::submit_cast)
             .service(openai::generate_chat)
             .service(anthropic::generate_chat_anthropic)
     })
