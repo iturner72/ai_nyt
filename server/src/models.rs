@@ -1,9 +1,10 @@
+//models.rs
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Cast {
     pub fid: u64,
-    pub has: String,
+    pub hash: String,
     pub parent_hash: Option<String>,
     pub author_fid: u64,
     pub timestamp: u64,
