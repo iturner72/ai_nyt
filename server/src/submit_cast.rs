@@ -19,6 +19,7 @@ struct CastSubmission {
     cast_add_body_bytes: Vec<u8>,
     signature_hex: String,
     public_key_hex: String,
+    fid: u64,
 }
 
 #[post("/submitCast")]
@@ -27,14 +28,13 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
         cast_add_body_bytes,
         signature_hex,
         public_key_hex,
+        fid,
     } = body.into_inner();
 
     let cast_add_body = match CastAddBody::parse_from_bytes(&cast_add_body_bytes) {
         Ok(body) => body,
         Err(err) => return HttpResponse::BadRequest().body(format!("Failed to parse CastAddBody: {}", err)),
     };
-
-    let fid = 249222;
 
     let timestamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
