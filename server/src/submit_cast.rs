@@ -43,7 +43,7 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
         .checked_sub(FARCASTER_EPOCH)
         .expect("Invalid timestamp") as u32;
 
-    let mut msg_data = MessageData {
+    let msg_data = MessageData {
         type_: MessageType::MESSAGE_TYPE_CAST_ADD.into(),
         fid,
         timestamp,
@@ -87,7 +87,7 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
 
     let client = Client::new();
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
-    let mut url = format!("{}:2281/v1/submitMessage", hubble_url);
+    let url = format!("{}:2281/v1/submitMessage", hubble_url);
 
     let res = client
         .post(url)
