@@ -1,6 +1,6 @@
-//main.rs
 use actix_cors::Cors;
 use actix_web::{get, App, HttpServer, Responder};
+use actix_web::http::{header, Method};
 use dotenv::dotenv;
 use std::env;
 
@@ -14,7 +14,7 @@ mod username_proof;
 
 #[get("/")]
 async fn index() -> impl Responder {
-    "Welcome to the Farcaster API!"
+    "Welcome to The Network Times API!"
 }
 
 
@@ -29,9 +29,11 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(|| {
         let cors = Cors::default()
-            .allow_any_origin()
-            .allow_any_method()
-            .allow_any_header();
+            .allowed_origin("https://www.farcon.info")
+            .allowed_methods(vec![Method::GET, Method::POST, Method::OPTIONS])
+            .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+            .allowed_header(header::CONTENT_TYPE)
+            .max_age(3600);
 
 
         App::new()
