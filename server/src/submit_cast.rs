@@ -1,7 +1,6 @@
 use actix_web::{post, web, HttpResponse, Responder};
 use blake3;
 use ed25519_dalek::Signature;
-use hex::decode;
 use message::{CastAddBody, FarcasterNetwork, MessageData, HashScheme, Message, MessageType, SignatureScheme};
 use protobuf::Message as ProtobufMessage;
 use reqwest::Client;
@@ -13,6 +12,11 @@ use crate::message;
 
 const FARCASTER_EPOCH: u64 = 1609459200;
 
+
+fn safe_hex_decode(hex_str: &str) -> Result<Vec<u8>, hex::FromHexError> {
+    let clean_hex = hex_str.trim_start_matches("0x");
+    hex::decode(clean_hex)
+}
 
 #[derive(Deserialize, PartialEq, Clone, Default, Debug)]
 struct CastSubmission {
@@ -58,8 +62,8 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
     // Hash MessageData
     let hash_bytes = blake3::hash(&msg_data_bytes).as_bytes()[..20].to_vec(); 
 
-    let signature_bytes = decode(&signature_hex).expect("Failed to decode hex signature");
-    let public_key_bytes = decode(&public_key_hex).expect("Failed to decode hex public key");
+    let signature_bytes = safe_hex_decode(&signature_hex).expect("Failed to decode hex signature");
+    let public_key_bytes = safe_hex_decode(&public_key_hex).expect("Failed to decode hex public key");
 
 
     let signature = match Signature::try_from(&signature_bytes[..]) {
