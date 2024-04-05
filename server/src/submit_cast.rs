@@ -15,7 +15,16 @@ const FARCASTER_EPOCH: u64 = 1609459200;
 
 fn safe_hex_decode(hex_str: &str) -> Result<Vec<u8>, hex::FromHexError> {
     let clean_hex = hex_str.trim_start_matches("0x");
-    hex::decode(clean_hex)
+
+
+    // Check if odd length and prepend 0 if so
+    let formatted_hex = if clean_hex.len() % 2 != 0 {
+        format!("0{}", clean_hex)
+    } else {
+        clean_hex.to_string()
+    };
+
+    hex::decode(formatted_hex)
 }
 
 #[derive(Deserialize, PartialEq, Clone, Default, Debug)]
