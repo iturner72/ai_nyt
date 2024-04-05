@@ -30,6 +30,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         let cors = Cors::default()
             .allowed_origin("https://www.farcon.info")
+            .allowed_origin("https://api.thenetworktimes.xyz")
             .allowed_methods(vec![Method::GET, Method::POST, Method::OPTIONS])
             .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             .allowed_header(header::CONTENT_TYPE)
