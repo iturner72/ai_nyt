@@ -2,6 +2,7 @@ use actix_web::{get, web, HttpResponse, Responder};
 use reqwest::Client;
 use std::collections::HashMap;
 use std::env;
+use urlencoding::decode;
 
 #[derive(serde::Deserialize)]
 struct UserDataParams {
@@ -55,7 +56,8 @@ async fn get_casts_by_parent(
 ) -> impl Responder {
     log::info!("Fetching Casts by Channel");
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
-    let channel_url = channel.into_inner();
+    let encoded_channel_url = channel.into_inner();
+    let decoded_channel_url = decode(&encoded_channel_url).expect("Failed to decode URL");
 
     let page = query.get("page").cloned().unwrap_or(1);
     let page_size = query.get("pageSize").cloned().unwrap_or(20);
@@ -65,7 +67,7 @@ async fn get_casts_by_parent(
 
     let url = format!(
         "{}:2281/v1/castsByParent?url={}&offset={}&limit={}",
-        hubble_url, channel_url, offset, limit
+        hubble_url, decoded_channel_url, offset, limit
     );
 
     let client = Client::new();
