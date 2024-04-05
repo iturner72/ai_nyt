@@ -3,6 +3,7 @@ use blake3;
 use ed25519_dalek::Signature;
 use message::{CastAddBody, FarcasterNetwork, MessageData, HashScheme, Message, MessageType, SignatureScheme};
 use protobuf::Message as ProtobufMessage;
+use regex::Regex;
 use reqwest::Client;
 use serde::Deserialize;
 use std::env;
@@ -44,6 +45,16 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
         fid,
     } = body.into_inner();
 
+    let re = Regex::new(r"0x[a-fA-F0-9]{40}").unwrap();
+    let captures = re.captures(&public_key_hex);
+
+    let eth_address = match captures {
+        Some(caps) => caps[0].to_string(),
+        None => {
+            return HttpResponse::BadRequest().body("No valid Ethereum address found in the public_key_hex value");
+        }
+    };
+
     let cast_add_body = match CastAddBody::parse_from_bytes(&cast_add_body_bytes) {
         Ok(body) => body,
         Err(err) => return HttpResponse::BadRequest().body(format!("Failed to parse CastAddBody: {}", err)),
@@ -72,7 +83,7 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
     let hash_bytes = blake3::hash(&msg_data_bytes).as_bytes()[..20].to_vec(); 
 
     let signature_bytes = safe_hex_decode(&signature_hex).expect("Failed to decode hex signature");
-    let public_key_bytes = safe_hex_decode(&public_key_hex).expect("Failed to decode hex public key");
+    let public_key_bytes = safe_hex_decode(&eth_address).expect("Failed to decode hex public key");
 
 
     let signature = match Signature::try_from(&signature_bytes[..]) {
