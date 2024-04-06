@@ -9,6 +9,8 @@ use serde::Deserialize;
 use std::env;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use log::{debug, error};
+
 use crate::message;
 
 const FARCASTER_EPOCH: u64 = 1609459200;
@@ -45,15 +47,26 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
         fid,
     } = body.into_inner();
 
+
+    debug!("Received CastSubmission: {:?}", CastSubmission {
+        cast_add_body_bytes: cast_add_body_bytes.clone(),
+        signature_hex: signature_hex.clone(),
+        public_key_hex: public_key_hex.clone(),
+        fid,
+    });
+
     let re = Regex::new(r"0x[a-fA-F0-9]{40}").unwrap();
     let captures = re.captures(&public_key_hex);
 
     let eth_address = match captures {
         Some(caps) => caps[0].to_string(),
         None => {
+            error!("No valid Ethereum address found in the public_key_hex value");
             return HttpResponse::BadRequest().body("No valid Ethereum address found in the public_key_hex value");
         }
     };
+
+    debug!("Extracted Ethereum address: {}", eth_address);
 
     let cast_add_body = match CastAddBody::parse_from_bytes(&cast_add_body_bytes) {
         Ok(body) => body,
@@ -82,9 +95,14 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
     // Hash MessageData
     let hash_bytes = blake3::hash(&msg_data_bytes).as_bytes()[..20].to_vec(); 
 
+    debug!("Signature hex: {}", signature_hex);
+    debug!("Public key hex: {}", eth_address);
+
     let signature_bytes = safe_hex_decode(&signature_hex).expect("Failed to decode hex signature");
     let public_key_bytes = safe_hex_decode(&eth_address).expect("Failed to decode hex public key");
 
+    debug!("Signature bytes: {:?}", signature_bytes);
+    debug!("Public key bytes: {:?}", public_key_bytes);
 
     let signature = match Signature::try_from(&signature_bytes[..]) {
         Ok(sig) => sig,
@@ -121,9 +139,18 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
         .await;
 
     match res {
-        Ok(res) if res.status().is_success() => HttpResponse::Ok().json("Cast sumbitted successfully"),
-        Ok(res) => HttpResponse::BadRequest().body(format!("Failed to send the message. HTTP status: {}", res.status())),
-        Err(err) => HttpResponse::InternalServerError().body(format!("HTTP request failed: {}", err)),
+        Ok(res) if res.status().is_success() => {
+            debug!("Cast submitted successfully");
+            HttpResponse::Ok().json("Cast submitted successfully")
+        }
+        Ok(res) => {
+            error!("Failed to send the message. HTTP status: {}", res.status());
+            HttpResponse::BadRequest().body(format!("Failed to send the message. HTTP status: {}", res.status()))
+        }
+        Err(err) => {
+            error!("HTTP request failed: {}", err);
+            HttpResponse::InternalServerError().body(format!("HTTP request failed: {}", err))
+        }
     }
 }
 
