@@ -3,7 +3,6 @@ use blake3;
 use ed25519_dalek::Signature;
 use message::{CastAddBody, FarcasterNetwork, MessageData, HashScheme, Message, MessageType, SignatureScheme};
 use protobuf::Message as ProtobufMessage;
-use regex::Regex;
 use reqwest::Client;
 use serde::Deserialize;
 use std::env;
@@ -14,21 +13,6 @@ use log::{debug, error};
 use crate::message;
 
 const FARCASTER_EPOCH: u64 = 1609459200;
-
-
-fn safe_hex_decode(hex_str: &str) -> Result<Vec<u8>, hex::FromHexError> {
-    let clean_hex = hex_str.trim_start_matches("0x");
-
-
-    // Check if odd length and prepend 0 if so
-    let formatted_hex = if clean_hex.len() % 2 != 0 {
-        format!("0{}", clean_hex)
-    } else {
-        clean_hex.to_string()
-    };
-
-    hex::decode(formatted_hex)
-}
 
 #[derive(Deserialize, PartialEq, Clone, Default, Debug)]
 struct CastSubmission {
@@ -47,26 +31,7 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
         fid,
     } = body.into_inner();
 
-
-    debug!("Received CastSubmission: {:?}", CastSubmission {
-        cast_add_body_bytes: cast_add_body_bytes.clone(),
-        signature_hex: signature_hex.clone(),
-        public_key_hex: public_key_hex.clone(),
-        fid,
-    });
-
-    let re = Regex::new(r"0x[a-fA-F0-9]{40}").unwrap();
-    let captures = re.captures(&public_key_hex);
-
-    let eth_address = match captures {
-        Some(caps) => caps[0].to_string(),
-        None => {
-            error!("No valid Ethereum address found in the public_key_hex value");
-            return HttpResponse::BadRequest().body("No valid Ethereum address found in the public_key_hex value");
-        }
-    };
-
-    debug!("Extracted Ethereum address: {}", eth_address);
+    debug!("Extracted Ethereum address: {}", public_key_hex);
 
     let cast_add_body = match CastAddBody::parse_from_bytes(&cast_add_body_bytes) {
         Ok(body) => body,
@@ -96,10 +61,10 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
     let hash_bytes = blake3::hash(&msg_data_bytes).as_bytes()[..20].to_vec(); 
 
     debug!("Signature hex: {}", signature_hex);
-    debug!("Public key hex: {}", eth_address);
+    debug!("Public key hex: {}", public_key_hex);
 
-    let signature_bytes = safe_hex_decode(&signature_hex).expect("Failed to decode hex signature");
-    let public_key_bytes = safe_hex_decode(&eth_address).expect("Failed to decode hex public key");
+    let signature_bytes = hex::decode(&signature_hex).expect("Failed to decode hex signature");
+    let public_key_bytes = hex::decode(&public_key_hex).expect("Failed to decode hex public key");
 
     debug!("Signature bytes: {:?}", signature_bytes);
     debug!("Public key bytes: {:?}", public_key_bytes);
