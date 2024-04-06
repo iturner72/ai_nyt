@@ -105,14 +105,27 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
     debug!("Public key bytes: {:?}", public_key_bytes);
 
     let signature = match Signature::try_from(&signature_bytes[..]) {
-        Ok(sig) => sig,
-        Err(err) => return HttpResponse::BadRequest().body(format!("Invalid signature: {}", err)),
+        Ok(sig) => {
+            debug!("Signature: {:?}", sig);
+            sig
+        }
+        Err(err) => {
+            error!("Invalid signature: {}", err);
+            return HttpResponse::BadRequest().body(format!("Invalid signature: {}", err));
+        }
+    };
+    
+    let verifying_key = match ed25519_dalek::VerifyingKey::try_from(&public_key_bytes[..]) {
+        Ok(key) => {
+            debug!("Verifying key: {:?}", key);
+            key
+        }
+        Err(err) => {
+            error!("Invalid public key: {}", err);
+            return HttpResponse::BadRequest().body(format!("Invalid public key: {}", err));
+        }
     };
 
-    let verifying_key = match ed25519_dalek::VerifyingKey::try_from(&public_key_bytes[..]) {
-        Ok(key) => key,
-        Err(err) => return HttpResponse::BadRequest().body(format!("Invalid public key: {}", err)),
-    };
 
     let message = Message {
         data: Some(msg_data).into(),
@@ -125,11 +138,15 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
         special_fields: ::protobuf::SpecialFields::new(),
     };
 
+    debug!("Message: {:?}", message);
+
     let buf = message.write_to_bytes().unwrap();
 
     let client = Client::new();
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
     let url = format!("{}:2281/v1/submitMessage", hubble_url);
+
+    debug!("Submitting message to: {}", url);
 
     let res = client
         .post(url)
