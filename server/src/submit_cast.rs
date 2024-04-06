@@ -63,6 +63,9 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
     debug!("Signature hex: {}", signature_hex);
     debug!("Public key hex: {}", public_key_hex);
 
+    let signature_hex = signature_hex.trim();
+    let public_key_hex = public_key_hex.trim();
+
     let signature_bytes = hex::decode(&signature_hex).expect("Failed to decode hex signature");
     let public_key_bytes = hex::decode(&public_key_hex).expect("Failed to decode hex public key");
 
