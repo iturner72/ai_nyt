@@ -1,8 +1,11 @@
 use actix_web::{post, web, HttpResponse, Responder};
 use blake3;
-use ed25519_dalek::Signature;
-use message::{CastAddBody, FarcasterNetwork, MessageData, HashScheme, Message, MessageType, SignatureScheme};
-use protobuf::Message as ProtobufMessage;
+use ed25519_dalek::{Signature, VerifyingKey, SigningKey, Signer, Verifier, SecretKey};
+use crate::message::{
+    CastAddBody, FarcasterNetwork, MessageData, HashScheme, Message, MessageType, SignatureScheme,
+    message_data,
+};
+use protobuf::{EnumOrUnknown, Message as ProtobufMessage, MessageField};
 use reqwest::Client;
 use serde::Deserialize;
 use std::env;
@@ -10,33 +13,50 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use log::{debug, error};
 
-use crate::message;
-
 const FARCASTER_EPOCH: u64 = 1609459200;
 
-#[derive(Deserialize, PartialEq, Clone, Default, Debug)]
+#[derive(Deserialize, PartialEq, Clone, Debug)]
 struct CastSubmission {
     cast_add_body_bytes: Vec<u8>,
-    signature_hex: String,
-    public_key_hex: String,
+    user_signature_hex: String,
+    user_public_key_hex: String,
+    user_authorization: String,
     fid: u64,
 }
 
 #[post("/submitCast")]
-async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
+async fn submit_cast(
+    body: web::Json<CastSubmission>,
+    app_data: web::Data<AppData>,
+) -> Result<impl Responder, actix_web::error::Error> {
     let CastSubmission {
         cast_add_body_bytes,
-        signature_hex,
-        public_key_hex,
+        user_signature_hex,
+        user_public_key_hex,
+        user_authorization,
         fid,
     } = body.into_inner();
 
-    debug!("Extracted Ethereum address: {}", public_key_hex);
+    debug!("Extracted user public key: {}", user_public_key_hex);
 
-    let cast_add_body = match CastAddBody::parse_from_bytes(&cast_add_body_bytes) {
-        Ok(body) => body,
-        Err(err) => return HttpResponse::BadRequest().body(format!("Failed to parse CastAddBody: {}", err)),
-    };
+    let user_public_key_bytes = hex::decode(&user_public_key_hex).map_err(|err| {
+        error!("Failed to decode user public key: {}", err);
+        actix_web::error::ErrorBadRequest(err.to_string())
+    })?;
+
+    let user_verifying_key = VerifyingKey::try_from(&user_public_key_bytes[..]).map_err(|err| {
+        error!("Invalid user public key: {}", err);
+        actix_web::error::ErrorBadRequest(err.to_string())
+    })?;
+
+    if !verify_user_authorization(&user_verifying_key, &user_authorization, &user_signature_hex) {
+        return Ok(HttpResponse::Unauthorized().body("User authorization is invalid"));
+    }
+
+    let cast_add_body = CastAddBody::parse_from_bytes(&cast_add_body_bytes).map_err(|err| {
+        error!("Failed to parse CastAddBody: {}", err);
+        actix_web::error::ErrorBadRequest(err.to_string())
+    })?;
 
     let timestamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -46,11 +66,11 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
         .expect("Invalid timestamp") as u32;
 
     let msg_data = MessageData {
-        type_: MessageType::MESSAGE_TYPE_CAST_ADD.into(),
+        type_: EnumOrUnknown::new(MessageType::MESSAGE_TYPE_CAST_ADD),
         fid,
         timestamp,
-        network: FarcasterNetwork::FARCASTER_NETWORK_MAINNET.into(),
-        body: Some(message::message_data::Body::CastAddBody(cast_add_body)),
+        network: EnumOrUnknown::new(FarcasterNetwork::FARCASTER_NETWORK_MAINNET),
+        body: Some(message_data::Body::CastAddBody(cast_add_body)),
         special_fields: ::protobuf::SpecialFields::new(),
     };
 
@@ -58,58 +78,24 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
     let msg_data_bytes = msg_data.write_to_bytes().unwrap();
 
     // Hash MessageData
-    let hash_bytes = blake3::hash(&msg_data_bytes).as_bytes()[..20].to_vec(); 
+    let hash_bytes = blake3::hash(&msg_data_bytes).as_bytes()[..20].to_vec();
 
-    debug!("Signature hex: {}", signature_hex);
-    debug!("Public key hex: {}", public_key_hex);
+    let mut msg = Message::new();
+    msg.data = MessageField::some(msg_data); 
+    msg.hash = hash_bytes.clone();
+    msg.hash_scheme = EnumOrUnknown::new(HashScheme::HASH_SCHEME_BLAKE3);
 
-    let signature_hex = signature_hex.trim_start_matches("0x");
-    let public_key_hex = public_key_hex.trim_start_matches("0x");
+    // Sign the message with the application's private key
+    let app_private_key = app_data.private_key.clone();
+    let signature = app_private_key.sign(&hash_bytes).to_bytes();
+    msg.signature_scheme = EnumOrUnknown::new(SignatureScheme::SIGNATURE_SCHEME_ED25519);
+    msg.signature = signature.to_vec();
+    msg.signer = app_private_key.verifying_key().to_bytes().to_vec();
 
-    let signature_bytes = hex::decode(&signature_hex).expect("Failed to decode hex signature");
-    let public_key_bytes = hex::decode(&public_key_hex).expect("Failed to decode hex public key");
+    // Serialize the message
+    let msg_bytes = msg.write_to_bytes().unwrap();
 
-    debug!("Signature bytes: {:?}", signature_bytes);
-    debug!("Public key bytes: {:?}", public_key_bytes);
-
-    let signature = match Signature::try_from(&signature_bytes[..]) {
-        Ok(sig) => {
-            debug!("Signature: {:?}", sig);
-            sig
-        }
-        Err(err) => {
-            error!("Invalid signature: {}", err);
-            return HttpResponse::BadRequest().body(format!("Invalid signature: {}", err));
-        }
-    };
-    
-    let verifying_key = match ed25519_dalek::VerifyingKey::try_from(&public_key_bytes[..]) {
-        Ok(key) => {
-            debug!("Verifying key: {:?}", key);
-            key
-        }
-        Err(err) => {
-            error!("Invalid public key: {}", err);
-            return HttpResponse::BadRequest().body(format!("Invalid public key: {}", err));
-        }
-    };
-
-
-    let message = Message {
-        data: Some(msg_data).into(),
-        hash: hash_bytes,
-        hash_scheme: ::protobuf::EnumOrUnknown::from(HashScheme::HASH_SCHEME_BLAKE3),
-        signature: signature.to_bytes().to_vec(),
-        signature_scheme: ::protobuf::EnumOrUnknown::from(SignatureScheme::SIGNATURE_SCHEME_ED25519), 
-        signer: verifying_key.to_bytes().to_vec(), 
-        data_bytes: None,
-        special_fields: ::protobuf::SpecialFields::new(),
-    };
-
-    debug!("Message: {:?}", message);
-
-    let buf = message.write_to_bytes().unwrap();
-
+    // Finally, submit the message to the network along with the user's public key and authorization
     let client = Client::new();
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
     let url = format!("{}:2281/v1/submitMessage", hubble_url);
@@ -119,23 +105,59 @@ async fn submit_cast(body: web::Json<CastSubmission>) -> impl Responder {
     let res = client
         .post(url)
         .header("Content-Type", "application/octet-stream")
-        .body(buf)
+        .header("User-Public-Key", user_public_key_hex)
+        .header("User-Authorization", user_authorization)
+        .body(msg_bytes)
         .send()
         .await;
 
     match res {
         Ok(res) if res.status().is_success() => {
             debug!("Cast submitted successfully");
-            HttpResponse::Ok().json("Cast submitted successfully")
+            Ok(HttpResponse::Ok().json("Cast submitted successfully"))
         }
         Ok(res) => {
             error!("Failed to send the message. HTTP status: {}", res.status());
-            HttpResponse::BadRequest().body(format!("Failed to send the message. HTTP status: {}", res.status()))
+            Ok(HttpResponse::BadRequest().body(format!("Failed to send the message. HTTP status: {}", res.status())))
         }
         Err(err) => {
             error!("HTTP request failed: {}", err);
-            HttpResponse::InternalServerError().body(format!("HTTP request failed: {}", err))
+            Err(actix_web::error::ErrorInternalServerError(err.to_string()))
         }
     }
 }
 
+fn verify_user_authorization(
+    user_verifying_key: &VerifyingKey,
+    user_authorization: &str,
+    user_signature_hex: &str,
+) -> bool {
+    let user_signature_bytes = hex::decode(user_signature_hex).expect("Failed to decode hex signature");
+    let user_signature = Signature::try_from(&user_signature_bytes[..]).expect("Invalid signature");
+
+    user_verifying_key
+        .verify(&user_authorization.as_bytes(), &user_signature)
+        .is_ok()
+}
+
+#[derive(Clone)]
+pub struct AppData {
+    pub private_key: SigningKey,
+    pub fid: u64,
+}
+
+impl AppData {
+    pub fn new(private_key_hex: &str, fid: u64) -> Self {
+        let private_key_bytes = hex::decode(private_key_hex)
+            .expect("Failed to decode private key hex");
+
+        let private_key_array: [u8; 32] = private_key_bytes.try_into()
+            .expect("Private key bytes must be 32 bytes long");
+
+        let secret_key = SecretKey::from(private_key_array);
+
+        let signing_key = SigningKey::from(&secret_key);
+
+        Self { private_key: signing_key, fid }
+    }
+}

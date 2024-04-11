@@ -1,6 +1,5 @@
-//main.rs
 use actix_cors::Cors;
-use actix_web::{get, App, HttpServer, Responder};
+use actix_web::{get, web, App, HttpServer, Responder};
 use dotenv::dotenv;
 use std::env;
 
@@ -29,7 +28,15 @@ async fn main() -> std::io::Result<()> {
     let server_port = env::var("SERVER_PORT").unwrap_or_else(|_| "8081".to_string());
     let server_address = format!("{}:{}", server_host, server_port);
 
-    HttpServer::new(|| {
+    let app_private_key_hex = env::var("APP_PRIVATE_KEY").expect("APP_PRIVATE_KEY must be set");
+    let app_fid = env::var("APP_FID")
+        .expect("APP_FID must be set")
+        .parse::<u64>()
+        .expect("Invalid APP_FID");
+
+    let app_data = submit_cast::AppData::new(&app_private_key_hex, app_fid);
+
+    HttpServer::new(move || {
         let cors = Cors::default()
             .allow_any_origin()
             .allow_any_method()
@@ -38,6 +45,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .wrap(cors)
+            .app_data(web::Data::new(app_data.clone()))
             .service(index)
             .service(hubble::get_username_proofs_by_fid)
             .service(hubble::get_user_data_by_fid)
