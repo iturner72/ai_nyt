@@ -2,7 +2,9 @@ use actix_cors::Cors;
 use actix_web::{get, web, App, HttpServer, Responder};
 use dotenv::dotenv;
 use std::env;
-
+use key_gateway::KeyGateway;
+use serde::Deserialize;
+use web3::types::{Address, U256};
 use env_logger::Env;
 
 mod models;
@@ -12,12 +14,12 @@ mod anthropic;
 mod submit_cast;
 mod message;
 mod username_proof;
+mod key_gateway;
 
 #[get("/")]
 async fn index() -> impl Responder {
     "Welcome to the Farcaster API!"
 }
-
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -35,6 +37,7 @@ async fn main() -> std::io::Result<()> {
         .expect("Invalid APP_FID");
 
     let app_data = submit_cast::AppData::new(&app_private_key_hex, app_fid);
+    let key_gateway = KeyGateway::new("http://localhost:8545", "0x123...abc");
 
     HttpServer::new(move || {
         let cors = Cors::default()
@@ -42,10 +45,11 @@ async fn main() -> std::io::Result<()> {
             .allow_any_method()
             .allow_any_header();
 
-
         App::new()
             .wrap(cors)
             .app_data(web::Data::new(app_data.clone()))
+            .app_data(web::Data::new(key_gateway.clone()))
+            .configure(configure_services)
             .service(index)
             .service(hubble::get_username_proofs_by_fid)
             .service(hubble::get_user_data_by_fid)
@@ -61,4 +65,33 @@ async fn main() -> std::io::Result<()> {
     .bind(server_address)?
     .run()
     .await
+}
+
+fn configure_services(cfg: &mut web::ServiceConfig) {
+    cfg.service(
+        web::resource("/add-signer")
+            .route(web::post().to(add_signer_handler)),
+    );
+}
+
+async fn add_signer_handler(key_gateway: web::Data<KeyGateway>, info: web::Json<SignerInfo>) -> impl Responder {
+    let signer_public_key = info.signer_public_key.clone();
+    let metadata = info.metadata.clone();
+    let signature = info.signature.clone();
+    let fid_owner = info.fid_owner;
+    let deadline = info.deadline;
+
+    match key_gateway.add_signer(signer_public_key, metadata, signature, fid_owner, deadline).await {
+        Ok(_) => "Signer added successfully".to_string(),
+        Err(e) => e.to_string(),
+    }
+}
+
+#[derive(Deserialize)]
+struct SignerInfo {
+    signer_public_key: Vec<u8>,
+    metadata: Vec<u8>,
+    signature: Vec<u8>,
+    fid_owner: Address,
+    deadline: U256,
 }
