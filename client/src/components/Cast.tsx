@@ -174,12 +174,6 @@ export default function CastEntry({ cast, index }: CastProps) {
             </Linkify>
           ) : 'N/A'}
         </p>
-        <div className="flex items-center mt-2">
-          <HeartIcon className="h-6 w-6 text-indigo-200" />
-          <span className="text-md font-extralight text-stone-500 ml-1">
-            {reactionData && reactionData.messages ? reactionData.messages.length : 0}
-          </span>
-          </div>
         {cast.data?.castAddBody?.embeds && cast.data.castAddBody.embeds.length > 0 && (
           <div className="mt-2">
             {cast.data.castAddBody.embeds.map((embed: any, index: number) => {
@@ -205,6 +199,13 @@ export default function CastEntry({ cast, index }: CastProps) {
             })}
           </div>
         )}
+
+        <div className="flex items-center mt-2">
+          <HeartIcon className="h-6 w-6 text-indigo-200" />
+          <span className="text-md font-extralight text-stone-500 ml-1">
+            {reactionData && reactionData.messages ? reactionData.messages.length : 0}
+          </span>
+          </div>
       </div>
     </div>
   ) : null;
