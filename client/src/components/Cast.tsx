@@ -29,6 +29,27 @@ interface UserData {
   signer: string;
 }
 
+interface ReactionData {
+  messages?: {
+    data: {
+      fid: number;
+      network: string;
+      reactionBody: {
+        targetCastId: {
+          fid: number;
+          hash: string;
+        };
+        type: string;
+      };
+      timestamp: number;
+      type: string;
+    };
+    hash: string;
+    hashScheme: string;
+  }[];
+  nextPageToken: string;
+}
+
 function getTweetId(url: string): string | null {
   const match = url.match(/\/(\d+)(?:\?.*)?$/);
   return match ? match[1] : null;
@@ -48,11 +69,26 @@ export default function CastEntry({ cast, index }: CastProps) {
   const [userPfpData, setUserPfpData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [pfpLoading, setPfpLoading] = useState<boolean>(true);
+  const [reactionData, setReactionData] = useState<ReactionData | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       setLoading(true);
       try {
+
+        const reactionsResponse = await axios.get(`https://${config2.serverBaseUrl}/reactionsByCast`, {
+          params: {
+            target_fid: cast.data?.fid,
+            target_hash: cast.hash,
+            reaction_type: 'REACTION_TYPE_LIKE',
+          },
+        });
+
+        if (reactionsResponse.status === 200 && reactionsResponse.data) {
+          setReactionData(reactionsResponse.data);
+          console.log("Reaction Data:", reactionsResponse.data);
+        }
+
         const usernameResponse = await axios.get(`https://${config2.serverBaseUrl}/userDataByFid`, {
           params: {
             fid: cast.data?.fid,
@@ -84,7 +120,7 @@ export default function CastEntry({ cast, index }: CastProps) {
     };
 
     fetchUserData();
-  }, [cast.data?.fid]);
+  }, [cast.data?.fid, cast.hash]);
 
   return cast.data ? (
     <div key={index} className="flex flex-col text-left p-4 pl-4 bg-stone-200 border border-stone-500">
@@ -137,6 +173,23 @@ export default function CastEntry({ cast, index }: CastProps) {
             </Linkify>
           ) : 'N/A'}
         </p>
+        <div className="flex items-center mt-2">
+          <span className="text-sm text-gray-600 mr-1">
+            {reactionData && reactionData.messages ? reactionData.messages.length : 0}
+          </span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 text-red-500"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+              clipRule="evenodd"
+            />
+          </svg>
+          </div>
         {cast.data?.castAddBody?.embeds && cast.data.castAddBody.embeds.length > 0 && (
           <div className="mt-2">
             {cast.data.castAddBody.embeds.map((embed: any, index: number) => {
