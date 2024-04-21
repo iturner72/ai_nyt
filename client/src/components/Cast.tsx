@@ -75,8 +75,15 @@ export default function CastEntry({ cast, index }: CastProps) {
 
   const navigate = useNavigate();
 
-  const handleProfileClick = (fid: number) => {
-    navigate(`/profile/${fid}`);
+  const handleProfileClick = (fid: number, event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const profileUrl = `/profile/${fid}`;
+
+    if (event.ctrlKey || event.metaKey) {
+      window.open(profileUrl, '_blank');
+    } else {
+      navigate(profileUrl);
+    }
   };
 
   useEffect(() => {
@@ -137,12 +144,14 @@ export default function CastEntry({ cast, index }: CastProps) {
           {pfpLoading ? (
             <div className="w-12 h-12 rounded-full bg-gray-300 animate-pulse mr-2" />
           ) : userPfpData?.data?.userDataBody?.value ? (
-            <div className="relative inline-block">
+            <div 
+              className="relative inline-block"
+              onClick={(event) => handleProfileClick(cast.data?.fid || 0, event)}
+            >
               <img
                 src={userPfpData.data.userDataBody.value}
                 alt="User PFP"
                 className="w-12 h-12 rounded-full object-cover object-center mr-2 cursor-pointer"
-                onClick={() => handleProfileClick(cast.data?.fid || 0)}
               />
               <div className="absolute top-0 left-0 right-2 bottom-0 rounded-full cursor-pointer transition-colors duration-100 ease-in-out hover:opacity-100 hover:bg-black hover:bg-opacity-10" />
             </div>
@@ -151,7 +160,7 @@ export default function CastEntry({ cast, index }: CastProps) {
           )}
           <h3 
             className="alumni-sans-bold text-indigo-800 text-lg md:text-xl cursor-pointer transition-colors duration-100 ease-in-out hover:text-indigo-600"
-            onClick={() => handleProfileClick(cast.data?.fid || 0)}
+            onClick={(event) => handleProfileClick(cast.data?.fid || 0, event)}
           >
             {loading ? (
               <div className="w-24 h-6 bg-stone-400 animate-pulse" />
