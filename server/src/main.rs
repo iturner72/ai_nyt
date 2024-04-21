@@ -48,12 +48,6 @@ async fn main() -> std::io::Result<()> {
     let app_data = submit_cast::AppData::new(&app_private_key_hex, app_fid);
     let key_gateway = KeyGateway::new("http://localhost:8545", "0x123...abc");
 
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let manager = ConnectionManager::<PgConnection>::new(database_url);
-    let pool = r2d2::Pool::builder()
-        .build(manager)
-        .expect("Failed to create database connection pool");
-
     HttpServer::new(move || {
         let cors = Cors::default()
             .allow_any_origin()

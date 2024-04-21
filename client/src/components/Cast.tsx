@@ -39,6 +39,10 @@ function getDomain(url: string): string {
   return domain.startsWith('www.') ? domain.slice(4) : domain;
 }
 
+function isNewCdnUrl(url: string): boolean {
+    return url.includes('imagedelivery.net');
+}
+
 export default function CastEntry({ cast, index }: CastProps) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userPfpData, setUserPfpData] = useState<UserData | null>(null);
@@ -136,7 +140,7 @@ export default function CastEntry({ cast, index }: CastProps) {
         {cast.data?.castAddBody?.embeds && cast.data.castAddBody.embeds.length > 0 && (
           <div className="mt-2">
             {cast.data.castAddBody.embeds.map((embed: any, index: number) => {
-              if (embed && embed.url && embed.url.includes('i.imgur')) {
+              if (embed && embed.url && (embed.url.includes('i.imgur') || isNewCdnUrl(embed.url))) {
                 return (
                   <ImageDetails
                     key={index}
