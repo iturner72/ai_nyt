@@ -9,6 +9,13 @@ struct UserDataParams {
     user_data_type: Option<String>,
 }
 
+#[derive(serde::Deserialize)]
+struct ReactionsByCastParams {
+    target_fid: u64,
+    target_hash: String,
+    reaction_type: Option<String>,
+}
+
 #[get("/userNameProofsByFid/{fid}")]
 async fn get_username_proofs_by_fid(fid: web::Path<u64>) -> impl Responder {
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
@@ -74,6 +81,19 @@ async fn get_casts_by_parent(
 async fn get_casts_by_mention(fid: web::Path<u64>) -> impl Responder {
     let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
     let url = format!("{}:2281/v1/castsByMention?fid={}", hubble_url, fid.into_inner());
+    fetch_and_respond(url).await
+}
+
+#[get("/reactionsByCast")]
+async fn get_reactions_by_cast(params: web::Query<ReactionsByCastParams>) -> impl Responder {
+    let hubble_url = env::var("HUBBLE_URL").expect("HUBBLE_URL must be set");
+    let mut url = format!("{}:2281/v1/reactionsByCast?target_fid={}&target_hash={}",
+                          hubble_url, params.target_fid, params.target_hash);
+
+    if let Some(ref reaction_type) = params.reaction_type {
+        url.push_str(&format!("&reaction_type={}", reaction_type));
+    }
+
     fetch_and_respond(url).await
 }
 

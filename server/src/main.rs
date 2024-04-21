@@ -67,6 +67,7 @@ async fn main() -> std::io::Result<()> {
             .service(hubble::get_casts_by_parent)
             .service(hubble::get_casts_by_mention)
             .service(hubble::get_channels)
+            .service(hubble::get_reactions_by_cast)
             .service(submit_cast::submit_cast)
             .service(openai::generate_chat)
             .service(anthropic::generate_chat_anthropic)
