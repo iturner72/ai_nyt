@@ -15,6 +15,7 @@ import { AuthKitProvider } from '@farcaster/auth-kit';
 import '@farcaster/auth-kit/styles.css';
 import { SignIn } from './components/SignIn';
 import MenuIcon from '@mui/icons-material/Menu';
+import ProfilePage from './components/ProfilePage';
 
 const currentUrl = window.location.origin;
 const siweUri = `${currentUrl}/login`;
@@ -139,6 +140,7 @@ return (
       <Routes>
         <Route path={'/'} element={<ArticleList channel={channels[currentChannelIndex]} channels={channels} onArticleClick={handleArticleClick} />} />
         <Route path={'/article/:id'} element={<ArticlePage />} />
+        <Route path={'profile/:fid'} element={<ProfilePage />} />
         <Route path={'/login'} element={<SignIn />} />
       </Routes>
       {isModalOpen && <LatexSourceModal closeModal={() => setIsModalOpen(false)} />}
