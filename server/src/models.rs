@@ -1,5 +1,35 @@
-//models.rs
 use serde::{Deserialize, Serialize};
+use diesel::Queryable;
+use diesel::Insertable;
+use crate::schema::articles;
+use chrono::NaiveDateTime;
+
+#[derive(Queryable, Insertable, Serialize, Deserialize)]
+pub struct Article {
+    pub id: i32,
+    pub user_id: i32,
+    pub title: String,
+    pub content: String,
+    #[serde(serialize_with = "serialize_datetime", deserialize_with = "deserialize_datetime")]
+    pub created_at: NaiveDateTime,
+}
+
+
+fn serialize_datetime<S>(datetime: &NaiveDateTime, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    let s = datetime.format("%Y-%m-%dT%H:%M:%S%.f").to_string();
+    serializer.serialize_str(&s)
+}
+
+fn deserialize_datetime<'de, D>(deserializer: D) -> Result<NaiveDateTime, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+    NaiveDateTime::parse_from_str(&s, "%Y-%m-%dT%H:%M:%S%.f").map_err(serde::de::Error::custom)
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Cast {

@@ -1,6 +1,6 @@
 # AI NYT
 
-This is a project meant to conquer this bounty set by [Bajajis](https://warpcast.com/balajis.eth/0x218b92a7)
+This is a project meant to conquer this bounty set by [Bajajis](https://warpcast.com/balajis.eth/0x218b92a7). Update (4/20/2022): I took a fat L on this project, but I use the site multiple times a week, so I'll continue working on it. It's very fun and I love the idea of farcaster clients. 
 
 ## Installation
 

@@ -6,8 +6,14 @@ use key_gateway::KeyGateway;
 use serde::Deserialize;
 use web3::types::{Address, U256};
 use env_logger::Env;
+use diesel::pg::PgConnection;
+use diesel::r2d2::{self, ConnectionManager};
+
+type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 mod models;
+mod schema;
+mod db;
 mod hubble;
 mod openai;
 mod anthropic;
@@ -15,6 +21,9 @@ mod submit_cast;
 mod message;
 mod username_proof;
 mod key_gateway;
+
+use crate::db::create_article;
+use crate::models::Article;
 
 #[get("/")]
 async fn index() -> impl Responder {
@@ -39,6 +48,12 @@ async fn main() -> std::io::Result<()> {
     let app_data = submit_cast::AppData::new(&app_private_key_hex, app_fid);
     let key_gateway = KeyGateway::new("http://localhost:8545", "0x123...abc");
 
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
+    let pool = r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create database connection pool");
+
     HttpServer::new(move || {
         let cors = Cors::default()
             .allow_any_origin()
@@ -61,6 +76,7 @@ async fn main() -> std::io::Result<()> {
             .service(submit_cast::submit_cast)
             .service(openai::generate_chat)
             .service(anthropic::generate_chat_anthropic)
+            .service(web::resource("/create-article").route(web::post().to(create_article_handler)))
     })
     .bind(server_address)?
     .run()
@@ -68,10 +84,7 @@ async fn main() -> std::io::Result<()> {
 }
 
 fn configure_services(cfg: &mut web::ServiceConfig) {
-    cfg.service(
-        web::resource("/add-signer")
-            .route(web::post().to(add_signer_handler)),
-    );
+    cfg.service(web::resource("/add-signer").route(web::post().to(add_signer_handler)));
 }
 
 async fn add_signer_handler(key_gateway: web::Data<KeyGateway>, info: web::Json<SignerInfo>) -> impl Responder {
@@ -94,4 +107,32 @@ struct SignerInfo {
     signature: Vec<u8>,
     fid_owner: Address,
     deadline: U256,
+}
+
+#[derive(Deserialize)]
+struct ArticleForm {
+    user_id: i32,
+    title: String,
+    content: String,
+}
+
+async fn create_article_handler(
+    pool: web::Data<DbPool>,
+    form: web::Json<ArticleForm>,
+) -> impl Responder {
+    let mut conn = pool.get().expect("Failed to get database connection");
+
+    match create_article(&mut conn, form.user_id, &form.title, &form.content) {
+        Ok(article) => web::Json(article),
+        Err(_) => {
+            let error_article = Article {
+                id: 0,
+                user_id: 0,
+                title: "Error".to_string(),
+                content: "Failed to create article".to_string(),
+                created_at: chrono::Utc::now().naive_utc(),
+            };
+            web::Json(error_article)
+        }
+    }
 }
