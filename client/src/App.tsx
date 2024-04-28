@@ -15,6 +15,7 @@ import { AuthKitProvider } from '@farcaster/auth-kit';
 import '@farcaster/auth-kit/styles.css';
 import { SignIn } from './components/SignIn';
 import MenuIcon from '@mui/icons-material/Menu';
+import ProfilePage from './components/ProfilePage';
 
 const currentUrl = window.location.origin;
 const siweUri = `${currentUrl}/login`;
@@ -100,8 +101,8 @@ return (
   <AuthKitProvider config={config}>
     <div className="flex flex-col items-center justify-center text-left bg-stone-100">
       <div className="header h-24 md:h-20 items-center w-full relative flex pl-4">
-        <div className="absolute left-0 top-0 w-7/12 md:w-2/12 h-full" onClick={navigateHome} ></div>
-        <img src="favicon.ico" alt="home" />
+        <div className="absolute left-0 top-0 w-7/12 md:w-2/12 h-full cursor-pointer" onClick={navigateHome} ></div>
+        <Title />
 
         <div className="md:hidden">
           <MenuIcon
@@ -139,6 +140,7 @@ return (
       <Routes>
         <Route path={'/'} element={<ArticleList channel={channels[currentChannelIndex]} channels={channels} onArticleClick={handleArticleClick} />} />
         <Route path={'/article/:id'} element={<ArticlePage />} />
+        <Route path={'profile/:fid'} element={<ProfilePage />} />
         <Route path={'/login'} element={<SignIn />} />
       </Routes>
       {isModalOpen && <LatexSourceModal closeModal={() => setIsModalOpen(false)} />}

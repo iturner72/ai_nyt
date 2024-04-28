@@ -5,6 +5,8 @@ import config2 from './../config2';
 import Linkify from 'react-linkify';
 import ImageDetails from "./ImageDetails";
 import { TwitterTweetEmbed } from "react-twitter-embed";
+import { HeartIcon } from '@heroicons/react/solid';
+import { useNavigate } from 'react-router-dom';
 
 interface CastProps {
   cast: Cast;
@@ -29,6 +31,27 @@ interface UserData {
   signer: string;
 }
 
+interface ReactionData {
+  messages?: {
+    data: {
+      fid: number;
+      network: string;
+      reactionBody: {
+        targetCastId: {
+          fid: number;
+          hash: string;
+        };
+        type: string;
+      };
+      timestamp: number;
+      type: string;
+    };
+    hash: string;
+    hashScheme: string;
+  }[];
+  nextPageToken: string;
+}
+
 function getTweetId(url: string): string | null {
   const match = url.match(/\/(\d+)(?:\?.*)?$/);
   return match ? match[1] : null;
@@ -48,11 +71,39 @@ export default function CastEntry({ cast, index }: CastProps) {
   const [userPfpData, setUserPfpData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [pfpLoading, setPfpLoading] = useState<boolean>(true);
+  const [reactionData, setReactionData] = useState<ReactionData | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleProfileClick = (fid: number, event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const profileUrl = `/profile/${fid}`;
+
+    if (event.ctrlKey || event.metaKey) {
+      window.open(profileUrl, '_blank');
+    } else {
+      navigate(profileUrl);
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
       setLoading(true);
       try {
+
+        const reactionsResponse = await axios.get(`https://${config2.serverBaseUrl}/reactionsByCast`, {
+          params: {
+            target_fid: cast.data?.fid,
+            target_hash: cast.hash,
+            reaction_type: 'REACTION_TYPE_LIKE',
+          },
+        });
+
+        if (reactionsResponse.status === 200 && reactionsResponse.data) {
+          setReactionData(reactionsResponse.data);
+          console.log("Reaction Data:", reactionsResponse.data);
+        }
+
         const usernameResponse = await axios.get(`https://${config2.serverBaseUrl}/userDataByFid`, {
           params: {
             fid: cast.data?.fid,
@@ -84,7 +135,7 @@ export default function CastEntry({ cast, index }: CastProps) {
     };
 
     fetchUserData();
-  }, [cast.data?.fid]);
+  }, [cast.data?.fid, cast.hash]);
 
   return cast.data ? (
     <div key={index} className="flex flex-col text-left p-4 pl-4 bg-stone-200 border border-stone-500">
@@ -93,28 +144,33 @@ export default function CastEntry({ cast, index }: CastProps) {
           {pfpLoading ? (
             <div className="w-12 h-12 rounded-full bg-gray-300 animate-pulse mr-2" />
           ) : userPfpData?.data?.userDataBody?.value ? (
-            <a href={`https://warpcast.com/${userData?.data?.userDataBody?.value}`} target="_blank" rel="noopener noreferrer">
+            <div 
+              className="relative inline-block"
+              onClick={(event) => handleProfileClick(cast.data?.fid || 0, event)}
+            >
               <img
                 src={userPfpData.data.userDataBody.value}
                 alt="User PFP"
-                className="w-12 h-12 rounded-full object-cover object-center mr-2"
+                className="w-12 h-12 rounded-full object-cover object-center mr-2 cursor-pointer"
               />
-            </a>
+              <div className="absolute top-0 left-0 right-2 bottom-0 rounded-full cursor-pointer transition-colors duration-100 ease-in-out hover:opacity-100 hover:bg-black hover:bg-opacity-10" />
+            </div>
           ) : (
             <div className="w-12 h-12 rounded-full bg-gray-300 mr-2" />
           )}
-          <h3 className="alumni-sans-bold text-indigo-800 text-lg md:text-xl">
+          <h3 
+            className="alumni-sans-bold text-indigo-800 text-lg md:text-xl cursor-pointer transition-colors duration-100 ease-in-out hover:text-indigo-600"
+            onClick={(event) => handleProfileClick(cast.data?.fid || 0, event)}
+          >
             {loading ? (
               <div className="w-24 h-6 bg-stone-400 animate-pulse" />
             ) : (
-              <a href={`https://warpcast.com/${userData?.data?.userDataBody?.value}`} target="_blank" rel="noopener noreferrer">
-                @{userData?.data?.userDataBody?.value || "No username"}
-              </a>
+                <>@{userData?.data?.userDataBody?.value || "No username"}</>
             )}
           </h3>
         </div>
         <a href={`https://warpcast.com/${userData?.data?.userDataBody?.value}/${cast.hash}`} target="_blank" rel="noopener noreferrer">
-          <img src="/images/fc.png" alt="Farcaster" className="w-8 h-8 ml-2" />
+          <img src="/images/fc.png" alt="Farcaster" className="w-8 h-8 ml-2 transition-transform duration-100 ease-in-out hover:scale-110" />
         </a>
       </div>
       <div className="flex-grow pt-2">
@@ -162,6 +218,13 @@ export default function CastEntry({ cast, index }: CastProps) {
             })}
           </div>
         )}
+
+        <div className="flex items-center mt-2">
+          <HeartIcon className="h-6 w-6 text-indigo-200" />
+          <span className="text-md font-extralight text-stone-500 ml-1">
+            {reactionData && reactionData.messages ? reactionData.messages.length : 0}
+          </span>
+          </div>
       </div>
     </div>
   ) : null;
