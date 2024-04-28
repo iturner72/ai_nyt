@@ -79,9 +79,17 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
         <div className="flex flex-col w-full">
           <div className="md:w-full md:pr-4">
             {article && (
-              <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-3xl pl-2 pb-2">
-                <h2>{article.title}</h2>
-                <p>{article.content}</p>
+              <div className="flex flex-col items-center justify-center">
+                <button
+                  onClick={handleCreateArticle}
+                  className="bg-indigo-500 hover:bg-indigo-700 text-white alumni-sans-bold py-2 px-4 mt-4"
+                > 
+                  Create Article
+                </button>
+                <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-3xl pl-2 pb-2">
+                  <h2>{article.title}</h2>
+                  <p>{article.content}</p>
+                </div>
               </div>
             )}
             <div className="grid grid-cols-3 md:flex md:flex-row md:items-center md:justify-center gap-4 justify-center items-center md:justify-start overflow-hidden md:overflow-visible">
