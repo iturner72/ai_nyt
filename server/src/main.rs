@@ -4,7 +4,7 @@ use dotenv::dotenv;
 use std::env;
 //use key_gateway::KeyGateway;
 use serde::Deserialize;
-use web3::types::{Address, U256};
+//use web3::types::{Address, U256};
 use env_logger::Env;
 use diesel::pg::PgConnection;
 use diesel::r2d2::{self, ConnectionManager};
@@ -39,11 +39,10 @@ async fn main() -> std::io::Result<()> {
     let server_port = env::var("SERVER_PORT").unwrap_or_else(|_| "8081".to_string());
     let server_address = format!("{}:{}", server_host, server_port);
 
-    let app_private_key_hex = env::var("APP_PRIVATE_KEY").expect("APP_PRIVATE_KEY must be set");
-    let app_fid = env::var("APP_FID")
-        .expect("APP_FID must be set")
-        .parse::<u64>()
-        .expect("Invalid APP_FID");
+//    let app_private_key_hex = env::var("APP_PRIVATE_KEY").expect("APP_PRIVATE_KEY must be set");
+    let app_private_key_hex = "25ab4c8f2d579e62c81d7434a3b9a1ec72cbf30478f98a5e3e5f8f8f96a1d0b2";
+//    let app_fid = env::var("APP_FID")
+    let app_fid = 249222;
 
     let app_data = submit_cast::AppData::new(&app_private_key_hex, app_fid);
 //    let key_gateway = KeyGateway::new("http://localhost:8545", "0x123...abc")
@@ -96,14 +95,14 @@ async fn main() -> std::io::Result<()> {
 //    }
 //}
 
-#[derive(Deserialize)]
-struct SignerInfo {
-    signer_public_key: Vec<u8>,
-    metadata: Vec<u8>,
-    signature: Vec<u8>,
-    fid_owner: Address,
-    deadline: U256,
-}
+//#[derive(Deserialize)]
+//struct SignerInfo {
+//    signer_public_key: Vec<u8>,
+//    metadata: Vec<u8>,
+//    signature: Vec<u8>,
+//    fid_owner: Address,
+//    deadline: U256,
+//}
 
 #[derive(Deserialize)]
 struct ArticleForm {

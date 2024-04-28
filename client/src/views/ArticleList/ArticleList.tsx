@@ -51,6 +51,27 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   const [error, setError] = useState('');
   const backgroundColors = ['#fff205','#ff5050', '#01fff4', '#7cff01', '#d8d8d8', '#ff529d' ];
 
+  const handleCreateArticle = async () => {
+    try {
+      const userFid = localStorage.getItem('userFid');
+      if (!userFid) {
+        throw new Error('User FID not found');
+      }
+
+      const response = await axios.post(`https://${config2.serverBaseUrl}/create-article`, {
+        user_id: parseInt(userFid, 10),
+        title: "New Test Article",
+        content: "Testing new endpoint with dummy article content.",
+      });
+
+      const createdArticle = response.data;
+      setArticle(createdArticle);
+    } catch (error) {
+      console.error("Failed to create article:", error);
+      setError("Failed to create article. Please try again.");
+    }
+  };
+
   return (
     <div className="flex flex-col w-full items-center justify-center pb-2 pl-4 pr-4">
       {error && <div>Error: {error}</div>}
