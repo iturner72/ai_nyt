@@ -99,7 +99,6 @@ Dockerfile
 
 # Optional - If you're using a database, you might want to exclude db files:
 *.db
-*.sql
 *.sqlite
 
 # Logs
