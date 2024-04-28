@@ -39,6 +39,12 @@ async fn main() -> std::io::Result<()> {
     let server_port = env::var("SERVER_PORT").unwrap_or_else(|_| "8081".to_string());
     let server_address = format!("{}:{}", server_host, server_port);
 
+    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
+    let pool = r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create database connection pool");
+
 //    let app_private_key_hex = env::var("APP_PRIVATE_KEY").expect("APP_PRIVATE_KEY must be set");
     let app_private_key_hex = "25ab4c8f2d579e62c81d7434a3b9a1ec72cbf30478f98a5e3e5f8f8f96a1d0b2";
 //    let app_fid = env::var("APP_FID")
@@ -57,6 +63,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(cors)
             .app_data(web::Data::new(app_data.clone()))
+            .app_data(web::Data::new(pool.clone()))
   //          .app_data(web::Data::new(key_gateway.clone()))
    //         .configure(configure_services)
             .service(index)
