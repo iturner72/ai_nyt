@@ -1,7 +1,7 @@
 use actix_web::{post, web, HttpResponse, Responder};
 use blake3;
 use ed25519_dalek::{Signature, VerifyingKey, SigningKey, Signer, Verifier, SecretKey};
-use crate::message::{
+use crate::farcaster::message::{
     CastAddBody, FarcasterNetwork, MessageData, HashScheme, Message, MessageType, SignatureScheme,
     message_data,
 };

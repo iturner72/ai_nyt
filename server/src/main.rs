@@ -11,20 +11,18 @@ use diesel::r2d2::{self, ConnectionManager};
 
 type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
+mod api;
 mod models;
 mod database;
+mod farcaster;
 mod schema;
-mod db;
-mod hubble;
-mod openai;
-mod anthropic;
-mod submit_cast;
-mod message;
-mod username_proof;
-//mod key_gateway;
+
+use api::{openai, anthropic};
+use database::db;
+use database::models::article::Article;
+use farcaster::{hubble, submit_cast};
 
 use crate::db::create_article;
-use database::models::article::Article;
 
 #[get("/")]
 async fn index() -> impl Responder {
