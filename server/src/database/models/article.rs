@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use diesel::{Queryable, Insertable};
 use chrono::NaiveDateTime;
 
-#[derive(Queryable, Insertable, Serialize, Deserialize)]
+#[derive(Queryable, Insertable, Serialize, Deserialize, Debug)]
 #[diesel(table_name = articles)]
 pub struct Article {
     pub id: i32,

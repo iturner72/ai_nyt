@@ -110,7 +110,7 @@ async fn main() -> std::io::Result<()> {
 //    deadline: U256,
 //}
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct ArticleForm {
     user_id: i64,
     title: String,
@@ -121,11 +121,17 @@ async fn create_article_handler(
     pool: web::Data<DbPool>,
     form: web::Json<ArticleForm>,
 ) -> impl Responder {
+    log::info!("Received request to create article: {:?}", form);
+
     let mut conn = pool.get().expect("Failed to get database connection");
 
     match create_article(&mut conn, form.user_id, &form.title, &form.content) {
-        Ok(article) => web::Json(article),
-        Err(_) => {
+        Ok(article) => {
+            log::info!("Successfully created article: {:?}", article);
+            web::Json(article)
+        },
+        Err(e) => {
+            log::error!("Failed to create article: {:?}", e);
             let error_article = Article {
                 id: 0,
                 user_id: 0,
