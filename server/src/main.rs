@@ -11,19 +11,18 @@ use diesel::r2d2::{self, ConnectionManager};
 
 type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
+mod api;
 mod models;
+mod database;
+mod farcaster;
 mod schema;
-mod db;
-mod hubble;
-mod openai;
-mod anthropic;
-mod submit_cast;
-mod message;
-mod username_proof;
-//mod key_gateway;
+
+use api::{openai, anthropic};
+use database::db;
+use database::models::article::Article;
+use farcaster::{hubble, submit_cast};
 
 use crate::db::create_article;
-use crate::models::Article;
 
 #[get("/")]
 async fn index() -> impl Responder {
@@ -113,7 +112,7 @@ async fn main() -> std::io::Result<()> {
 
 #[derive(Deserialize)]
 struct ArticleForm {
-    user_id: i32,
+    user_id: i64,
     title: String,
     content: String,
 }
@@ -133,6 +132,7 @@ async fn create_article_handler(
                 title: "Error".to_string(),
                 content: "Failed to create article".to_string(),
                 created_at: chrono::Utc::now().naive_utc(),
+                is_default: false,
             };
             web::Json(error_article)
         }
