@@ -5,10 +5,13 @@ use crate::database::models::article::Article;
 use crate::schema::articles::dsl::*;
 
 pub fn create_article(conn: &mut PgConnection, user_id_param: i64, article_title: &str, article_content: &str) -> Result<Article, DieselError> {
+    let is_default_value = if user_id_param == 249222 { true } else { false };
+
     let new_article = NewArticle {
         user_id: user_id_param,
         title: article_title.to_string(),
         content: article_content.to_string(),
+        is_default: is_default_value,
     };
 
     diesel::insert_into(articles)
@@ -22,4 +25,5 @@ struct NewArticle {
     user_id: i64,
     title: String,
     content: String,
+    is_default: bool,
 }
