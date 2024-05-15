@@ -51,26 +51,6 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
   const [error, setError] = useState('');
   const backgroundColors = ['#fff205','#ff5050', '#01fff4', '#7cff01', '#d8d8d8', '#ff529d' ];
 
-  const handleCreateArticle = async () => {
-    try {
-      const userFid = localStorage.getItem('userFid');
-      if (!userFid) {
-        throw new Error('User FID not found');
-      }
-
-      const response = await axios.post(`https://${config2.serverBaseUrl}/create-article`, {
-        user_id: parseInt(userFid, 10),
-        title: "New Test Article",
-        content: "Testing new endpoint with dummy article content.",
-      });
-
-      const createdArticle = response.data;
-      setArticle(createdArticle);
-    } catch (error) {
-      console.error("Failed to create article:", error);
-      setError("Failed to create article. Please try again.");
-    }
-  };
 
   return (
     <div className="flex flex-col w-full items-center justify-center pb-2 pl-4 pr-4">
@@ -78,20 +58,6 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
       <div className="w-full mx-auto pt-2">
         <div className="flex flex-col w-full">
           <div className="md:w-full md:pr-4">
-            {article && (
-              <div className="flex flex-col items-center justify-center">
-                <button
-                  onClick={handleCreateArticle}
-                  className="bg-indigo-500 hover:bg-indigo-700 text-white alumni-sans-bold py-2 px-4 mt-4"
-                > 
-                  Create Article
-                </button>
-                <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-3xl pl-2 pb-2">
-                  <h2>{article.title}</h2>
-                  <p>{article.content}</p>
-                </div>
-              </div>
-            )}
             <div className="grid grid-cols-3 md:flex md:flex-row md:items-center md:justify-center gap-4 justify-center items-center md:justify-start overflow-hidden md:overflow-visible">
               {/* Display channels as clickable images */}
               {channels.map((chan, index) => {

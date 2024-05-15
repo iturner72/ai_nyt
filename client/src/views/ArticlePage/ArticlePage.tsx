@@ -1,4 +1,4 @@
-import React, { useState, useEffect }from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import config2 from './../../config2';
@@ -46,6 +46,8 @@ export default function ArticlePage() {
   const [error, setError] = useState('');
   const [channelName, setChannelName] = useState('');
   const [modelName, setModelName] = useState('');
+  const [saveError, setSaveError] = useState('');
+  const [saveSuccess, setSaveSuccess] = useState(false); // Success state
   const expirationTime = 2 * 60 * 60 * 1000; // 2 hrs
 
   const isArticleExpired = (storedArticle: string | null) => {
@@ -69,7 +71,6 @@ export default function ArticlePage() {
     return () => clearInterval(interval); // Clear interval on component unmount
   }, [channelUrl]);
 
-
   useEffect(() => {
     const fetchArticlesForChannelClaude = async () => {
       setLoading(true);
@@ -77,7 +78,8 @@ export default function ArticlePage() {
 
       const storedArticle = localStorage.getItem(`article_${channelUrl}`);
       if (storedArticle && !isArticleExpired(storedArticle)) {
-        setArticle(JSON.parse(storedArticle));
+        const parsedArticle = JSON.parse(storedArticle);
+        setArticle(parsedArticle);
         setLoading(false);
         return;
       }
@@ -100,12 +102,11 @@ export default function ArticlePage() {
         const filteredCasts = castsArray.filter((cast: Cast) => {
           const castTimestamp = new Date(cast.data.timestamp * 1000);
           return castTimestamp >= oneWeekAgo;
-        }).map((cast: Cast) => cast.data.castAddBody?.text || '').filter((text: string) => text);;
+        }).map((cast: Cast) => cast.data.castAddBody?.text || '').filter((text: string) => text);
 
         console.log("filteredCasts:", filteredCasts);
 
         const concatenatedText = filteredCasts.join(' ');
-
 
         const instructionText = `You are The Network Times. This means that you are the new media which will replace the New York Times, Washington Post, Wall Street Journal, and the like. I would like for you to summarize the following Casts in a weekly digest named ${channelName} digest (in lowercase) as a journalist who works for a publication at a higher caliber than those just mentioned. Please format your response with the following tags:
         
@@ -120,7 +121,6 @@ export default function ArticlePage() {
         
         Casts to summarize:
         ` + concatenatedText;
-
 
         console.log("Concatenated Text:", concatenatedText);
 
@@ -149,8 +149,8 @@ export default function ArticlePage() {
               const paragraphs = Array.from(section.querySelectorAll('paragraph')).map((p) => p.textContent || '');
               return { heading, paragraphs };
             });
-          
-            const generatedArticle = {
+
+            const generatedArticle: Article = {
               id: id ? parseInt(id, 10) : Date.now(),
               title: `${channelName}`,
               subtitle,
@@ -183,6 +183,37 @@ export default function ArticlePage() {
     }
   }, [channelUrl, id]);
 
+  const handleCreateArticle = async () => {
+    try {
+      const userFid = localStorage.getItem('userFid');
+      if (!userFid) {
+        throw new Error('User FID not found');
+      }
+
+      if (!article) {
+        throw new Error('Article is not generated yet');
+      }
+
+      const response = await axios.post(`https://${config2.serverBaseUrl}/create-article`, {
+        user_id: parseInt(userFid, 10),
+        title: article.title,
+        content: JSON.stringify(article), // Send the entire article as a JSON string
+      });
+
+      const createdArticle = response.data;
+      const parsedContent = JSON.parse(createdArticle.content);
+      setArticle(parsedContent);
+      setSaveSuccess(true); // Show success message
+
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        setSaveSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Failed to create article:", error);
+      setSaveError("Failed to create article. Please try again.");
+    }
+  };
 
   if (loading) {
     return (
@@ -197,11 +228,27 @@ export default function ArticlePage() {
   }
 
   if (!article) {
-    return <div>article not found.</div>
+    return <div>Article not found.</div>;
   }
 
   return (
     <div className="w-11/12 px-4 sm:px-8 lg:px-16 py-2 pb-64">
+      <div>
+        <div className="flex flex-col items-center justify-center">
+          <button
+            onClick={handleCreateArticle}
+            className="bg-indigo-500 hover:bg-indigo-700 text-white alumni-sans-bold py-2 px-4 mt-4"
+          > 
+            Save Article
+          </button>
+          {saveError && <div className="text-red-500 mt-2">{saveError}</div>}
+          {saveSuccess && <div className="text-green-500 mt-2">Article saved successfully!</div>}
+          <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-3xl pl-2 pb-2">
+            <h2>{article.title}</h2>
+            <p>{article.subtitle}</p>
+          </div>
+        </div>
+      </div>
       <div className="max-w-full lg:max-w-[2200px] mx-auto">
         <article className="text-left text-xl sm:text-2xl lg:text-3xl font-serif leading-relaxed lg:leading-10 mx-auto py-6 lg:py-2">
           <div className="mt-8">
@@ -211,11 +258,9 @@ export default function ArticlePage() {
           </div>
           <div className="flex flex-col md:flex-row">
             <div className="alumni-sans-regular text-xl md:text-4xl md:w-11/12 md:pr-8">
-              <h2 className="text-2xl font-bold mb-4">{article.title}</h2>
-              <h3 className="text-xl font-semibold mb-6">{article.subtitle}</h3>
-              {article.sections.map((section, index) => (
+              {article.sections && article.sections.map((section, index) => (
                 <div key={index} className="mb-8">
-                  <h4 className="text-3xl font-semibold mb-2">{section.heading}</h4>
+                  <h3 className="text-3xl font-semibold mb-2">{section.heading}</h3>
                   {section.paragraphs.map((paragraph, pIndex) => (
                     <p key={pIndex} className="mb-4 md:text-2xl">{paragraph}</p>
                   ))}
@@ -235,6 +280,4 @@ export default function ArticlePage() {
       </div>
     </div>
   );
-
-  
 }
