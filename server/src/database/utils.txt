@@ -1,0 +1,6 @@
+# some helpful psql cli commands for this repo
+
+
+## list first 72 characters in content col from articles table
+
+select id, user_id, title, substring(content, 1, 72) as content_short, created_at, is_default from articles;
