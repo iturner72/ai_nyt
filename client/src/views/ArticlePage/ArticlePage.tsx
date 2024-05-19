@@ -194,9 +194,13 @@ export default function ArticlePage() {
         throw new Error('Article is not generated yet');
       }
 
+      const randomString = Math.random().toString(36).substring(7);
+
+      const titleWithRandomString = `${article.title}-${randomString}`;
+
       const response = await axios.post(`https://${config2.serverBaseUrl}/create-article`, {
         user_id: parseInt(userFid, 10),
-        title: article.title,
+        title: titleWithRandomString, 
         content: JSON.stringify(article), // Send the entire article as a JSON string
       });
 
@@ -205,10 +209,10 @@ export default function ArticlePage() {
       setArticle(parsedContent);
       setSaveSuccess(true); // Show success message
 
-      // Hide success message after 3 seconds
+      // Hide success message after 5 seconds
       setTimeout(() => {
         setSaveSuccess(false);
-      }, 3000);
+      }, 5000);
     } catch (error) {
       console.error("Failed to create article:", error);
       setSaveError("Failed to create article. Please try again.");

@@ -1,0 +1,1 @@
+DROP INDEX articles_user_id_title_unique;
