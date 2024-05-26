@@ -101,7 +101,6 @@ export default function CastEntry({ cast, index }: CastProps) {
 
         if (reactionsResponse.status === 200 && reactionsResponse.data) {
           setReactionData(reactionsResponse.data);
-          console.log("Reaction Data:", reactionsResponse.data);
         }
 
         const usernameResponse = await axios.get(`https://${config2.serverBaseUrl}/userDataByFid`, {

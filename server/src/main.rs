@@ -44,12 +44,8 @@ async fn main() -> std::io::Result<()> {
         .build(manager)
         .expect("Failed to create database connection pool");
 
-//    let app_private_key_hex = env::var("APP_PRIVATE_KEY").expect("APP_PRIVATE_KEY must be set");
-    let app_private_key_hex = "25ab4c8f2d579e62c81d7434a3b9a1ec72cbf30478f98a5e3e5f8f8f96a1d0b2";
-//    let app_fid = env::var("APP_FID")
-    let app_fid = 249222;
 
-    let app_data = submit_cast::AppData::new(&app_private_key_hex, app_fid);
+//    let app_data = submit_cast::AppData::new(&app_private_key_hex, app_fid);
 //    let key_gateway = KeyGateway::new("http://localhost:8545", "0x123...abc")
  //       .expect("Failed to create KeyGateway");
 
@@ -61,7 +57,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .wrap(cors)
-            .app_data(web::Data::new(app_data.clone()))
+ //           .app_data(web::Data::new(app_data.clone()))
             .app_data(web::Data::new(pool.clone()))
   //          .app_data(web::Data::new(key_gateway.clone()))
    //         .configure(configure_services)
