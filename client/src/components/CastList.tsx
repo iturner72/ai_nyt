@@ -45,14 +45,12 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
     const fetchChannelCasts = async () => {
       setLoading(true);
       try {
-        console.log('Fetching casts by channel');
 
         const response = await axios.get(`https://${config2.serverBaseUrl}/castsByChannel/${encodeURIComponent(channel)}`);
         const fetchedCasts = response.data.messages;
 
         const sortedCasts = fetchedCasts.sort((a: any, b: any) => b.data.timestamp - a.data.timestamp);
 
-        console.log(`Fetched casts for channel ${channel}:`, sortedCasts);
         setAllCasts(sortedCasts);
         setDisplayCasts(sortedCasts.slice(0, 120));
       } catch (error) {

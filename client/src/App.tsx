@@ -85,7 +85,6 @@ const App: React.FC = () => {
     async function fetchChannels() {
       try {
         axios.get(`https://${config2.serverBaseUrl}/channels`).then(res => {
-          console.log('Channels:', res.data.channels);
           setAllChannels(res.data.channels);
         });
       } catch (error) {

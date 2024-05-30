@@ -4,7 +4,6 @@ import axios from 'axios';
 import config2 from './../../config2';
 
 interface Article {
-  id: number;
   title: string;
   subtitle: string;
   sections: {
@@ -37,7 +36,6 @@ interface Cast {
 }
 
 export default function ArticlePage() {
-  const { id } = useParams<{ id: string }>();
   const { state } = useLocation();
   const channelUrl = state?.channelUrl;
 
@@ -88,10 +86,8 @@ export default function ArticlePage() {
         const response = await axios.get(`https://${config2.serverBaseUrl}/castsByChannel/${encodeURIComponent(channelUrl)}`);
         const channelName = channelUrl.split('/').pop() || '';
         setChannelName(channelName);
-        console.log("Response data:", response.data);
 
         let castsArray = response.data.messages || [];
-        console.log("Casts array:", castsArray);
 
         const newestTimestamp = castsArray.reduce((newest: Date, cast: Cast) => {
           const castTimestamp = new Date(cast.data.timestamp * 1000);
@@ -104,7 +100,6 @@ export default function ArticlePage() {
           return castTimestamp >= oneWeekAgo;
         }).map((cast: Cast) => cast.data.castAddBody?.text || '').filter((text: string) => text);
 
-        console.log("filteredCasts:", filteredCasts);
 
         const concatenatedText = filteredCasts.join(' ');
 
@@ -122,7 +117,6 @@ export default function ArticlePage() {
         Casts to summarize:
         ` + concatenatedText;
 
-        console.log("Concatenated Text:", concatenatedText);
 
         try {
           const summaryResponse = await axios.post(`https://${config2.serverBaseUrl}/generate_chat_anthropic`, {
@@ -133,7 +127,6 @@ export default function ArticlePage() {
             headers: { 'Content-Type': 'application/json' },
           });
 
-          console.log("Summary response:", summaryResponse.data);
           const summary = summaryResponse.data.content[0].text;
           const modelName = 'Claude 3 Haiku';
           setModelName(modelName);
@@ -151,7 +144,6 @@ export default function ArticlePage() {
             });
 
             const generatedArticle: Article = {
-              id: id ? parseInt(id, 10) : Date.now(),
               title: `${channelName}`,
               subtitle,
               sections,
@@ -159,7 +151,6 @@ export default function ArticlePage() {
               timestamp: new Date().getTime(),
             };
 
-            console.log("Generated article:", generatedArticle);
             setArticle(generatedArticle);
             localStorage.setItem(`article_${channelUrl}`, JSON.stringify(generatedArticle));
           } else {
@@ -181,7 +172,7 @@ export default function ArticlePage() {
     if (channelUrl) {
       fetchArticlesForChannelClaude();
     }
-  }, [channelUrl, id]);
+  }, [channelUrl]);
 
   const handleCreateArticle = async () => {
     try {
@@ -214,8 +205,8 @@ export default function ArticlePage() {
         setSaveSuccess(false);
       }, 5000);
     } catch (error) {
-      console.error("Failed to create article:", error);
-      setSaveError("Failed to create article. Please try again.");
+      console.error("Failed to save article:", error);
+      setSaveError("Please sign in with Farcaster to save articles.");
     }
   };
 
