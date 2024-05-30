@@ -120,7 +120,7 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
     }
   }, [searchUsername, allCasts, startIndex]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="cardo-regular">Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
