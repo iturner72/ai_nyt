@@ -7,7 +7,7 @@ interface InformationModalProps {
 const InformationModal: React.FC<InformationModalProps> = ({ closeModal }) => {
   return (
     <>
-      <div className="fixed alumni-sans-regular inset-0 z-50 bg-black bg-opacity-50 overflow-y-auto h-full w-full" onClick={closeModal}>
+      <div className="fixed ir inset-0 z-50 bg-black bg-opacity-50 overflow-y-auto h-full w-full" onClick={closeModal}>
         <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg bg-white" onClick={(e) => e.stopPropagation()}>
           <div className="mt-3 text-center">
             <h3 className="text-3xl leading-6 font-medium text-gray-900">Lock In</h3>

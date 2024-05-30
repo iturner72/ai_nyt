@@ -27,20 +27,20 @@ const LatexSourceModal: React.FC<LatexSourceModalProps> = ({ closeModal }) => {
           <a
             href="https://github.com/iturner72/ai_nyt.git"
             target="_blank"
-            className="bg-black alumni-sans-regular text-xl hover:bg-stone-200 hover:text-black text-white px-4 py-2 rounded-md"
+            className="bg-black cardo-regular text-xl hover:bg-stone-200 hover:text-black text-white px-4 py-2 rounded-md"
           >
             Github
           </a>
           <div className="flex flex-row items-center justify-center pt-2">
             <button
               onClick={handleOpenPDF}
-              className="bg-stone-600 hover:bg-stone-800 alumni-sans-regular text-xl text-white px-4 py-2 rounded-md"
+              className="bg-stone-600 hover:bg-stone-800 cardo-regular text-xl text-white px-4 py-2 rounded-md"
             >
               Open PDF
             </button>
             <button
               onClick={closeModal}
-              className="ml-4 alumni-sans-regular text-xl bg-gray-300 text-stone-800 px-4 py-2 rounded-md"
+              className="ml-4 cardo-regular text-xl bg-gray-300 text-stone-800 px-4 py-2 rounded-md"
             >
               Close
             </button>

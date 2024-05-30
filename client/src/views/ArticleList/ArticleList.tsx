@@ -63,7 +63,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
               {channels.map((chan, index) => {
                 const backgroundColor = backgroundColors[index % backgroundColors.length];
                 return (
-                  <div key={index} className="text-left alumni-sans-regular w-24 md:w-40 flex-shrink-0">
+                  <div key={index} className="text-left ir w-24 md:w-40 flex-shrink-0">
                     <Link
                       to={`/article/${article.id}`}
                       state={{ channelUrl: chan }}
@@ -77,7 +77,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
                         className="h-24 w-24 md:h-40 md:w-40 object-cover"
                         onError={(e) => ((e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/400x300')}
                       />
-                      <span className="pl-1 text-md alumni-sans-regular py-1 w-full">
+                      <span className="pl-1 text-md ir py-1 w-full">
                         /{chan.split('/').pop() || ''}
                       </span>
                     </Link>

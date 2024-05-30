@@ -51,19 +51,24 @@ code {
   font-style: normal;
 }
 
-.alumni-sans-regular {
-  font-family: "Alumni Sans", sans-serif;
-  font-optical-sizing: auto;
+.cardo-regular {
+  font-family: "Cardo", serif;
   font-weight: 400;
   font-style: normal;
 }
 
-.alumni-sans-bold {
-  font-family: "Alumni Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 800;
+.cardo-bold {
+  font-family: "Cardo", serif;
+  font-weight: 700;
   font-style: normal;
 }
+
+.cardo-regular-italic {
+  font-family: "Cardo", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
 
 .buttonStyle = {
   backgroundColor: '#fff';

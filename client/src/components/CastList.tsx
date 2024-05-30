@@ -132,7 +132,7 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
           href={`https://warpcast.com/~/channel/${channelName}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-2xl alumni-sans-bold text-indigo-800 hover:underline"
+          className="text-2xl cardo-bold text-indigo-800 hover:underline"
         >
           /{channelName}
         </a>
@@ -157,14 +157,14 @@ const CastList = ({ channel, searchUsername }: CastListProps) => {
             <button
               onClick={() => updateDisplayedCasts(startIndex - 40)}
               disabled={startIndex === 0}
-              className="alumni-sans-regular mr-2 px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
+              className="cardo-regular mr-2 px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
             >
               Previous
             </button>
             <button
               onClick={() => updateDisplayedCasts(startIndex + 40)}
               disabled={startIndex + 40 >= allCasts.length}
-              className="alumni-sans-regular px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
+              className="cardo-regular px-4 py-2 bg-stone-700 text-white disabled:bg-stone-400"
             >
               Next
             </button>

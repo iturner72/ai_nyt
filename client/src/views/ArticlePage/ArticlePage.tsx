@@ -241,13 +241,13 @@ export default function ArticlePage() {
         <div className="flex flex-col items-center justify-center">
           <button
             onClick={handleCreateArticle}
-            className="bg-indigo-500 hover:bg-indigo-700 text-white alumni-sans-bold py-2 px-4 mt-4"
+            className="bg-indigo-500 hover:bg-indigo-700 text-white cardo-bold py-2 px-4 mt-4"
           > 
             Save Article
           </button>
           {saveError && <div className="text-red-500 mt-2">{saveError}</div>}
           {saveSuccess && <div className="text-green-500 mt-2">Article saved successfully!</div>}
-          <div className="flex flex-col items-center alumni-sans-regular text-2xl md:text-3xl pl-2 pb-2">
+          <div className="flex flex-col items-center cardo-regular text-2xl md:text-3xl pl-2 pb-2">
             <h2>{article.title}</h2>
             <p>{article.subtitle}</p>
           </div>
@@ -256,12 +256,12 @@ export default function ArticlePage() {
       <div className="max-w-full lg:max-w-[2200px] mx-auto">
         <article className="text-left text-xl sm:text-2xl lg:text-3xl font-serif leading-relaxed lg:leading-10 mx-auto py-6 lg:py-2">
           <div className="mt-8">
-            <h1 className="alumni-sans-bold text-4xl lg:text-5xl mb-2">weekly {channelName} digest</h1>
-            <p className="alumni-sans-regular text-xl mb-2">by {modelName}</p>
+            <h1 className="cardo-bold text-4xl lg:text-5xl mb-2">weekly {channelName} digest</h1>
+            <p className="cardo-regular text-xl mb-2">by {modelName}</p>
             <p className="text-stone-500 text-sm">(3 min. read)</p>
           </div>
           <div className="flex flex-col md:flex-row">
-            <div className="alumni-sans-regular text-xl md:text-4xl md:w-11/12 md:pr-8">
+            <div className="cardo-regular text-xl md:text-4xl md:w-11/12 md:pr-8">
               {article.sections && article.sections.map((section, index) => (
                 <div key={index} className="mb-8">
                   <h3 className="text-3xl font-semibold mb-2">{section.heading}</h3>

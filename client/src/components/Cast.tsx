@@ -159,7 +159,7 @@ export default function CastEntry({ cast, index }: CastProps) {
             <div className="w-12 h-12 rounded-full bg-gray-300 mr-2" />
           )}
           <h3 
-            className="alumni-sans-bold text-indigo-800 text-lg md:text-xl cursor-pointer transition-colors duration-100 ease-in-out hover:text-indigo-600"
+            className="cardo-bold text-indigo-800 text-lg md:text-xl cursor-pointer transition-colors duration-100 ease-in-out hover:text-indigo-600"
             onClick={(event) => handleProfileClick(cast.data?.fid || 0, event)}
           >
             {loading ? (
@@ -174,7 +174,7 @@ export default function CastEntry({ cast, index }: CastProps) {
         </a>
       </div>
       <div className="flex-grow pt-2">
-        <p className="alumni-sans-regular text-lg md:text-xl break-words hyphens-auto" style={{ lineHeight: 1.122 }}>
+        <p className="cardo-regular text-lg md:text-xl break-words hyphens-auto" style={{ lineHeight: 1.122 }}>
           {cast.data?.castAddBody ? (
             <Linkify
               componentDecorator={(decoratedHref, decoratedText, key) => (
@@ -221,7 +221,7 @@ export default function CastEntry({ cast, index }: CastProps) {
 
         <div className="flex items-center mt-2">
           <HeartIcon className="h-6 w-6 text-indigo-200" />
-          <span className="text-md font-extralight text-stone-500 ml-1">
+          <span className="cardo-regular text-md font-extralight text-stone-500 ml-1">
             {reactionData && reactionData.messages ? reactionData.messages.length : 0}
           </span>
           </div>
