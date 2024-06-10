@@ -1,0 +1,25 @@
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Week 8?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Sunday, 06/10/2024}
+\begin{itemize}
+    \item we might be back (leptos rewrite). notes from testing existing hubble
+        node routes with leptos components.
+    \item this is not live yet since it has very limited funtionality.
+    \item \texttt{fetch_username} checks if \texttt{lead_usernames} already 
+        has the \texttt{fid}. if not, it fetches the username and updates the 
+        state.
+    \item added \texttt{ongoing_requests} to track fetches and avoid multiple 
+        requests for the same \texttt{fid}.
+    \item Used \texttt{create_effect} to manage side effects, ensuring 
+        usernames are fetched only once.
+    \item Used \texttt{spawn_local} for async tasks to keep the main thread 
+        non-blocking.
+    \item \texttt{Signal} and \texttt{set_signal} handle reactive state in the 
+        \texttt{Channels} component, making sure the UI updates when data 
+        changes.
+    \item \texttt{HashSet} tracks \texttt{ongoing_requests}, preventing 
+        duplicate fetches and redundant state updates.
+    \item The component dynamically displays usernames from the updated state.
+\end{itemize}
