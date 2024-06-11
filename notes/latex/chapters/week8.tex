@@ -22,4 +22,17 @@
     \item \texttt{HashSet} tracks \texttt{ongoing_requests}, preventing 
         duplicate fetches and redundant state updates.
     \item The component dynamically displays usernames from the updated state.
+    \item asdfasdf
+\end{itemize}
+
+\subsection*{Monday, 06/11/2024}
+\begin{itemize}
+    \item removed the \texttt{lead_username} variable and its assignment using 
+        \texttt{unwrap_or_else} from the \texttt{view!} macro.
+    \item added closure inside the \texttt{view!} macrothat matches on 
+        \texttt{lead_usernames.get().get(&fid)}.
+    \item if the lead username is available show it, else show "chill" in div
+        where username would be 
+    \item closure is defined using \texttt{move ||} to capture the 
+        \texttt{lead_usernames} and \texttt{fid} variables.
 \end{itemize}
