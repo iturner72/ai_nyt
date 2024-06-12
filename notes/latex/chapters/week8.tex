@@ -36,3 +36,17 @@
     \item closure is defined using \texttt{move ||} to capture the 
         \texttt{lead_usernames} and \texttt{fid} variables.
 \end{itemize}
+
+\subsection*{Tuesday, 06/12/2024}
+\begin{itemize}
+    \item begin rewrite of cast and cast list pages, need to think about using 
+        \texttt{create_effect} in the complicated way that i did above.
+    \item using this \texttt{create_effect} in the way that i am to sync the
+        reactive system is \textit{officially} discouraged since you might shoot
+        off your foot with an infinite loop if you don't create something to
+        keep track of the ongoing_requests. i liike the chill message though and
+        how it could show up at different times for different channels in some
+        cases (probably won't be used, but we will see).
+    \item i'll do the cast stuff without \texttt{create_effect} to see
+        if it's less complicated and achieves virtually the same thing. 
+\end{itemize}
