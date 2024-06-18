@@ -30,9 +30,33 @@
     \item removed the \texttt{lead_username} variable and its assignment using 
         \texttt{unwrap_or_else} from the \texttt{view!} macro.
     \item added closure inside the \texttt{view!} macrothat matches on 
-        \texttt{lead_usernames.get().get(&fid)}.
+        \texttt{lead_usernames.get().get(<ref>fid)}.
     \item if the lead username is available show it, else show "chill" in div
         where username would be 
     \item closure is defined using \texttt{move ||} to capture the 
         \texttt{lead_usernames} and \texttt{fid} variables.
+\end{itemize}
+
+\clearpage
+\subsection*{Tuesday, 06/12/2024}
+\begin{itemize}
+    \item begin rewrite of cast and cast list pages, need to think about using 
+        \texttt{create_effect} in the complicated way that i did above.
+    \item using this \texttt{create_effect} in the way that i am to sync the
+        reactive system is \textit{officially} 
+        (Figure~\ref{fig:create_effect_bad}) discouraged since you might shoot
+        off your foot with an infinite loop if you don't create something to
+        keep track of the ongoing_requests. i liike the chill message though and
+        how it could show up at different times for different channels in some
+        cases (probably won't be used, but we will see).
+    \item i'll do the cast stuff without \texttt{create_effect} to see
+        if it's less complicated and achieves virtually the same thing. 
+
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=15cm]{create_effect_bad}
+            \captionsetup{labelfont=bf, textfont=it}
+            \caption{create effect bad}
+            \label{fig:create_effect_bad}
+        \end{figure}
 \end{itemize}
