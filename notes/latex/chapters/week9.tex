@@ -43,3 +43,15 @@
             \label{fig:fearless_concurrency}
         \end{figure}
 \end{itemize}
+
+\clearpage
+\subsection*{Thursday, 07/20/2024}
+\begin{itemize}
+    \item added url encoding to allow user to upload code snippets or special
+        characters basically. this should prevent bugs where a cast can have
+        some strange character which breaks the request to create an article.
+    \item we will see what the limits of what i can pass into the url for a get
+        request can be. if this becomes an issue i can always change it up or
+        even experiment with web sockets rather than sse if the complexity is
+        not too crazy.
+\end{itemize}
