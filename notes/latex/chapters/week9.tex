@@ -93,4 +93,16 @@
             \caption{init threads component}
             \label{fig:threads_leptos_init}
         \end{figure}
+    \item essentially, i forgot that i could import the \texttt{AppState} 
+        struct like i do in main function to aquire a db connection. the more 
+        annoying thing was the error formatting. i needed to create a custom 
+        \texttt{ThreadError} enum to
+        categorize different types of errors (PoolError, DatabaseError,
+        InteractionError) but they could not be type cast properly. this didn't
+        properly convert them all the \texttt{ServerFnError} which leptos server
+        functions must return. unlucky, so i needed to create a
+        \texttt{to_server_error()} function which explicitly converts
+        \texttt{ThreadError} to \texttt{ServerFnError}.
+    \item these problems easier to tackle once i stopped trying to do everything
+        in the \texttt{chat.rs} component.
 \end{itemize}
