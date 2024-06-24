@@ -63,4 +63,27 @@
     \item it works lets go
     \item will continue reworking the hubble endpoints from react project in
         leptos components
+    \item might even rework the chat stream component to use server functions
+        properly
+    \item i think in order to get the chat working where messages are actually
+        chained together, i need to rework my \texttt{conversations} module.
+    \item since i want to use some structs on the client side, i need create new
+        structs for client only (without any server crates in the ssr block of
+        the cfg_if macro), then new structs which share these common types for
+        the server with the database functionality.
+    \item this way the new structs \texttt{ThreadView}, \texttt{MessageView},
+        and \texttt{NewMessageView} are safe to use client and server side,
+        while diesel specific structs \texttt{Thread}, \texttt{Message}, and
+        \texttt{NewMessage} are only compiled for ssr.
+\end{itemize}
+
+\clearpage
+\subsection*{Sunday, 07/23/2024}
+\begin{itemize}
+    \item getting absolutely cucked by a simple server function implementation.
+        i straight up can't get them to work dawg, but i want to be fancy and
+        use them so i will keep trying.
+    \item i think i should for sure abstract away the thread fetching logic to
+        its own component, this may be the number one source of my woes
+        recently.
 \end{itemize}
