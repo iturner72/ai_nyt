@@ -1,0 +1,21 @@
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Week 14}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{Thursday, 8/01/2024}
+\begin{itemize}
+    \item damn i need to commit more here!
+    \item working on cast list and cast entry merging finally. implemented very
+        lazy lazy loading. i still don't have shuttle postgres thing set up so i
+        have to make all these fetches randomly, so i'd like to keep them to a
+        minimum for user data.
+    \item this lazy load feature was fun since it gave me an excuse to use some
+        \texttt{web_sys} stuff related to interactive observers.
+    \item i basically have it so that only the first 8 cast entries load data
+        immediately (user data, not cast body), and the rest are loaded as they
+        become visible in the viewport.
+    \item this was a breeze with this fine grained readtivity business honestly!
+    \item the IntersectionObserver types are cracked since i can set a threshold
+        for visibility (i used 10 percent in this feature). 
+\end{itemize}
