@@ -30,5 +30,23 @@
         though later for like a tweetdeck style fetch.
     \item added images, will wait on reactions until i can get cast creation 
         working i think.
+\end{itemize}
+
+\subsection*{Sunday, 8/04/2024}
+\begin{itemize}
+    \item working on the pfp page and will continue to issue max  
+        \textcolor{blue}{\href{https://github.com/iturner72/thenetworktimes/issues/4}{issue 4}}
+    \item will study leptos routes since rn things are just really shitty and
+        not organized.
+    \item oh it's just \texttt{:id} for the path in the route i can use for
+        profile, very nice.
+    \item i decided to use \texttt{create_memo} for the fid on the profile page
+        which uses a params map as a prop, this allows flexibility later i
+        think...
+    \item either way, i needed to handle the \texttt{ServerFnError} manually in
+        the create resourse call for \texttt{user_data}, i should probably use
+        the leptos helper libs in the ecosystem, but i feel like doing all these
+        annoying manual things helps me learn what the framework is actually
+        doing, so i don't mind the extra dev time.
     \item ...
 \end{itemize}
