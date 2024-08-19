@@ -11,5 +11,26 @@
     \item okay it's working as designed now lets gooo!
     \item i am going to leave the remote feature branches up since i reference
         them in issues, and will help contributors if that ever is a thing.
+\end{itemize}
+
+\subsection*{Sunday, 8/18/2024}
+\begin{itemize}
+    \item that was really easy to get working, but it literally conflicts with
+        my lazy loading logic which was based on the user scrolling (before
+        caching was implemented) so this clearly breaks things.
+    \item i'll need to try to get some sort of client side cache working as
+        well, it might be a RIP to the wasm bundle size but oh well, perhaps the
+        bundle splitting lads will fix by the time i have a usable app.
+    \item omg that was also very easy, now first load on any feed is unusable!!!
+        but every subsequent load is lightning which is exactly what i expected
+        to happen.
+    \item luckily my website is a nice LLM enjoyer, crypto adjacent power app
+        that has a questionable use case! :)
+    \item again, all these hacks are fun to implement, but really, i should be
+        migrating to leptos 0.7 beta since it allows axum to actually do work in
+        paralled (i think), in 0.6, even the server functions somehow only run
+        blocking on 1 thread if i am not mistaken.
+    \item much to do, after 0.7 migration, think about postgres rust shuttle
+        like service implementation (rip).
     \item ...
 \end{itemize}
