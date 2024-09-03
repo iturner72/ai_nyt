@@ -49,7 +49,7 @@ export function ArticleList({ channel, channels, onArticleClick }: ArticleListPr
     timestamp: 0,
   });
   const [error, setError] = useState('');
-  const backgroundColors = ['#fff205','#ff5050', '#01fff4', '#7cff01', '#d8d8d8', '#ff529d' ];
+  const backgroundColors = ['#7cff01','#ff5050', '#01fff4', '#fff205', '#d8d8d8', '#ff529d' ];
 
   return (
     <div className="flex flex-col w-full items-center justify-center pb-2 pl-4 pr-4">
