@@ -18,3 +18,21 @@
     \item i need to work on bryptoblogs, scripts still work somehow, still
         haven't set up a con job to automate this stuff oopsie.
 \end{itemize}
+
+\subsection*{Monday, 9/16/2024}
+\begin{itemize}
+    \item working on new thread creation animations, would be good to practice
+        highlightjs integration on a small chat completion. 
+    \item i've written like 3 or 4 different stream handlers, i like this SSE
+        one the best so far, but it's really really naive and should make better
+        use of mpsc::channel.
+    \item in previous stream handlers i would store each chunk (thought that was
+        dumb, maybe it wasn't), then a few chunks here and there, now none at
+        all unless the stream is complete.
+    \item i realize this probably doesn't work for the highlightjs package since
+        it requires the fully formed code block to work (also if user refreshes
+        they lose the completion)
+    \item much to fix, i'll rework stream once i figure out 0.7 migration (i've
+        been lazy on this)
+    \item ...
+\end{itemize}
